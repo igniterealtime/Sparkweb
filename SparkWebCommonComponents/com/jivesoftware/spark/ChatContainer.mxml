@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    This file is part of SparkWeb.
+    
+    SparkWeb is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    SparkWeb is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    
+    You should have received a copy of the GNU Lesser General Public License
+    along with SparkWeb.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<sparkComp:ColorShiftingPanel
+	headerHeight="0"
+	filters="{[new DropShadowFilter(0, 45, 0.0, 0.75, 6.0)]}" height="100%" width="80%" visible="false" 
+	backgroundAlpha=".4"
+	resize="chatFrame.validateDisplayList();"
+	xmlns:mx="http://www.adobe.com/2006/mxml"
+	xmlns:gui="com.jivesoftware.spark.*" 
+	xmlns:sparkComp="com.jivesoftware.spark.*"
+	xmlns:flexlib = "flexlib.containers.*"
+	xmlns:fc="com.jivesoftware.spark.components.resize.*"
+	paddingLeft="5" paddingRight="5"
+	paddingBottom="5" paddingTop="5" creationComplete="init()">	
+	
+	<mx:Style>
+		.container {
+			verticalGap: 0;
+		}
+		
+		.searching { 
+        	color: black;
+        	font-size: 11;
+        	font-weight:normal;
+        }
+        
+        .defaultStyle {
+        	color: #7C7C7C;
+        	font-size: 11;
+        	font-weight:bold;
+        }
+        
+	</mx:Style>
+
+	<mx:Script>
+		<![CDATA[
+			import com.jivesoftware.spark.events.NotifyEvent;
+			import org.jivesoftware.xiff.core.JID;
+			import com.jivesoftware.spark.SparkGroupChat;
+			import mx.events.IndexChangedEvent;
+			import com.jivesoftware.spark.SparkChat;
+			import com.jivesoftware.spark.SparkMessage;
+			import mx.events.ItemClickEvent;
+			import org.jivesoftware.xiff.data.muc.MUC;
+			import org.jivesoftware.xiff.events.RosterEvent;
+			import org.jivesoftware.xiff.data.im.RosterItem;
+			import org.jivesoftware.xiff.data.IExtension;
+			import org.jivesoftware.xiff.conference.Room;
+			import mx.events.ChildExistenceChangedEvent;
+			import flexlib.controls.SuperTabBar;
+			import flexlib.containers.SuperTabNavigator;
+			import mx.controls.TabBar;
+			import com.jivesoftware.spark.utils.*;
+			import mx.events.CollectionEvent;
+			
+			import com.jivesoftware.spark.managers.*;
+			import com.jivesoftware.spark.*;
+			import org.jivesoftware.xiff.data.im.RosterItemVO;
+			import org.jivesoftware.xiff.im.Roster;
+			import com.jivesoftware.spark.managers.SparkManager;
+			import com.jivesoftware.spark.ChatRoom;
+			import mx.collections.XMLListCollection;
+			import flexlib.containers.SuperTabNavigator;
+			import org.jivesoftware.xiff.data.Presence;
+			import flash.display.Sprite;
+			import org.jivesoftware.xiff.core.XMPPConnection;
+			import org.jivesoftware.xiff.data.Message;
+			import flash.events.Event;
+			import org.jivesoftware.xiff.events.PresenceEvent;
+			import flash.profiler.showRedrawRegions;
+			import org.jivesoftware.xiff.events.MessageEvent;
+			import mx.managers.PopUpManager;
+			import mx.containers.TitleWindow;
+			import flash.geom.Point;
+    		
+			public var inFocus:Boolean = true;
+			private var chats:Object = {};
+			private var _activeRoom:ChatRoom = null;
+			private var queuedRooms:Array = [];
+			private var autoJoinTimer:Timer;
+			
+			private static var _window:ChatContainer;
+			
+			public static function get window():ChatContainer
+			{
+				return _window;
+			}
+			
+			public function get activeRoom():ChatRoom
+			{
+				return _activeRoom;
+			}
+			
+			public function queueRoom(jid:JID):void
+			{
+				queuedRooms.push(jid);
+				if(!autoJoinTimer)
+				{
+					autoJoinTimer = new Timer(3.0, 1);
+					autoJoinTimer.addEventListener(TimerEvent.TIMER_COMPLETE, autoJoinRoom);
+					autoJoinTimer.start();
+				}
+			}
+			
+			protected function autoJoinRoom(event:TimerEvent):void
+			{
+				if(queuedRooms.length == 0)
+					return;
+				
+				startGroupChat(queuedRooms.pop(), true);
+				autoJoinTimer.reset();
+				autoJoinTimer.start();
+			}
+			
+			public function set activeRoom(r:ChatRoom):void
+			{
+				if(activeRoom && r.parent == chatFrame)
+					activeRoom.active = false;
+					
+				_activeRoom = r;
+				if(activeRoom != chatFrame.selectedChild)
+					chatFrame.selectedChild = activeRoom; //note: this will cause activeRoom to be set again, calling this reentrantly
+				
+				if(activeRoom)			
+					activeRoom.active = true;
+			}
+			
+			public function startGroupChat(jid:JID, activate:Boolean = true, password:String = null):SparkGroupChat
+			{
+				if(!jid)
+					return null;
+				var chat:SparkGroupChat = getChatByJID(jid) as SparkGroupChat;
+				if(!chat)
+					chat = new SparkGroupChat(jid);
+					
+				if (password != null)
+					chat.password = password;
+					
+				createChatUI(chat, activate);
+				return chat;
+			}
+		
+			public function startChat(jid:JID, activate:Boolean = true):SparkChat
+			{
+				if(!jid)
+					return null;
+				var chat:SparkChat = getChatByJID(jid) as SparkChat;
+				if(!chat)
+					chat = new SparkChat(jid);
+				createChatUI(chat, activate);
+				return chat;
+			}
+		
+			public function createChatUI(chat:SparkChat, activate:Boolean = true):void
+			{
+				var child:ChatRoom = chat ? chat.ui : null;
+				
+				//if we don't have an existing chat for this JID, we'll need to create one
+				if(!child)
+				{
+					child = new ChatRoom();
+					chat.ui = child;
+					chats[chat.jid.toBareJID()] = chat;
+					child.id = chat.jid.toBareJID();
+					child.chat = chat;
+					child.label = chat.displayName;
+					child.setStyle('paddingLeft', 10);
+					child.setStyle('paddingBottom', 10);
+					child.setStyle('paddingRight', 10);
+					child.setStyle('paddingTop', 10);
+					child.setStyle('backgroundAlpha', 0.9);
+					child.setStyle('backgroundColor', "white");
+					child.setStyle('borderStyle', "solid");
+					child.setStyle('borderWidth', 0.5);
+					child.setStyle('borderColor', "#AAAAAA");
+					chatFrame.addChild(child);
+				}
+				
+				setVisible(true);
+				
+				chatFrame.validateDisplayList();
+			    
+			    if(inFocus && (activate || chatFrame.getChildren().length == 1))
+			    	activeRoom = child;
+			}
+			
+			public function getChatByJID(jid:JID):SparkChat 
+			{
+				return chats[jid.bareJid];
+			}
+			
+			public function init():void 
+			{
+				// Set Defaults
+				_window = this;
+				
+				chatFrame.addEventListener(ChildExistenceChangedEvent.CHILD_REMOVE, checkIfClosed);
+				this.addEventListener(Event.CLOSE, closeAll);
+				
+				chatFrame.closePolicy = "close_always";
+				
+				SparkManager.connectionManager.connection.addEventListener("message", handleMessages);
+			}
+			
+			private function checkIfClosed(event:ChildExistenceChangedEvent):void 
+			{
+				// Handle the closing of the room.
+				var chatRoom:ChatRoom = event.relatedObject as ChatRoom;
+				chatRoom.chat.close();	
+				chats[chatRoom.chat.jid] = null;
+								
+				if(chatFrame.getChildren().length == 1) 
+					setVisible(false);
+			}
+			
+			public function closeGroupChatByJID(jid:JID):void
+			{
+				var chat:SparkGroupChat = getChatByJID(jid) as SparkGroupChat;
+				chat.close();
+				chats[chat.jid] = null;
+				
+				chatFrame.removeChild(chat.ui);
+				if(chatFrame.getChildren().length == 0)
+					setVisible(false);
+			}
+			
+			private function closeAll(event:Event):void 
+			{
+				while(chatFrame.getChildren().length > 0)
+					(chatFrame.getChildAt(0) as ChatRoom).chat.close();
+			}
+			
+			public function handleMessages(event:MessageEvent):void 
+			{
+				var message:Message = event.data;
+				var chat:SparkChat= getChatByJID(message.from);
+
+				//if we don't have an existing chat, and there's content to the message (i.e. ignoring stuff like composing messages), then we need to create a chat to display the message in
+				if(!chat && message.body)
+					chat = message.type == Message.GROUPCHAT_TYPE ? startGroupChat(message.from, false) : startChat(message.from, false);
+				
+				//the if is needed for the case in which chat and xiffMessage.body were both null above
+				if(chat)
+				{
+					if(chat.handleMessage(message) && !inFocus)
+					{
+						var evt:NotifyEvent = new NotifyEvent(NotifyEvent.NEW_MESSAGE);
+						evt.message = message;
+						dispatchEvent(evt);
+					}
+				}
+
+			}
+		]]>
+	</mx:Script>
+   		 <flexlib:SuperTabNavigator
+   		 	 id="chatFrame"
+   		 	 width="100%"
+   		 	 height="100%"
+   		 	 backgroundAlpha="0.0"
+   		 	 borderStyle="none"
+   		 	 paddingTop="0"
+		     popUpButtonPolicy="off"
+     		 scrollSpeed="100"
+     		 dragEnabled="false"
+     		 dropEnabled="false"
+     		 minTabWidth="80"
+     		 tabWidth="150"
+     		 change="activeRoom = event.relatedObject as ChatRoom"
+     	/>
+ </sparkComp:ColorShiftingPanel>

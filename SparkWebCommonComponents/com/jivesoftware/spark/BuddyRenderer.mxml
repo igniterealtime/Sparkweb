@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    This file is part of SparkWeb.
+    
+    SparkWeb is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    SparkWeb is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    
+    You should have received a copy of the GNU Lesser General Public License
+    along with SparkWeb.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<mx:HBox 
+		xmlns:mx="http://www.adobe.com/2006/mxml" 
+		xmlns:sparkComp="com.jivesoftware.spark.*"
+		filters="{[]}" 
+		verticalScrollPolicy="off" 
+	    horizontalScrollPolicy="off"
+	    height="28"
+	    maxHeight="28"
+	    minHeight="28"
+		width="100%" 
+		toolTip="{data.jid}" toolTipCreate="event.toolTip = createProfileToolTip()"
+		verticalAlign="middle" 
+		paddingTop="2" 
+		paddingBottom="2" 
+		paddingLeft="4" 
+		paddingRight="4" 
+		horizontalGap="0"
+	    borderSides="top bottom"
+		implements="mx.managers.IFocusManagerComponent">
+ 
+<mx:Script>
+	<![CDATA[
+		import org.jivesoftware.xiff.data.im.Contact;
+		import org.jivesoftware.xiff.events.VCardEvent;
+		import org.jivesoftware.xiff.core.JID;
+		import com.jivesoftware.spark.managers.Localizator;
+		import com.jivesoftware.spark.ProfileWindow;
+		import com.jivesoftware.spark.GroupChangeWindow;
+		import com.jivesoftware.spark.BuddyToolTip;
+		import mx.core.IToolTip;
+		import mx.core.UIComponent;
+		import org.jivesoftware.xiff.events.RosterEvent;
+		import mx.binding.utils.BindingUtils;
+		import com.jivesoftware.spark.ChatContainer;
+		import org.jivesoftware.xiff.data.im.RosterItemVO;
+		import mx.graphics.BitmapFill;
+		import org.jivesoftware.xiff.data.Presence;
+		import org.jivesoftware.xiff.vcard.VCard;
+		import flash.events.MouseEvent;
+		import mx.collections.ArrayCollection;
+		import mx.controls.*;
+		import com.jivesoftware.spark.managers.SparkManager;
+		import com.jivesoftware.spark.managers.PresenceManager;
+		import org.jivesoftware.xiff.data.im.RosterExtension;
+		
+		protected var _selected:Boolean = false;
+		protected var _changingName:Boolean = false;
+		protected var clickTimer:Timer;
+		
+		[Embed(source="/assets/images/dummyContact.png")]
+		protected static const dummyIcon:Class;
+		
+		[Bindable(event=dataChanged)]
+		public function get rosterItem():RosterItemVO
+		{
+			return data as RosterItemVO;
+		}
+		
+		public function set rosterItem(ri:RosterItemVO):void
+		{
+			data = ri;
+		}
+		
+		public function singleClicked(event:MouseEvent):void 
+		{
+			if(clickTimer || changingName || !selected)
+				return;
+			clickTimer = new Timer(1250, 1);
+			clickTimer.addEventListener(TimerEvent.TIMER_COMPLETE, renameUser);
+			clickTimer.start();
+		}
+		
+		protected function cancelEditTimer(evt:FocusEvent=null):void 
+		{
+			if(clickTimer)
+			{
+				clickTimer.stop();
+				clickTimer = null;
+			}
+		}
+		
+		public function doubleClicked(event:Event):void 
+		{
+			cancelEditTimer();
+			ChatContainer.window.startChat(jid, true);
+			event.stopImmediatePropagation();
+		}
+		
+		public function loadVCard(rosterItem:RosterItemVO):void 
+		{
+			var card:VCard = VCard.getVCard(SparkManager.connectionManager.connection, rosterItem)
+			if(card.avatar)
+			{
+				avatar = card.avatar;
+			}
+			else
+			{
+				avatar = null;
+				card.addEventListener(VCardEvent.AVATAR_LOADED, handleAvatarLoaded);
+			}
+		}
+		
+		protected function handleAvatarLoaded(evt:VCardEvent):void
+		{
+			var card:VCard = evt.vcard;
+			card.removeEventListener(VCardEvent.AVATAR_LOADED, handleAvatarLoaded);
+			avatar = card.avatar;
+		}
+		
+		public override function set data(value:Object):void
+		{
+			if(value && contact != value)
+			{
+				super.data = value;
+				
+				addListeners();
+				
+				contextMenu = null;
+				
+				this.contextMenu = getMenu();
+					
+				if(rosterItem && rosterItem.online)
+					loadVCard(contact as RosterItemVO);
+				dispatchEvent(new Event("dataChanged"));
+			}
+		}
+		
+		protected var isSetup:Boolean = false;
+		protected function addListeners():void
+		{
+			if(isSetup)
+				return;
+			
+			isSetup = true;
+			doubleClickEnabled = true;
+			addEventListener(MouseEvent.DOUBLE_CLICK, doubleClicked);
+			addEventListener(MouseEvent.CLICK, singleClicked);
+			addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, cancelEditTimer);
+			addEventListener(FocusEvent.KEY_FOCUS_CHANGE, cancelEditTimer);
+				
+			editNameField.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, commitNickname);
+			editNameField.addEventListener(FocusEvent.KEY_FOCUS_CHANGE, commitNickname);
+			editNameField.addEventListener(KeyboardEvent.KEY_DOWN, checkEnterKey);
+		}
+		
+		protected function getMenu():ContextMenu
+		{
+			var my_cm:ContextMenu = new ContextMenu();
+			// Note: We may want to extract out the 'start a chat' code from within doubleClicked() as it is not so intuitive as a callback here
+			var startChatMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.start.chat'));
+			startChatMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, doubleClicked);
+			my_cm.customItems.push(startChatMenuItem);
+		
+			var renameMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.rename') + contact.displayName);
+			renameMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, renameUser);
+			my_cm.customItems.push(renameMenuItem);
+			
+			var removeMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.remove') + contact.displayName);
+			removeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, removeUser);
+			my_cm.customItems.push(removeMenuItem);
+				
+			var viewProfileMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.view.profile'));
+			viewProfileMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, viewProfile);
+			my_cm.customItems.push(viewProfileMenuItem);
+			
+			var groupMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.groups'));
+			groupMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, groupMenuItemSelected);
+			my_cm.customItems.push(groupMenuItem);
+			
+			//TODO: MUC/1:1 renderer split
+			if (contact is RosterItemVO && (contact as RosterItemVO).pending) 
+			{
+				var requestAuthMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.rerequest.auth'));
+				requestAuthMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, requestAuth);
+				my_cm.customItems.push(requestAuthMenuItem);	
+			}
+			
+			my_cm.hideBuiltInItems();
+			return my_cm;
+		}
+
+		protected function renameUser(event:Event):void 
+		{
+			editNameField.text = nicknameLabel.text;
+			changingName = true;
+			stage.focus = editNameField;
+			editNameField.setSelection(0, editNameField.text.length);
+		}
+		
+		protected function checkEnterKey(event:KeyboardEvent):void 
+		{
+			switch(event.keyCode)
+			{
+				case Keyboard.ENTER:
+					commitNickname(event);
+					event.stopPropagation();
+					break;
+			}
+		}
+		
+		protected function commitNickname(event:Event):void 
+		{
+			nick = editNameField.text;
+			cancelEditTimer();
+			changingName = false;
+		}
+		
+		protected function removeUser(event:ContextMenuEvent):void 
+		{
+			SparkManager.roster.removeContact(rosterItem);
+		}
+		
+		protected function viewProfile(event:ContextMenuEvent):void 
+		{
+			//TODO: CS profile viewing... will need some sort of useful abstraction here
+			ProfileWindow.showProfile(rosterItem);
+		}
+		
+		protected function groupMenuItemSelected(event:ContextMenuEvent):void
+		{
+			GroupChangeWindow.showGroupChangeWindow(jid);
+		}
+		
+		protected function requestAuth(event:ContextMenuEvent):void 
+		{
+			SparkManager.roster.requestSubscription(jid);
+		}
+		
+		/**** Setters ****/
+
+		public function set selected(selected:Boolean):void 
+		{
+			if(selected == _selected)
+				return;
+			_selected = selected;
+		}
+		
+		public function set nick(n:String):void 
+		{
+			if(!rosterItem)
+				return;
+			
+			// Update the contact in the roster only if the nick was actually changed.
+			if(n != rosterItem.displayName)
+				SparkManager.roster.updateContactName(rosterItem, n);
+		}
+		
+		protected var avatarLoader:Loader;
+		public function set avatar(img:*):void 
+		{
+			if(img)
+				avatarImage.source = img is ByteArray ? img as ByteArray : img.loaderInfo.bytes
+			else
+				avatarImage.source = dummyIcon;
+		}
+		
+		public function set changingName(flag:Boolean):void { _changingName = flag; }
+		
+		/**** Getters ****/
+		
+		public function get jid():JID { return rosterItem ? rosterItem.jid : null; }
+		
+		[Bindable]
+		public function get changingName():Boolean { return _changingName; }
+		
+		[Bindable]
+		public function get selected():Boolean { return _selected; }
+		
+		[Bindable(event=dataUpdated)]
+		public function get contact():Contact { return data as Contact; }
+		
+		public function formatStatus(status:String):String 
+		{
+			if(!status)
+				return "";
+			switch(status.toLowerCase())
+			{
+				case "available":
+				case "online":
+				case "offline":
+					return "";
+				default:
+					return status;
+			}
+		}
+		
+		public function createProfileToolTip():IToolTip
+		{
+			var tt:BuddyToolTip = new BuddyToolTip();
+			tt.text = jid.toString();
+			return tt;
+		}
+	]]>
+</mx:Script>
+
+	<!-- TODO: need to update the icon when Pending changes as well, but without breaking MUC occupants -->
+	<mx:Image id="presenceIconImage" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />
+	
+	<mx:TextInput id="editNameField" visible="{changingName}" maxWidth="{changingName ? NaN : 0}" paddingLeft="0" paddingRight="0" />
+	<mx:HBox id="textContainer" visible="{!changingName}" maxWidth="{changingName ? 0 : NaN}" paddingTop="3" paddingBottom="0" width="100%" color="black" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" horizontalGap="0" fontStyle="{rosterItem &amp;&amp; rosterItem.show != null &amp;&amp; rosterItem.show != Presence.SHOW_CHAT ? 'italic' : 'normal'}" fontWeight="{selected ? 'bold' : 'normal'}" horizontalScrollPolicy="off">
+		<mx:Label id="nicknameLabel" fontSize="13"  text="{data.displayName}" paddingLeft="0" paddingRight="0" />
+		<sparkComp:TruncatingLabel toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" visible="{statusLabel.text.length > 2}" fontSize="12" text="{'- ' + formatStatus(rosterItem.status)}" left="0" right="0" />
+	</mx:HBox>
+	
+	<mx:Image id="avatarImage" width="24" height="24" source="@Embed(source='/assets/images/dummyContact.png')" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
+
+</mx:HBox>
