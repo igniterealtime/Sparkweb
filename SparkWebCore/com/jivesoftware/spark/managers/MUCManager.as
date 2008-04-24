@@ -79,13 +79,15 @@ package com.jivesoftware.spark.managers
 			var extensions:Array = iq.getAllExtensionsByNS(ItemDiscoExtension.NS);
 			if (!extensions || extensions.length < 1) 
 				return;
+				
+			var extension:ItemDiscoExtension = extensions[0];
 			
 			var server:JID = iq.from;
 			
-			for each(var item:* in extensions[0].items) 
+			for each(var item:* in extension.items) 
 			{
-				serviceJIDStoServerJIDS[item.jid.toString()] = server;
-				new Browser(SparkManager.connectionManager.connection).getServiceInfo(item.jid, "handleInfoReply", this);
+				serviceJIDStoServerJIDS[item.jid] = server;
+				new Browser(SparkManager.connectionManager.connection).getServiceInfo(new JID(item.jid), "handleInfoReply", this);
 			}
 		}
 		
