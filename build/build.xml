@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+
+<!--
+    $RCSfile$
+    $Revision$
+    $Date$
+
+    This software is published under the terms of the GNU Public License (GPL),
+    a copy of which is included in this distribution.
+-->
+
+<!--
+    Build Requirements:
+
+        * Ant 1.6 or 1.7 (including optional tasks)
+-->
+
+<project name="SparkWeb" default="sparkweb" basedir="..">
+
+    <description>
+        SparkWeb XMPP client.
+    </description>
+
+    <!-- Set up build paths -->
+    <property name="target.dir" value="${basedir}/target"/>  
+    <property name="lib.dir" value="${target.dir}/lib"/>  
+
+    <!-- Set up Flex environment variables -->
+    <property name="FLEX_HOME" value="/Applications/Adobe Flex Builder 3/sdks/3.0.0"/>
+    <property name="APP_ROOT" value="${basedir}/SparkWeb/src"/>  
+    <property name="DEPLOY_DIR" value="${target.dir}/default-war"/>  
+
+    <!-- Add Flex ANT tasks -->
+    <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
+
+    <!-- Build SparkWeb asset bundle --> 
+    <target name="_sparkweb-assets">
+        <compc output="${lib.dir}/messenger.swc">
+            <include-file name="messenger.swf" path="${basedir}/SparkWeb/assets/css/messenger.swf"/>
+        </compc>        
+    </target>
+
+    <!-- Build sparkweb -->
+    <target name="sparkweb" depends="_sparkweb-assets">
+        <mxmlc
+                file="${APP_ROOT}/SparkWeb.mxml"
+                output="${DEPLOY_DIR}/SparkWeb.swf"
+                keep-generated-actionscript="true"
+        >
+            <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
+
+            <source-path path-element="${FLEX_HOME}/frameworks"/>
+
+            <compiler.source-path path-element="${basedir}/xiff/src"/>
+            <compiler.source-path path-element="${basedir}/SparkWebCore"/>
+            <compiler.source-path path-element="${basedir}/SparkWebCommonComponents"/>
+            <compiler.source-path path-element="${basedir}/SparkWeb/src"/>
+
+            <compiler.include-libraries dir="${basedir}/SparkWebCommonComponents/assets/lib" append="true">
+                <include name="corelib.swc"/>
+                <include name="flexlib.swc"/>
+            </compiler.include-libraries>
+
+            <compiler.include-libraries dir="${lib.dir}">
+                <include name="messenger.swc"/>
+            </compiler.include-libraries>
+
+        </mxmlc>
+    </target>  
+</project>
+
