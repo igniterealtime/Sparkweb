@@ -122,18 +122,6 @@
 				}
 			}
 
-			public function get buddies():Array 
-			{
-				var result:Array = [];
-				for each(var item:* in getChildren()) 
-				{
-					if(!item is ListGroup) 
-						continue;
-					result = result.concat((item as ListGroup).buddyRenderers);
-				}
-				return result;
-			}
-
 			private function init():void 
 			{
 			//	SparkManager.registerForScrollEvents(acc);

@@ -93,11 +93,11 @@
 		{
 			clickTimer = new Timer(350, 1);
 			clickTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(evt:TimerEvent):void {
-				if(_open)
+				if(expanded)
 					close();
 				else
 					expand();
-				_open = !_open;
+				selected = !selected;
 			});
 			clickTimer.start();
 		}

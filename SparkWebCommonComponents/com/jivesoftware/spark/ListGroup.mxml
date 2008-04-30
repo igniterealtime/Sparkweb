@@ -72,19 +72,9 @@
 			return _collapsed;
 		}
 		
-		public function get buddyCount():int {
-			return dataProvider.length;
-		}
-		
-		public function get buddyRenderers():Array
+		public function get buddyCount():int 
 		{
-			var results:Array = [];
-			for(var i:uint = 0; i < navBox.numChildren; i++)
-			{
-				results.push(navBox.getChildAt(i));
-			}
-
-			return results;
+			return dataProvider.length;
 		}
 		
 		public function set collapsable(flag:Boolean):void
@@ -132,19 +122,12 @@
 		{
 			if(!provider)
 				provider = new ArrayCollection();
-			/*else if(provider is Array)
-				provider = new ArrayCollection(provider as Array);
-			else if(!provider is ListCollectionView)
-				provider = new ArrayCollection(); //can't get valid data, set null*/
 			
 			_dataProvider = new ListCollectionView(provider);
 			dataProvider.filterFunction = defaultFilter;
 			dataProvider.refresh();
 			if(!collapsed && _dataProvider != null)
 		    	itemRepeater.dataProvider = _dataProvider;
-		    	
-		    	
-		   // itemRepeater.dataProvider.refresh();
 		}
 		
 		public function set alternatingItemColors(colors:Array):void
@@ -152,24 +135,10 @@
 			itemColors = colors;
 		}
 		
-		//TODO: needs to be configurable
-		[Bindable]
-		public function get alternatingItemColors():Array
-		{
-			return [0xDDDDDD, 0xEEEEEE];
-		}
-		
-		public function colorForRowIndex(colors:Array, index:uint):Number
-		{
-			return new Number(colors[index % colors.length]);
-		}
-		
 		public function getShouldBeVisible(dp:ListCollectionView, count:int):Boolean
 		{
 			return dp != null && count > 0;
 		}
-		
-		public static var repeatCount:uint = 0;
 	]]>
 </mx:Script>
 

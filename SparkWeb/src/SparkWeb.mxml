@@ -26,7 +26,7 @@
 				layout="absolute">
  
  <!-- TODO: Add initialize="StyleManager.loadStyleDeclarations('assets/css/SparkWebSkin.swf')" back in... once we figure out why Flex Builder isn't copying the file right -->
- <!--<mx:Style source="../assets/css/messenger.css" />-->
+ <mx:Style source="../assets/css/messenger.css" />
  
  
 <mx:Style>
