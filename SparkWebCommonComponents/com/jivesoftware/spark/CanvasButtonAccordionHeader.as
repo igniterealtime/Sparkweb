@@ -1,20 +1,3 @@
-/*
- *This file is part of SparkWeb.
- *
- *SparkWeb is free software: you can redistribute it and/or modify
- *it under the terms of the GNU Lesser General Public License as published by
- *the Free Software Foundation, either version 3 of the License, or
- *(at your option) any later version.
- *
- *SparkWeb is distributed in the hope that it will be useful,
- *but WITHOUT ANY WARRANTY; without even the implied warranty of
- *MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *GNU Lesser General Public License for more details.
- *
- *You should have received a copy of the GNU Lesser General Public License
- *along with SparkWeb.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 ////////////////////////////////////////////////////////////////////////////////
 //
 //  Copyright (C) 2003-2006 Adobe Macromedia Software LLC and its licensors.
@@ -40,7 +23,7 @@ import mx.core.mx_internal;
 import mx.styles.CSSStyleDeclaration;
 import mx.styles.ISimpleStyleClient;
 import mx.styles.StyleManager;
-import com.jivesoftware.spark.CompatibleCanvasButton;
+import com.jivesoftware.spark.CanvasButton;
 import mx.skins.halo.AccordionHeaderSkin;
 
 use namespace mx_internal;
@@ -57,7 +40,7 @@ use namespace mx_internal;
  * @see flexlib.controls.CanvasButton
  * @see mx.containers.Accordion
  */
-public class CompatibleCanvasButtonAccordionHeader extends CompatibleCanvasButton implements IDataRenderer
+public class CanvasButtonAccordionHeader extends CanvasButton implements IDataRenderer
 {
 	
 	//--------------------------------------------------------------------------
@@ -81,7 +64,7 @@ public class CompatibleCanvasButtonAccordionHeader extends CompatibleCanvasButto
 	/**
 	 *  Constructor.
 	 */
-	public function CompatibleCanvasButtonAccordionHeader()
+	public function CanvasButtonAccordionHeader()
 	{
 		super();
 
@@ -151,15 +134,14 @@ public class CompatibleCanvasButtonAccordionHeader extends CompatibleCanvasButto
 	 */
 	override public function set selected(value:Boolean):void
 	{
-		//Jive hack
-		_selected = false;
+		_selected = value;
 
 		invalidateDisplayList();
 	}
 
 	private static function initializeStyles():void
 	{
-	/*	var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("CanvasButtonAccordionHeader");
+		var selector:CSSStyleDeclaration = StyleManager.getStyleDeclaration("CanvasButtonAccordionHeader");
 		
 		if(!selector)
 		{
@@ -170,22 +152,22 @@ public class CompatibleCanvasButtonAccordionHeader extends CompatibleCanvasButto
 		{
 			this.fontSize = 10;
 			this.fontWeight = "bold";
-	//		this.disabledSkin = mx.skins.halo.AccordionHeaderSkin;
-	//		this.downSkin = mx.skins.halo.AccordionHeaderSkin;
+			this.disabledSkin = mx.skins.halo.AccordionHeaderSkin;
+			this.downSkin = mx.skins.halo.AccordionHeaderSkin;
 			this.horizontalGap = 2;
 			this.overSkin = mx.skins.halo.AccordionHeaderSkin;
 			this.paddingLeft = 5;
 			this.paddingRight = 5;
-	//		this.selectedDisabledSkin = mx.skins.halo.AccordionHeaderSkin;
-	//		this.selectedDownSkin = mx.skins.halo.AccordionHeaderSkin;
-	//		this.selectedOverSkin = mx.skins.halo.AccordionHeaderSkin;
-	//		this.selectedUpSkin = mx.skins.halo.AccordionHeaderSkin;
-	//		this.skin = mx.skins.halo.AccordionHeaderSkin;
+			this.selectedDisabledSkin = mx.skins.halo.AccordionHeaderSkin;
+			this.selectedDownSkin = mx.skins.halo.AccordionHeaderSkin;
+			this.selectedOverSkin = mx.skins.halo.AccordionHeaderSkin;
+			this.selectedUpSkin = mx.skins.halo.AccordionHeaderSkin;
+			this.skin = mx.skins.halo.AccordionHeaderSkin;
 			this.textAlign = "left";
-	//		this.upSkin = mx.skins.halo.AccordionHeaderSkin;
+			this.upSkin = mx.skins.halo.AccordionHeaderSkin;
 		}
 		
-		StyleManager.setStyleDeclaration("CanvasButtonAccordionHeader", selector, false);*/
+		StyleManager.setStyleDeclaration("CanvasButtonAccordionHeader", selector, false);
 			
 	}
 	
@@ -204,8 +186,8 @@ public class CompatibleCanvasButtonAccordionHeader extends CompatibleCanvasButto
 	 */
 	override protected function initializeAccessibility():void
 	{
-		if (CompatibleCanvasButtonAccordionHeader.createAccessibilityImplementation != null)
-			CompatibleCanvasButtonAccordionHeader.createAccessibilityImplementation(this);
+		if (CanvasButtonAccordionHeader.createAccessibilityImplementation != null)
+			CanvasButtonAccordionHeader.createAccessibilityImplementation(this);
 	}
 
 	/**
@@ -238,7 +220,7 @@ public class CompatibleCanvasButtonAccordionHeader extends CompatibleCanvasButto
 	 */
 	override public function drawFocus(isFocused:Boolean):void
 	{
-	/*	// Accordion header focus is drawn inside the control.
+		// Accordion header focus is drawn inside the control.
 		if (isFocused && !isEffectStarted)
 		{
 			if (!focusObj)
@@ -269,7 +251,7 @@ public class CompatibleCanvasButtonAccordionHeader extends CompatibleCanvasButto
 		else if (focusObj)
 		{
 			focusObj.visible = false;
-		}*/
+		}
 	}
 
 	//--------------------------------------------------------------------------

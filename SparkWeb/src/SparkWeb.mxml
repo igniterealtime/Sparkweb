@@ -26,7 +26,7 @@
 				layout="absolute">
  
  <!-- TODO: Add initialize="StyleManager.loadStyleDeclarations('assets/css/SparkWebSkin.swf')" back in... once we figure out why Flex Builder isn't copying the file right -->
- <mx:Style source="../assets/css/messenger.css" />
+ <!--<mx:Style source="../assets/css/messenger.css" />-->
  
  
 <mx:Style>
@@ -75,6 +75,7 @@
  			import com.jivesoftware.spark.managers.SparkManager;
 			import org.jivesoftware.xiff.util.*;
 			import com.kebinger.flexlayout.*;
+			import org.jivesoftware.xiff.core.XMPPBOSHConnection;
  			
  			private var connectionManager:ConnectionManager;
  			
@@ -113,6 +114,7 @@
 				Security.allowDomain( "*" );
 				Security.allowInsecureDomain("*");
 				shouldShowLoginWindow = SparkManager.getConfigValueForKey("autoLogin") != "true";
+				XMPPBOSHConnection.disableSASLMechanism("ANONYMOUS");
 			}
 			
 			
@@ -169,8 +171,10 @@
  				loginDialog.visible = false;
  				contactListContainer.visible = true;
  				contactListContainer.contacts.showsOfflineContacts = true;
- 				contactListContainer.contacts.dataProvider = SparkManager.roster.groups;
- 				SparkManager.roster.fetchRoster();
+ 				SparkManager.roster.addEventListener(RosterEvent.ROSTER_LOADED, function():void { 
+ 					contactListContainer.contacts.dataProvider = SparkManager.roster.groups; 
+ 				});
+ 		//		contactListContainer.contacts.dataProvider = SparkManager.roster.groups;
  				//TODO: invisible login UI
  				//if(!invisible)
 					SparkManager.connectionManager.connection.send(new Presence());

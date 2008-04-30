@@ -18,7 +18,7 @@
 -->
 
 
-<sparkComp:CompatibleCanvasButtonAccordionHeader 
+<sparkComp:CanvasButtonAccordionHeader 
 	verticalScrollPolicy="off" 
 	horizontalScrollPolicy="off" 
 	xmlns:sparkComp="com.jivesoftware.spark.*" 
@@ -73,4 +73,4 @@
 		<mx:LinkButton id="reloadButton" click="roomList.populate(true); event.stopImmediatePropagation();" toolTip="{Localizator.getText('label.load.rooms')}" width="28" height="24" icon="@Embed(source='/assets/images/temp_reload_server.png')"/>
 		<mx:LinkButton id="createButton" click="ContactListContainer.conferenceList.createRoom(label); event.stopImmediatePropagation();" toolTip="Create Room" width="22" height="24" icon="@Embed(source='/assets/images/temp_create_room_button.png')"/>
 	</mx:HBox>
-</sparkComp:CompatibleCanvasButtonAccordionHeader>
+</sparkComp:CanvasButtonAccordionHeader>

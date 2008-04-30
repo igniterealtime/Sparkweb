@@ -26,7 +26,7 @@
 	 	  paddingBottom="10"
 	 	  paddingRight="10"
 	 	  paddingLeft="10"
-	 	  backgroundAlpha="1"
+	 	  backgroundAlpha="0.4"
 	 	  borderThickness="1"
 	 	  headerHeight="0"
 	 	  layout="absolute"

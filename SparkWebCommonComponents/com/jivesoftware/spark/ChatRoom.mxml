@@ -161,7 +161,7 @@
 		</mx:VBox>
 		
 		<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucControls" height="100%" maxHeight="{contentDivider.height}" borderSides="right left bottom" borderStyle="solid" width="{chat is SparkGroupChat ? 225 : 0}">
-			<spark:ListGroup alternatingItemColors="{[0xDDDDDD, 0xEEEEEE]}"  collapsable="false" maxHeight="{mucControls.height}" verticalScrollPolicy="auto" groupName="Participants" id="occupantList" itemRenderer="com.jivesoftware.spark.MUCOccupantRenderer" dataProvider="{chat.room ? chat.room : null}"/>
+			<spark:ListGroup alternatingItemColors="{[0xDDDDDD, 0xEEEEEE]}" collapsable="false" maxHeight="{mucControls.height}" verticalScrollPolicy="auto" groupName="Participants" id="occupantList" dataProvider="{chat.room ? chat.room : null}"/>
 			<spark:MUCInvitePane visible="false" id="invitePane" creationComplete="{invitePane.addEventListener('close', function(evt:*):void {invitePane.visible = false; occupantList.visible = true; inviteButton.visible = true;});}" width="{mucControls.width}" room="{chat.room}"/>
 			<mx:LinkButton id="inviteButton" click="{occupantList.visible = false; inviteButton.visible = false; invitePane.visible = true; invitePane.rebuildCompletionList();}" label="Invite" color="#555555" textDecoration="underline" right="0" top="0"/>
 		</mx:Canvas>

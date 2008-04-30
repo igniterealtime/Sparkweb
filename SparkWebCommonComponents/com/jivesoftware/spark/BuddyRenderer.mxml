@@ -18,28 +18,26 @@
 -->
 
 
-<mx:HBox 
+<mx:Canvas
 		xmlns:mx="http://www.adobe.com/2006/mxml" 
 		xmlns:sparkComp="com.jivesoftware.spark.*"
 		filters="{[]}" 
 		verticalScrollPolicy="off" 
 	    horizontalScrollPolicy="off"
-	    height="28"
-	    maxHeight="28"
-	    minHeight="28"
 		width="100%" 
 		toolTip="{data.jid}" toolTipCreate="event.toolTip = createProfileToolTip()"
-		verticalAlign="middle" 
-		paddingTop="2" 
-		paddingBottom="2" 
-		paddingLeft="4" 
-		paddingRight="4" 
-		horizontalGap="0"
+	    height="28"
 	    borderSides="top bottom"
+	    color="black"
+	    backgroundColor="{expanded ? 0xCFCFCF : 0xEEEEEE}"
+	    fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif"
+	    fontStyle="{rosterItem &amp;&amp; rosterItem.show != null &amp;&amp; rosterItem.show != Presence.SHOW_CHAT ? 'italic' : 'normal'}" 
+	    fontWeight="{selected ? 'bold' : 'normal'}"
 		implements="mx.managers.IFocusManagerComponent">
  
 <mx:Script>
 	<![CDATA[
+		import org.jivesoftware.xiff.conference.RoomOccupant;
 		import org.jivesoftware.xiff.data.im.Contact;
 		import org.jivesoftware.xiff.events.VCardEvent;
 		import org.jivesoftware.xiff.core.JID;
@@ -66,14 +64,24 @@
 		protected var _selected:Boolean = false;
 		protected var _changingName:Boolean = false;
 		protected var clickTimer:Timer;
+		protected var _open:Boolean = false;
+		protected var actionsPane:* = null;
+		[Bindable]
+		protected var expanded:Boolean = false;
 		
 		[Embed(source="/assets/images/dummyContact.png")]
 		protected static const dummyIcon:Class;
 		
+		[Bindable]
 		[Bindable(event=dataChanged)]
 		public function get rosterItem():RosterItemVO
 		{
-			return data as RosterItemVO;
+			if(data is RosterItemVO)
+				return data as RosterItemVO;
+			else if(data.rosterItem)
+				return data.rosterItem as RosterItemVO;
+			else
+				return null;
 		}
 		
 		public function set rosterItem(ri:RosterItemVO):void
@@ -83,14 +91,18 @@
 		
 		public function singleClicked(event:MouseEvent):void 
 		{
-			if(clickTimer || changingName || !selected)
-				return;
-			clickTimer = new Timer(1250, 1);
-			clickTimer.addEventListener(TimerEvent.TIMER_COMPLETE, renameUser);
+			clickTimer = new Timer(350, 1);
+			clickTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(evt:TimerEvent):void {
+				if(_open)
+					close();
+				else
+					expand();
+				_open = !_open;
+			});
 			clickTimer.start();
 		}
 		
-		protected function cancelEditTimer(evt:FocusEvent=null):void 
+		protected function cancelClickTimer(evt:FocusEvent=null):void 
 		{
 			if(clickTimer)
 			{
@@ -101,7 +113,7 @@
 		
 		public function doubleClicked(event:Event):void 
 		{
-			cancelEditTimer();
+			cancelClickTimer();
 			ChatContainer.window.startChat(jid, true);
 			event.stopImmediatePropagation();
 		}
@@ -129,15 +141,11 @@
 		
 		public override function set data(value:Object):void
 		{
-			if(value && contact != value)
+			if(value && value is Contact && contact != value)
 			{
 				super.data = value;
 				
 				addListeners();
-				
-				contextMenu = null;
-				
-				this.contextMenu = getMenu();
 					
 				if(rosterItem && rosterItem.online)
 					loadVCard(contact as RosterItemVO);
@@ -155,12 +163,8 @@
 			doubleClickEnabled = true;
 			addEventListener(MouseEvent.DOUBLE_CLICK, doubleClicked);
 			addEventListener(MouseEvent.CLICK, singleClicked);
-			addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, cancelEditTimer);
-			addEventListener(FocusEvent.KEY_FOCUS_CHANGE, cancelEditTimer);
-				
-			editNameField.addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, commitNickname);
-			editNameField.addEventListener(FocusEvent.KEY_FOCUS_CHANGE, commitNickname);
-			editNameField.addEventListener(KeyboardEvent.KEY_DOWN, checkEnterKey);
+			addEventListener(FocusEvent.MOUSE_FOCUS_CHANGE, cancelClickTimer);
+			addEventListener(FocusEvent.KEY_FOCUS_CHANGE, cancelClickTimer);
 		}
 		
 		protected function getMenu():ContextMenu
@@ -201,10 +205,7 @@
 
 		protected function renameUser(event:Event):void 
 		{
-			editNameField.text = nicknameLabel.text;
-			changingName = true;
-			stage.focus = editNameField;
-			editNameField.setSelection(0, editNameField.text.length);
+			
 		}
 		
 		protected function checkEnterKey(event:KeyboardEvent):void 
@@ -220,9 +221,7 @@
 		
 		protected function commitNickname(event:Event):void 
 		{
-			nick = editNameField.text;
-			cancelEditTimer();
-			changingName = false;
+		
 		}
 		
 		protected function removeUser(event:ContextMenuEvent):void 
@@ -286,6 +285,12 @@
 		[Bindable]
 		public function get selected():Boolean { return _selected; }
 		
+		
+		public function set contact(c:Contact):void {
+			data = c;
+		}
+		
+		[Bindable]
 		[Bindable(event=dataUpdated)]
 		public function get contact():Contact { return data as Contact; }
 		
@@ -300,8 +305,17 @@
 				case "offline":
 					return "";
 				default:
-					return status;
+					return "<font size='12'>" + status + "</font>";
 			}
+		}
+		
+		public function formatLabel(name:String, status:String):String
+		{
+			status = formatStatus(status);
+			if(status && status.length > 0)
+				return name + " - " + status;
+
+			return name;
 		}
 		
 		public function createProfileToolTip():IToolTip
@@ -310,18 +324,31 @@
 			tt.text = jid.toString();
 			return tt;
 		}
+		
+		public function expand():void {
+			if(contact is RoomOccupant)
+				actionsPane = new RoomOccupantActionsRenderer();
+			else if(contact is RosterItemVO)
+				actionsPane = new BuddyActionsRenderer();
+			else
+				throw new Error("Unknown contact type");
+
+			actionsPane.contact = contact;
+			height += actionsPane.height;
+			actionsPane.setStyle("bottom", Number(0));
+			addChild(actionsPane);
+			expanded = true;
+		}
+		
+		public function close():void {
+			height -= actionsPane.height;
+			removeChildAt(this.numChildren - 1);
+			expanded = false;
+		}
 	]]>
 </mx:Script>
-
-	<!-- TODO: need to update the icon when Pending changes as well, but without breaking MUC occupants -->
-	<mx:Image id="presenceIconImage" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />
-	
-	<mx:TextInput id="editNameField" visible="{changingName}" maxWidth="{changingName ? NaN : 0}" paddingLeft="0" paddingRight="0" />
-	<mx:HBox id="textContainer" visible="{!changingName}" maxWidth="{changingName ? 0 : NaN}" paddingTop="3" paddingBottom="0" width="100%" color="black" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" horizontalGap="0" fontStyle="{rosterItem &amp;&amp; rosterItem.show != null &amp;&amp; rosterItem.show != Presence.SHOW_CHAT ? 'italic' : 'normal'}" fontWeight="{selected ? 'bold' : 'normal'}" horizontalScrollPolicy="off">
-		<mx:Label id="nicknameLabel" fontSize="13"  text="{data.displayName}" paddingLeft="0" paddingRight="0" />
-		<sparkComp:TruncatingLabel toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" visible="{statusLabel.text.length > 2}" fontSize="12" text="{'- ' + formatStatus(rosterItem.status)}" left="0" right="0" />
-	</mx:HBox>
-	
-	<mx:Image id="avatarImage" width="24" height="24" source="@Embed(source='/assets/images/dummyContact.png')" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
-
-</mx:HBox>
+	<!-- Warning! I know these hardcoded vertical offsets are lame, but don't try to fix it with a nested canvas. It kills roster performance -->
+	<mx:Image id="avatarImage" left="8" top="2" width="24" height="24" source="@Embed(source='/assets/images/dummyContact.png')" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
+	<mx:Image id="presenceIconImage" left="40" top="8" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />
+	<sparkComp:TruncatingLabel left="64" right="0" top="8" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem.status)}" />
+</mx:Canvas>

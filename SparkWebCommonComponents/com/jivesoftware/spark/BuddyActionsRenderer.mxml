@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    This file is part of SparkWeb.
+    
+    SparkWeb is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Lesser General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+    
+    SparkWeb is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Lesser General Public License for more details.
+    
+    You should have received a copy of the GNU Lesser General Public License
+    along with SparkWeb.  If not, see <http://www.gnu.org/licenses/>.
+-->
+
+
+<mx:VBox
+		xmlns:mx="http://www.adobe.com/2006/mxml" 
+		xmlns:sparkComp="com.jivesoftware.spark.*"
+		filters="{[]}" 
+		verticalScrollPolicy="off" 
+	    horizontalScrollPolicy="off"
+		width="100%"
+	    height="50"
+	    click="event.preventDefault(); event.stopImmediatePropagation();"
+	    doubleClick="event.preventDefault(); event.stopImmediatePropagation();"
+		verticalAlign="middle"
+	    borderSides="top bottom"
+		implements="mx.managers.IFocusManagerComponent">
+ 
+<mx:Script>
+	<![CDATA[
+		import org.jivesoftware.xiff.data.im.RosterItemVO;
+		import org.jivesoftware.xiff.data.im.Contact;
+		
+		protected var _contact:Contact = null;
+		
+		public function set contact(inContact:Contact):void
+		{
+			_contact = inContact;
+		}
+		
+		[Bindable]
+		public function get contact():Contact
+		{
+			return _contact;
+		}
+	]]>
+</mx:Script>
+
+<mx:LinkButton label="View Profile" />
+<mx:LinkButton label="stuff" />
+<mx:LinkButton label="things" />
+
+</mx:VBox>

@@ -33,11 +33,11 @@ OfflineListGroup is a special group that always contains all the offline contact
 			import org.jivesoftware.xiff.data.im.RosterItemVO;
 			import com.jivesoftware.spark.managers.Localizator;
 			import mx.collections.SortField;
-			
+						
 			protected function init():void
 			{
 				collapsed = true;
-				super.dataProvider = SparkManager.roster;
+				dataProvider = SparkManager.roster;
 			}
 			
 			protected override function defaultFilter(contact:Contact):Boolean
@@ -54,14 +54,6 @@ OfflineListGroup is a special group that always contains all the offline contact
 					_name = Localizator.getText('group.name.offline');
 				return _name;
 			}
-			
-			[Bindable]
-			public override function get dataProvider():Object
-			{
-			    return null;
-			}
-			
-			public override function set dataProvider(g:Object):void {}
 		]]>
 	</mx:Script>
 </ListGroup>

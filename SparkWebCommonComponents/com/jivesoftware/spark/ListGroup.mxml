@@ -18,7 +18,7 @@
 -->
 
 
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" paddingBottom="0" paddingTop="0" borderStyle="none" verticalGap="0">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" visible="{dataProvider != null &amp;&amp; dataProvider.length > 0}" maxHeight="{visible ? NaN : 0}" xmlns:spark="com.jivesoftware.spark.*" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" paddingBottom="0" paddingTop="0" borderStyle="none" verticalGap="0">
 <mx:Script>
 	<![CDATA[
 		import mx.events.FlexEvent;
@@ -29,7 +29,6 @@
 		import mx.collections.Sort;
 		import org.jivesoftware.xiff.data.im.RosterGroup;
 		import org.jivesoftware.xiff.data.Presence;
-		import mx.collections.ArrayCollection;
 		import mx.collections.ArrayCollection;
 		import mx.core.IChildList;
 		import com.jivesoftware.spark.managers.PresenceManager;
@@ -50,18 +49,34 @@
 		private static const dnd:Class;
 
 		protected var _name:String;
-		[Bindable]
-		protected var collapsed:Boolean = false;
+		protected var _collapsed:Boolean = false;
 		protected var _collapsable:Boolean = true;
 		[Bindable]
 		protected var filter:String = "";
 		protected var itemColors:Array = undefined;
 		
-		public function getBuddyCount():int {
+		protected var _dataProvider:ListCollectionView = null;
+		
+		public function set collapsed(flag:Boolean):void
+		{
+			_collapsed = flag;
+			if(_collapsed == false && itemRepeater.dataProvider == null && dataProvider != null)
+			{
+				itemRepeater.dataProvider = _dataProvider;
+			}
+		}
+		
+		[Bindable]
+		public function get collapsed():Boolean
+		{
+			return _collapsed;
+		}
+		
+		public function get buddyCount():int {
 			return dataProvider.length;
 		}
 		
-		public function getBuddyRenderers():Array
+		public function get buddyRenderers():Array
 		{
 			var results:Array = [];
 			for(var i:uint = 0; i < navBox.numChildren; i++)
@@ -95,9 +110,10 @@
 		}
 		
 		[Bindable]
-		public function get dataProvider():Object
+		[Bindable(event=updateDataProvider)]
+		public function get dataProvider():ListCollectionView
 		{
-		    return navBox.dataProvider as ListCollectionView;
+		    return itemRepeater.dataProvider ? itemRepeater.dataProvider as ListCollectionView : _dataProvider;
 		}
 		
 		protected function defaultFilter(contact:Contact):Boolean
@@ -108,34 +124,27 @@
 		public function filterBy(newFilter:String):void
 		{
 			filter = newFilter;
-		    (navBox.dataProvider as ListCollectionView).refresh();
+		//	if(itemRepeater.dataProvider)
+		    	dataProvider.refresh();
 		}
 		
-		public function set dataProvider(provider:Object):void
+		public function set dataProvider(provider:ListCollectionView):void
 		{
 			if(!provider)
 				provider = new ArrayCollection();
-			else if(provider is Array)
+			/*else if(provider is Array)
 				provider = new ArrayCollection(provider as Array);
 			else if(!provider is ListCollectionView)
-				provider = new ArrayCollection(); //can't get valid data, set null
+				provider = new ArrayCollection(); //can't get valid data, set null*/
 			
-		    navBox.dataProvider = new ListCollectionView(provider as ListCollectionView);
-		    navBox.dataProvider.filterFunction = defaultFilter;
-		    navBox.dataProvider.refresh();
-		}
-		
-		public function set itemRenderer(renderer:IFactory):void
-		{
-			if(navBox)
-				navBox.itemRenderer = renderer;
-			else
-				addEventListener(FlexEvent.CREATION_COMPLETE, function(evt:*):void { navBox.itemRenderer = renderer; });
-		}
-		
-		public function get itemRenderer():IFactory
-		{
-			return navBox.itemRenderer;
+			_dataProvider = new ListCollectionView(provider);
+			dataProvider.filterFunction = defaultFilter;
+			dataProvider.refresh();
+			if(!collapsed && _dataProvider != null)
+		    	itemRepeater.dataProvider = _dataProvider;
+		    	
+		    	
+		   // itemRepeater.dataProvider.refresh();
 		}
 		
 		public function set alternatingItemColors(colors:Array):void
@@ -143,38 +152,44 @@
 			itemColors = colors;
 		}
 		
+		//TODO: needs to be configurable
 		[Bindable]
 		public function get alternatingItemColors():Array
 		{
-			return itemColors;
+			return [0xDDDDDD, 0xEEEEEE];
 		}
+		
+		public function colorForRowIndex(colors:Array, index:uint):Number
+		{
+			return new Number(colors[index % colors.length]);
+		}
+		
+		public function getShouldBeVisible(dp:ListCollectionView, count:int):Boolean
+		{
+			return dp != null && count > 0;
+		}
+		
+		public static var repeatCount:uint = 0;
 	]]>
 </mx:Script>
 
 <!-- Collapsible Item -->
-<mx:HBox width="100%" id="innerBox" visible="{navBox.dataProvider != null &amp;&amp; navBox.dataProvider.length > 0}" filters="{[]}" backgroundColor="#DDDDDD" cornerRadius="5" verticalAlign="middle" horizontalGap="0" click="collapsed = !collapsed" paddingBottom="0" paddingTop="0" maxHeight="{innerBox.visible ? NaN : 0}">
+<mx:HBox width="100%" id="innerBox" filters="{[]}" backgroundColor="#DDDDDD" cornerRadius="5" verticalAlign="middle" horizontalGap="0" click="collapsed = !collapsed" paddingBottom="0" paddingTop="0">
 	<mx:Spacer height="100%" width="5"/>
 	<mx:Image id="arrows" source="{collapsable ? (collapsed ? blueArrowRight : blueArrowDown) : null}" />
 	<mx:Spacer height="100%" width="5"/>
-	<mx:Label id="title" text="{groupName + ' (' + navBox.dataProvider.length + ') '}" height="20" paddingTop="3" fontWeight="bold" color="black" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" fontSize="12" />
+	<mx:Label id="title" text="{groupName + ' (' + dataProvider.length + ') '}" height="20" paddingTop="3" fontWeight="bold" color="black" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" fontSize="12" />
 	<mx:Spacer height="100%" width="100%"/>
 </mx:HBox>
-<mx:List filters="{[]}" 
-		 borderSides="top" 
-		 verticalScrollPolicy="auto" 
-		 visible="{(!collapsed || filter != '') &amp;&amp; navBox.dataProvider != null &amp;&amp; navBox.dataProvider.length > 0}" 
-		 rowCount="{navBox.dataProvider != null ? navBox.dataProvider.length : 0}" 
-		 paddingLeft="0" 
-		 paddingBottom="0" 
-		 paddingTop="0" 
-		 width="100%" 
-		 variableRowHeight="false" 
-		 horizontalScrollPolicy="off" 
-		 itemRenderer="com.jivesoftware.spark.BuddyRenderer" 
-		 rollOverColor="0xFFCC00" 
-		 selectionColor="0xDDB000" 
-		 alternatingItemColors="{alternatingItemColors}" 
-		 id="navBox" 
-		 maxHeight="{navBox.visible ? maxHeight - innerBox.height : 0}" />
+<mx:VBox
+	verticalGap="0"
+	visible="{(!collapsed || filter != '') &amp;&amp; visible}"
+    maxHeight="{navBox.visible ? NaN : 0}" 
+	width="100%" 
+	id="navBox" >
+	<mx:Repeater recycleChildren="true" id="itemRepeater">
+		 	<spark:BuddyRenderer contact="{itemRepeater.currentItem}" />
+	</mx:Repeater>
+</mx:VBox>
 </mx:VBox>
 
