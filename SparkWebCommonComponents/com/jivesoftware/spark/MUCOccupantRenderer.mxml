@@ -93,55 +93,6 @@
 				tip.text = occupant.displayName;
 				return tip;	
 			}
-			
-	/*		protected override function getMenu():ContextMenu
-			{
-				var occupantMenu:ContextMenu = new ContextMenu();
-				if(rosterItem)
-				{
-					// Note: We may want to extract out the 'start a chat' code from within doubleClicked() as it is not so intuitive as a callback here
-					var startChatMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.start.chat'));
-					startChatMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, doubleClicked);
-					occupantMenu.customItems.push(startChatMenuItem);
-						
-					var viewProfileMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.contact.view.profile'));
-					viewProfileMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, viewProfile);
-					occupantMenu.customItems.push(viewProfileMenuItem);
-				}
-				
-				room = occupant.room;
-				
-				if (room.role == Room.MODERATOR_ROLE) {
-					var kickMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.kick.user'));
-					kickMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, kickUser);
-					occupantMenu.customItems.push(kickMenuItem);
-				}
-				
-				if (room.affiliation == Room.ADMIN_AFFILIATION || room.affiliation == Room.OWNER_AFFILIATION) {		
-					var banMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.ban.user'));
-					banMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, banUser);
-					occupantMenu.customItems.push(banMenuItem);
-				}
-				
-				occupantMenu.hideBuiltInItems();
-				
-				return occupantMenu;
-			}
-			*/
-			public function kickUser(event:ContextMenuEvent):void {
-				// TODO: Include reason for kick and also report errors when the kick fails (by listenening to RoomEvent.ADMIN_ERROR)
-				room.kickOccupant(occupant.displayName, '');
-			}
-			
-			public function banUser(event:ContextMenuEvent):void 
-			{
-				if(!contact)
-					return;
-				// TODO: Include reason for ban and also report errors when the ban fails (by listenening to RoomEvent.ADMIN_ERROR)
-
-				room.ban([contact.jid]);
-			}
-			
 		]]>
 	</mx:Script>
 	

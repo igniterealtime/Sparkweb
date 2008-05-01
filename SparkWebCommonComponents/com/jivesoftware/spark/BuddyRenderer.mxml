@@ -272,5 +272,5 @@
 	<!-- Warning! I know these hardcoded vertical offsets are lame, but don't try to fix it with a nested canvas. It kills roster performance -->
 	<mx:Image id="avatarImage" left="8" top="2" width="24" height="24" source="@Embed(source='/assets/images/dummyContact.png')" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
 	<mx:Image id="presenceIconImage" left="40" top="8" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />
-	<sparkComp:TruncatingLabel left="64" right="0" top="8" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem.status)}" />
+	<sparkComp:TruncatingLabel left="64" right="0" top="8" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem != null ? rosterItem.status : 'available')}" />
 </mx:Canvas>
