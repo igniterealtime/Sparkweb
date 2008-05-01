@@ -15,10 +15,10 @@
  *along with SparkWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jivesoftware.spark
+package com.jivesoftware.spark.chats
 {
-	import com.jivesoftware.spark.SparkChat;
-	import com.jivesoftware.spark.SparkGroupChat;
+	import com.jivesoftware.spark.chats.SparkChat;
+	import com.jivesoftware.spark.chats.SparkGroupChat;
 	
 	import org.jivesoftware.xiff.core.JID;
 	import org.jivesoftware.xiff.data.Message;

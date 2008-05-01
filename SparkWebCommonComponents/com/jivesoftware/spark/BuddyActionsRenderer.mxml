@@ -34,10 +34,16 @@
  
 <mx:Script>
 	<![CDATA[
+		import com.jivesoftware.spark.managers.ChatManager;
 		import org.jivesoftware.xiff.data.im.RosterItemVO;
 		import org.jivesoftware.xiff.data.im.Contact;
 		
 		protected var _contact:Contact = null;
+		
+		public function startChat():void
+		{
+			ChatManager.sharedInstance.startChat(contact.jid, true);
+		}
 		
 		public function set contact(inContact:Contact):void
 		{

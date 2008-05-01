@@ -34,7 +34,6 @@
 	<mx:Script>
 		<![CDATA[
 			import com.jivesoftware.spark.ScrollWheelManager;
-			import mx.core.Application;
 			import com.jivesoftware.spark.AddServerWindow;
 			import com.jivesoftware.spark.AddUserWindow;
 			import org.jivesoftware.xiff.events.LoginEvent;
@@ -62,7 +61,7 @@
  				{
  					case Localizator.getText('label.muctab'):
  						conferences.setVisible(true);
- 						contactList.setVisible(false);
+ 						contacts.setVisible(false);
  						searchButton.visible = false;
  						searchButton.maxWidth = 0;
  						addUser.visible = false;
@@ -77,7 +76,7 @@
  						addUser.maxWidth = NaN;
  						addServer.maxWidth = 0;
  						addServer.visible = false;
- 						contactList.setVisible(true);
+ 						contacts.setVisible(true);
  						conferences.setVisible(false);
  						break;
 				}
@@ -90,17 +89,9 @@
 				contacts.searchString = "";
 				UserSearchWindow.showSearch(searchText, SparkManager.connectionManager.connection.jid.domain);
 			}
-
-			public static function get contactList():ContactList {
-				return sharedInstance.contacts;
-			}
 			
 			public static function get conferenceList():MUCList {
 				return sharedInstance.conferences;
-			}
-			
-			public static function get window():ContactListContainer {
-				return sharedInstance;
 			}
 			
 			//TODO: implement this

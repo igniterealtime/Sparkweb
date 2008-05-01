@@ -31,11 +31,10 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import com.jivesoftware.spark.managers.ChatManager;
 			import mx.core.Application;
 			import org.jivesoftware.xiff.core.JID;
 			import org.jivesoftware.xiff.events.InviteEvent;
-			import com.jivesoftware.spark.ChatContainer;
-			import com.jivesoftware.spark.managers.SparkManager;
 			import com.jivesoftware.spark.managers.Localizator;
 			import org.jivesoftware.xiff.conference.Room;
 			import mx.managers.PopUpManager;
@@ -51,7 +50,7 @@
             }
             
             protected function accept():void {
-            	ChatContainer.window.startGroupChat(roomJid);
+            	ChatManager.sharedInstance.joinGroupChat(roomJid);
             }
             
             protected function showWindow(fromJid:JID, room:Room, reason:String=''):void 

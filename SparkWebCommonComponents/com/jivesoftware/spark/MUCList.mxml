@@ -31,6 +31,7 @@
 
 		<mx:Script>
 			<![CDATA[
+				import com.jivesoftware.spark.managers.ChatManager;
 				import org.jivesoftware.xiff.events.BookmarkRetrievedEvent;
 				import org.jivesoftware.xiff.bookmark.GroupChatBookmark;
 				import org.jivesoftware.xiff.events.BookmarkChangedEvent;
@@ -86,7 +87,7 @@
 						else
 						{
 							if (bookmark.autoJoin)
-								ChatContainer.window.queueRoom(bookmark.jid);
+								ChatManager.sharedInstance.queueRoom(bookmark.jid);
 							
 							
 							// Automatically add the conference server that a bookmarked room resides on to this MUCList

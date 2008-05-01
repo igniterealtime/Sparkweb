@@ -26,21 +26,35 @@
 	     height="100%"
 	     verticalScrollPolicy="off"
 	     horizontalScrollPolicy="off"
-	     backgroundColor="#DDDDDD">
+	     creationComplete="setup()"
+	     icon="{getIcon(chat.presence, isTyping, unreadMessageCount)}"
+	     backgroundColor="#DDDDDD"
+	     implements="com.jivesoftware.spark.chats.ChatUI">
 	     
 	<mx:Script>
 		<![CDATA[
+			import com.jivesoftware.spark.managers.Localizator;
+			import org.jivesoftware.xiff.events.RoomEvent;
 			import org.jivesoftware.xiff.conference.Room;
 			import org.jivesoftware.xiff.data.im.RosterItemVO;
-			import com.jivesoftware.spark.SparkChat;
+			import com.jivesoftware.spark.chats.*;
 			import com.jivesoftware.spark.events.EditorEvent;
 			import com.jivesoftware.spark.ui.Message;
 			import org.jivesoftware.xiff.data.Presence;
 			import com.jivesoftware.spark.managers.SparkManager;
+			import com.jivesoftware.spark.displayfilters.EmoticonFilter;
+			import com.jivesoftware.spark.displayfilters.HTMLEscapingFilter;
+			import com.jivesoftware.spark.displayfilters.URLFilter;
 			private var _active:Boolean = false;
-			private var _isTyping:Boolean = false;
-			private var _unreadMessages:int = 0;
+			protected var _isTyping:Boolean = false;
+			[Bindable]
+			protected var unreadMessageCount:uint = 0;
 			private var _chat:SparkChat;
+			protected var lastMessage:SparkMessage = null;
+			//fire an event at midnight each day so we can post a divider message to chats
+ 			protected static var dayTimer:Timer = new Timer(0,1);
+		
+			protected static var filters:Array = [HTMLEscapingFilter, URLFilter, EmoticonFilter];
 			
 			private var completionPrefix:String = null;
 			private var lastCompletedString:String = null;
@@ -54,6 +68,83 @@
 			
 			[Embed(source="/assets/images/conference_16x16.png")]
 			private static const conferenceIcon:Class;
+			
+			protected function setup():void
+			{
+				editor.addEventListener(EditorEvent.MESSAGE_CREATED, function(evt:EditorEvent):void {
+					var text:String = evt.message;
+					if(text.length == 0)
+						return;
+						
+					//run commands like /away, /clear
+					if(runCommand(text))
+						return;
+					
+					var message:SparkMessage = new SparkMessage(SparkManager.connectionManager.connection.jid, text);
+					message.local = true;
+					message.chat = chat;
+					// Send Message
+					chat.transmitMessage(message);
+					chat.insertMessage(message);
+				});
+				dayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(evt:TimerEvent):void {
+					addNotification(new Date().toLocaleDateString());
+					setupDateChangeEvent();
+				});
+				setupDateChangeEvent();
+			}
+			
+			protected function setupDateChangeEvent():void
+		    {
+		        var now:Date = new Date();
+		        var alarmTime:Date = new Date(now.fullYear, now.month, now.date, 23, 59);
+		        alarmTime.time += 60000; //add 1 minute
+	
+		        dayTimer.reset();
+		        dayTimer.delay = alarmTime.time - now.time;
+		        dayTimer.start();
+		    }
+			
+			public function addMessage(message:SparkMessage):void
+			{
+				for each(var filter:* in filters)
+				{
+					message.body = filter.apply(message.body);
+				}
+				var id:String = message.nick;
+				isTyping = false;
+				if(!message.time)
+					message.time = new Date();
+				else
+				{
+					if(!lastMessage || message.time.date != lastMessage.time.date)
+						addNotification(message.time.toLocaleDateString());
+				}
+				history.addUserMessage(id, id, message.body, message.time, message.local ? "user" : null);
+				if(!message.local)
+					increaseMessageCount();
+				lastMessage = message;
+			}
+			
+			protected function runCommand(message:String):Boolean
+			{
+				var segments:Array = message.split(" ");
+				if(!message.charAt(0) == '/')
+					return false;
+				switch((segments.shift() as String).substring(1))
+				{
+					case "away":
+					case "brb":
+						SparkManager.presenceManager.changePresence(Presence.SHOW_AWAY, segments.length > 0 ? segments.join(" ") : "Away");
+						return true;
+					case "back":
+					case "available":
+						SparkManager.presenceManager.changePresence(null, segments.length > 0 ? segments.join(" ") : "Available");
+						return true;
+					
+				}
+				return false;
+			}
 			
 			//TODO: fix this up. It works, but there's a lot that could be better
 			public function completeWord(event:EditorEvent):void
@@ -87,6 +178,46 @@
 			public function set chat(c:SparkChat):void
 			{
 				_chat = c;
+				if(chat is SparkGroupChat)
+				{
+					(chat as SparkGroupChat).room.addEventListener(RoomEvent.ROOM_JOIN, setupContextMenu);
+				}
+			}
+			
+			/**
+			 * Used to setup the room's context menu after the user has joined the room.
+			 * This is done asynchronously since we do not have access to occupant role
+			 * data until this point and we can determine whether to show/hide menu items
+			 * based on the user's role.
+			 */
+	  	    public function setupContextMenu(event:RoomEvent):void
+	  	    {
+				// Setup the custom context menu
+	  	    	var inviteMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.invite.users'));
+				inviteMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(evt:ContextMenuEvent):void { MUCInviteSendWindow.show(chat.room.roomJID); });
+				
+				if (contextMenu == null)
+					contextMenu = new ContextMenu();
+	
+				contextMenu.hideBuiltInItems();
+				contextMenu.customItems.push(inviteMenuItem);
+				
+				if (chat.room.affiliation == Room.OWNER_AFFILIATION) {
+					var configureRoomMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.configure.room')); 
+					configureRoomMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,
+						function(evt:ContextMenuEvent):void
+						{
+							MUCConfigurationWindow.showMUCConfigureWindow(chat.room);
+						});
+					
+					contextMenu.customItems.push(configureRoomMenuItem);
+				}
+				
+				chat.room.removeEventListener(RoomEvent.ROOM_JOIN, setupContextMenu);
+			}
+			
+			public function addNotification(body:String, time:Date = null):void {
+				history.addSystemMessage(body, time, null);
 			}
 			
 			//todo: figure out how to make this statically typed without breaking bindings
@@ -110,7 +241,6 @@
 			    if(active) 
 				{	
 					clearMessageCount();
-					updateIcon();
 					label = chat.displayName;
 					editor.focus();
 				}
@@ -121,33 +251,33 @@
 				if(active)
 					return;
 					
-				_unreadMessages++;
-				updateIcon();
+				unreadMessageCount++;
 				label = chat.displayName + " (" + unreadMessageCount + ")";
 			}
 			
 			public function clearMessageCount():void {
-				_unreadMessages = 0;
+				unreadMessageCount = 0;
 			}
 			
-			public function get unreadMessageCount():int {
-				return _unreadMessages;
-			}
-			
-			public function updateIcon():void
+			public function getIcon(presence:String = Presence.UNAVAILABLE_TYPE, typing:Boolean = false, messageCount:int = 0):Class
 			{
-				if(_isTyping)
-					icon = editIcon;
-				else if(unreadMessageCount > 0)
-			    	icon = sparkIcon;
-				else
-					icon = chat is SparkGroupChat ? conferenceIcon : SparkManager.presenceManager.getIconFromPresence(chat ? chat.presence : Presence.UNAVAILABLE_TYPE);
+				if(typing)
+					return editIcon;
+				if(messageCount > 0)
+			    	return sparkIcon;
+			    	
+				return chat is SparkGroupChat ? conferenceIcon : SparkManager.presenceManager.getIconFromPresence(presence);
 			}
 			
 			public function set isTyping(flag:Boolean):void
 			{
 				_isTyping = flag;
-				updateIcon();
+			}
+			
+			[Bindable]
+			public function get isTyping():Boolean
+			{
+				return _isTyping;
 			}
 		]]>
 	</mx:Script>

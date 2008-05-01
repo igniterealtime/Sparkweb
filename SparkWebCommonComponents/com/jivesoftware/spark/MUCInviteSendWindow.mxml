@@ -31,6 +31,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import com.jivesoftware.spark.managers.ChatManager;
 			import mx.core.Application;
 			import org.jivesoftware.xiff.core.JID;
 			import mx.core.UITextField;
@@ -38,9 +39,7 @@
 			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
 
-			import com.jivesoftware.spark.ChatContainer;
-			import com.jivesoftware.spark.SparkGroupChat;
-			import com.jivesoftware.spark.managers.SparkManager;
+			import com.jivesoftware.spark.chats.SparkGroupChat;
 			import com.jivesoftware.spark.managers.Localizator;
 			
 			import org.jivesoftware.xiff.events.RosterEvent;
@@ -137,12 +136,9 @@
             /**
              * Sends the conference invitation.
              */
-            private function send():void {
-            	var chatContainer:ChatContainer = ChatContainer.window;
-            	if (!chatContainer) {
-            		return;
-            	}
-            	var groupChat:SparkGroupChat = chatContainer.getChatByJID(new JID(roomJidLabel.text)) as SparkGroupChat;
+            private function send():void 
+            {
+            	var groupChat:SparkGroupChat = ChatManager.sharedInstance.getChat(new JID(roomJidLabel.text)) as SparkGroupChat;
             	
             	if (groupChat && groupChat.room) {
             		for each(var recipient:JID in invitationRecipients) {

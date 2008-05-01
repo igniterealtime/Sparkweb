@@ -26,7 +26,6 @@
 			import mx.collections.Sort;
 			import mx.collections.ArrayCollection;
 			import com.jivesoftware.spark.managers.*;
-			import com.jivesoftware.spark.ChatContainer;
 			import org.jivesoftware.xiff.core.Browser;
 			import org.jivesoftware.xiff.conference.Room;
 			import com.jivesoftware.spark.ContactListContainer;

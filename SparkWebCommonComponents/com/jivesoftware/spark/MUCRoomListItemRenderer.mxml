@@ -20,7 +20,7 @@
 
 <mx:HBox 
 	xmlns:mx="http://www.adobe.com/2006/mxml" 
-	doubleClick="ChatContainer.window.startGroupChat(jid, true)" 
+	doubleClick="ChatManager.sharedInstance.joinGroupChat(jid, true)" 
 	doubleClickEnabled="true" 
 	horizontalScrollPolicy="off" 
 	verticalScrollPolicy="off" 
@@ -37,6 +37,7 @@
 	implements="mx.managers.IFocusManagerComponent, mx.controls.listClasses.IListItemRenderer">
 <mx:Script>
 	<![CDATA[
+		import com.jivesoftware.spark.managers.ChatManager;
 		import org.jivesoftware.xiff.bookmark.GroupChatBookmark;
 		import org.jivesoftware.xiff.events.BookmarkChangedEvent;
 		import org.jivesoftware.xiff.core.JID;
@@ -45,11 +46,6 @@
 		import com.jivesoftware.spark.managers.Localizator;
 	
 		//TODO: refactor this and BuddyRenderer to have a common superclass
-
-		private var _icon:*;
-		
-		// Flex builder complains about an undefined property if we don't declare this variable for the parent VBox.
-		//private var chatContainer:ChatContainer = SparkManager.chatContainer;
 		
 		[Embed(source="assets/images/bookmark.png")]
 		private static const bookmarkIcon:Class;

@@ -16,28 +16,19 @@
  */
 
 package com.jivesoftware.spark.managers 
-{
+{	
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
-	import flash.xml.XMLDocument;
-	import flash.xml.XMLNode;
-	
-	import mx.core.Application;
 	
 	import org.jivesoftware.xiff.core.JID;
 	import org.jivesoftware.xiff.core.XMPPBOSHConnection;
 	import org.jivesoftware.xiff.core.XMPPConnection;
-	import org.jivesoftware.xiff.data.IExtension;
-	import org.jivesoftware.xiff.data.IQ;
 	import org.jivesoftware.xiff.data.Message;
-	import org.jivesoftware.xiff.data.Presence;
 	import org.jivesoftware.xiff.data.events.MessageEventExtension;
 	import org.jivesoftware.xiff.data.im.RosterItemVO;
-	import org.jivesoftware.xiff.events.IncomingDataEvent;
 	import org.jivesoftware.xiff.events.LoginEvent;
-	import org.jivesoftware.xiff.events.OutgoingDataEvent;
 	
 	
 	/**

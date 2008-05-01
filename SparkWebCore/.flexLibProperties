@@ -5,11 +5,17 @@
 <classEntry path="com.jivesoftware.spark.managers.UserSearchManager"/>
 <classEntry path="com.jivesoftware.spark.managers.SharedGroupsManager"/>
 <classEntry path="com.jivesoftware.spark.managers.AccountManager"/>
+<classEntry path="com.jivesoftware.spark.chats.SparkGroupChat"/>
+<classEntry path="com.jivesoftware.spark.events.ChatEvent"/>
+<classEntry path="com.jivesoftware.spark.chats.SparkChat"/>
+<classEntry path="com.jivesoftware.spark.chats.ChatUI"/>
 <classEntry path="com.jivesoftware.spark.managers.StringUtils"/>
 <classEntry path="com.jivesoftware.spark.managers.SparkManager"/>
 <classEntry path="com.jivesoftware.spark.managers.PresenceManager"/>
 <classEntry path="com.jivesoftware.spark.managers.MUCManager"/>
+<classEntry path="com.jivesoftware.spark.managers.ChatManager"/>
 <classEntry path="com.jivesoftware.spark.managers.ConnectionManager"/>
+<classEntry path="com.jivesoftware.spark.chats.SparkMessage"/>
 <classEntry path="com.jivesoftware.spark.managers.RoomSearchManager"/>
 <classEntry path="com.jivesoftware.spark.managers.AbstractSearchManager"/>
 </includeClasses>
@@ -18,8 +24,8 @@
 <resourceEntry destPath="assets/images/im_available.png" sourcePath="assets/images/im_available.png"/>
 <resourceEntry destPath="assets/images/im_unavailable.png" sourcePath="assets/images/im_unavailable.png"/>
 <resourceEntry destPath="assets/images/im_available_stale.png" sourcePath="assets/images/im_available_stale.png"/>
-<resourceEntry destPath="assets/images/im_free_chat_stale.png" sourcePath="assets/images/im_free_chat_stale.png"/>
 <resourceEntry destPath="assets/images/im_away.png" sourcePath="assets/images/im_away.png"/>
+<resourceEntry destPath="assets/images/im_free_chat_stale.png" sourcePath="assets/images/im_free_chat_stale.png"/>
 <resourceEntry destPath="assets/images/pending.png" sourcePath="assets/images/pending.png"/>
 <resourceEntry destPath="assets/images/im_away_stale.png" sourcePath="assets/images/im_away_stale.png"/>
 <resourceEntry destPath="assets/images/im_free_chat.png" sourcePath="assets/images/im_free_chat.png"/>

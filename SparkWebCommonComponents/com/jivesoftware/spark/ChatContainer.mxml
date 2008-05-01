@@ -52,82 +52,46 @@
 
 	<mx:Script>
 		<![CDATA[
-			import com.jivesoftware.spark.events.NotifyEvent;
+			import com.jivesoftware.spark.chats.*;
+			import com.jivesoftware.spark.managers.*;
+			import com.jivesoftware.spark.*;
+			import com.jivesoftware.spark.utils.*;
+			import com.jivesoftware.spark.events.*;
+			
 			import org.jivesoftware.xiff.core.JID;
-			import com.jivesoftware.spark.SparkGroupChat;
 			import mx.events.IndexChangedEvent;
-			import com.jivesoftware.spark.SparkChat;
-			import com.jivesoftware.spark.SparkMessage;
+			import com.jivesoftware.spark.chats.SparkChat;
+			import com.jivesoftware.spark.chats.SparkMessage;
 			import mx.events.ItemClickEvent;
 			import org.jivesoftware.xiff.data.muc.MUC;
 			import org.jivesoftware.xiff.events.RosterEvent;
-			import org.jivesoftware.xiff.data.im.RosterItem;
 			import org.jivesoftware.xiff.data.IExtension;
 			import org.jivesoftware.xiff.conference.Room;
 			import mx.events.ChildExistenceChangedEvent;
 			import flexlib.controls.SuperTabBar;
 			import flexlib.containers.SuperTabNavigator;
 			import mx.controls.TabBar;
-			import com.jivesoftware.spark.utils.*;
 			import mx.events.CollectionEvent;
 			
-			import com.jivesoftware.spark.managers.*;
-			import com.jivesoftware.spark.*;
 			import org.jivesoftware.xiff.data.im.RosterItemVO;
 			import org.jivesoftware.xiff.im.Roster;
-			import com.jivesoftware.spark.managers.SparkManager;
 			import com.jivesoftware.spark.ChatRoom;
-			import mx.collections.XMLListCollection;
 			import flexlib.containers.SuperTabNavigator;
 			import org.jivesoftware.xiff.data.Presence;
-			import flash.display.Sprite;
 			import org.jivesoftware.xiff.core.XMPPConnection;
 			import org.jivesoftware.xiff.data.Message;
 			import flash.events.Event;
 			import org.jivesoftware.xiff.events.PresenceEvent;
 			import flash.profiler.showRedrawRegions;
 			import org.jivesoftware.xiff.events.MessageEvent;
-			import mx.managers.PopUpManager;
-			import mx.containers.TitleWindow;
 			import flash.geom.Point;
     		
 			public var inFocus:Boolean = true;
-			private var chats:Object = {};
 			private var _activeRoom:ChatRoom = null;
-			private var queuedRooms:Array = [];
-			private var autoJoinTimer:Timer;
-			
-			private static var _window:ChatContainer;
-			
-			public static function get window():ChatContainer
-			{
-				return _window;
-			}
 			
 			public function get activeRoom():ChatRoom
 			{
 				return _activeRoom;
-			}
-			
-			public function queueRoom(jid:JID):void
-			{
-				queuedRooms.push(jid);
-				if(!autoJoinTimer)
-				{
-					autoJoinTimer = new Timer(3.0, 1);
-					autoJoinTimer.addEventListener(TimerEvent.TIMER_COMPLETE, autoJoinRoom);
-					autoJoinTimer.start();
-				}
-			}
-			
-			protected function autoJoinRoom(event:TimerEvent):void
-			{
-				if(queuedRooms.length == 0)
-					return;
-				
-				startGroupChat(queuedRooms.pop(), true);
-				autoJoinTimer.reset();
-				autoJoinTimer.start();
 			}
 			
 			public function set activeRoom(r:ChatRoom):void
@@ -142,43 +106,18 @@
 				if(activeRoom)			
 					activeRoom.active = true;
 			}
-			
-			public function startGroupChat(jid:JID, activate:Boolean = true, password:String = null):SparkGroupChat
-			{
-				if(!jid)
-					return null;
-				var chat:SparkGroupChat = getChatByJID(jid) as SparkGroupChat;
-				if(!chat)
-					chat = new SparkGroupChat(jid);
-					
-				if (password != null)
-					chat.password = password;
-					
-				createChatUI(chat, activate);
-				return chat;
-			}
 		
-			public function startChat(jid:JID, activate:Boolean = true):SparkChat
+			public function createChatUI(evt:ChatEvent):void
 			{
-				if(!jid)
-					return null;
-				var chat:SparkChat = getChatByJID(jid) as SparkChat;
-				if(!chat)
-					chat = new SparkChat(jid);
-				createChatUI(chat, activate);
-				return chat;
-			}
-		
-			public function createChatUI(chat:SparkChat, activate:Boolean = true):void
-			{
-				var child:ChatRoom = chat ? chat.ui : null;
+				var activate:Boolean = evt.activate;
+				var chat:SparkChat = evt.chat;
+				var child:ChatRoom = chat ? chat.ui as ChatRoom : null;
 				
 				//if we don't have an existing chat for this JID, we'll need to create one
 				if(!child)
 				{
 					child = new ChatRoom();
 					chat.ui = child;
-					chats[chat.jid.toBareJID()] = chat;
 					child.id = chat.jid.toBareJID();
 					child.chat = chat;
 					child.label = chat.displayName;
@@ -202,42 +141,51 @@
 			    	activeRoom = child;
 			}
 			
-			public function getChatByJID(jid:JID):SparkChat 
-			{
-				return chats[jid.bareJid];
-			}
-			
 			public function init():void 
 			{
-				// Set Defaults
-				_window = this;
-				
-				chatFrame.addEventListener(ChildExistenceChangedEvent.CHILD_REMOVE, checkIfClosed);
-				this.addEventListener(Event.CLOSE, closeAll);
+				chatFrame.addEventListener(ChildExistenceChangedEvent.CHILD_REMOVE, function(evt:ChildExistenceChangedEvent):void {
+					callLater(ChatManager.sharedInstance.closeChat, [(evt.relatedObject as ChatRoom).chat]); //move to ChatRoom?
+				});
+				addEventListener(Event.CLOSE, closeAll);
 				
 				chatFrame.closePolicy = "close_always";
 				
 				SparkManager.connectionManager.connection.addEventListener("message", handleMessages);
+				ChatManager.sharedInstance.addEventListener(ChatEvent.CHAT_STARTED, createChatUI);
+				ChatManager.sharedInstance.addEventListener(ChatEvent.CHAT_ENDED, handleChatClosed);
+				ChatManager.sharedInstance.addEventListener(ChatEvent.CHAT_ERROR, handleChatError);
 			}
 			
-			private function checkIfClosed(event:ChildExistenceChangedEvent):void 
+			protected function handleChatError(evt:ChatEvent):void
 			{
-				// Handle the closing of the room.
-				var chatRoom:ChatRoom = event.relatedObject as ChatRoom;
-				chatRoom.chat.close();	
-				chats[chatRoom.chat.jid] = null;
-								
-				if(chatFrame.getChildren().length == 1) 
-					setVisible(false);
+				switch(evt.error)
+				{
+					case ChatEvent.PASSWORD_ERROR:
+						MUCPasswordRequiredWindow.show((evt.chat as SparkGroupChat).room);
+						break;
+					case ChatEvent.REGISTRATION_REQUIRED_ERROR:
+					  	SparkManager.displayError(Localizator.getText('muc.error'), Localizator.getText('muc.error.auth'));
+						break;
+					case ChatEvent.BANNED_ERROR:
+					  	SparkManager.displayError(Localizator.getText('muc.error'), Localizator.getText('muc.error.forbidden'));
+						break;
+					case ChatEvent.NICK_CONFLICT_ERROR:
+					  	SparkManager.displayError(Localizator.getText('muc.error'), Localizator.getText('muc.error.conflict'));
+						break;
+					case ChatEvent.MAX_USERS_ERROR:
+						SparkManager.displayError(Localizator.getText('muc.error'), Localizator.getText('muc.error.service.unavailable'));
+						break;
+					case ChatEvent.ROOM_LOCKED_ERROR:
+						SparkManager.displayError(Localizator.getText('muc.error'), Localizator.getText('muc.error.item.not.found'));
+						break;
+				}
 			}
 			
-			public function closeGroupChatByJID(jid:JID):void
+			public function handleChatClosed(evt:ChatEvent):void
 			{
-				var chat:SparkGroupChat = getChatByJID(jid) as SparkGroupChat;
-				chat.close();
-				chats[chat.jid] = null;
-				
-				chatFrame.removeChild(chat.ui);
+				var ui:ChatRoom = evt.chat.ui as ChatRoom;
+				if(ui && ui.parent)
+					ui.parent.removeChild(ui);
 				if(chatFrame.getChildren().length == 0)
 					setVisible(false);
 			}
@@ -251,21 +199,18 @@
 			public function handleMessages(event:MessageEvent):void 
 			{
 				var message:Message = event.data;
-				var chat:SparkChat= getChatByJID(message.from);
+				var chat:SparkChat = ChatManager.sharedInstance.getChat(message.from);
 
 				//if we don't have an existing chat, and there's content to the message (i.e. ignoring stuff like composing messages), then we need to create a chat to display the message in
 				if(!chat && message.body)
-					chat = message.type == Message.GROUPCHAT_TYPE ? startGroupChat(message.from, false) : startChat(message.from, false);
+					chat = message.type == Message.GROUPCHAT_TYPE ? ChatManager.sharedInstance.joinGroupChat(message.from, false) : ChatManager.sharedInstance.startChat(message.from, false);
 				
 				//the if is needed for the case in which chat and xiffMessage.body were both null above
-				if(chat)
+				if(chat && chat.handleMessage(message) && !inFocus)
 				{
-					if(chat.handleMessage(message) && !inFocus)
-					{
-						var evt:NotifyEvent = new NotifyEvent(NotifyEvent.NEW_MESSAGE);
-						evt.message = message;
-						dispatchEvent(evt);
-					}
+					var evt:NotifyEvent = new NotifyEvent(NotifyEvent.NEW_MESSAGE);
+					evt.message = message;
+					dispatchEvent(evt);
 				}
 
 			}

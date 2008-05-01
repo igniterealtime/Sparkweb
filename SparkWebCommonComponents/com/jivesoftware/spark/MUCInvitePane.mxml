@@ -51,7 +51,7 @@
 			import mx.managers.FocusManager;
 			import mx.collections.ArrayCollection;
 
-			import com.jivesoftware.spark.SparkGroupChat;
+			import com.jivesoftware.spark.chats.SparkGroupChat;
 			import com.jivesoftware.spark.managers.SparkManager;
 			import com.jivesoftware.spark.managers.Localizator;
 			

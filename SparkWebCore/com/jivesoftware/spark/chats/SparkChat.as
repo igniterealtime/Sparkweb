@@ -15,36 +15,27 @@
  *along with SparkWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jivesoftware.spark
+package com.jivesoftware.spark.chats
 {
-	import com.jivesoftware.spark.displayfilters.EmoticonFilter;
-	import com.jivesoftware.spark.displayfilters.HTMLEscapingFilter;
-	import com.jivesoftware.spark.displayfilters.URLFilter;
-	import com.jivesoftware.spark.events.EditorEvent;
+	
 	import com.jivesoftware.spark.managers.*;
-	import com.jivesoftware.spark.SparkMessage;
 	
 	import flash.events.EventDispatcher;
-	import flash.events.TimerEvent;
-	import flash.utils.Timer;
 	import flash.xml.XMLNode;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.*;
-	import mx.events.FlexEvent;
 	import mx.events.PropertyChangeEvent;
 	
 	import org.jivesoftware.xiff.core.JID;
-	import org.jivesoftware.xiff.core.XMPPConnection;
 	import org.jivesoftware.xiff.data.Message;
-	import org.jivesoftware.xiff.data.Presence;
 	import org.jivesoftware.xiff.data.im.RosterItemVO;
 	import org.jivesoftware.xiff.util.*;
 	
 	[Bindable]
 	public class SparkChat extends EventDispatcher
 	{
-		private var _ui:ChatRoom;
+		private var _ui:ChatUI
 		protected var _jid:JID;
 		protected var _nickname:String;
 		protected var windowID:String;
@@ -52,44 +43,24 @@ package com.jivesoftware.spark
 		protected var _presence:String;
 		protected var _activated:Boolean;
 		protected var _isReady:Boolean = false;
+				
 		
-		protected var lastMessage:SparkMessage = null;
-		
-		//fire an event at midnight each day so we can post a divider message to chats
- 		protected static var dayTimer:Timer = new Timer(0,1);
-		
-		protected static var filters:Array = [HTMLEscapingFilter, URLFilter, EmoticonFilter];
 		
 		public function SparkChat(j:JID)
 		{
-			dayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(evt:TimerEvent):void {
-				insertNotification(new Date().toLocaleDateString());
-				setupDateChangeEvent();
-			});
-			setupDateChangeEvent();
 			_jid = j;
 		}
 		
-		protected function setupDateChangeEvent():void
-	    {
-	        var now:Date = new Date();
-	        var alarmTime:Date = new Date(now.fullYear, now.month, now.date, 23, 59);
-	        alarmTime.time += 60000; //add 1 minute
-
-	        dayTimer.reset();
-	        dayTimer.delay = alarmTime.time - now.time;
-	        dayTimer.start();
-	    }
 		
-		public function get ui():ChatRoom
+		
+		public function get ui():ChatUI
 		{
 			return _ui;
 		}
 		
-		public function set ui(view:ChatRoom):void
+		public function set ui(view:ChatUI):void
 		{
 			_ui = view;
-			ui.addEventListener(FlexEvent.CREATION_COMPLETE, function(evt:FlexEvent):void { ui.editor.addEventListener(EditorEvent.MESSAGE_CREATED, sendMessage); });
 			setup(_jid);
 		}
 		
@@ -150,48 +121,11 @@ package com.jivesoftware.spark
 
 		public function insertMessage(message:SparkMessage):void 
 		{		
-			for each(var filter:* in filters)
-			{
-				message.body = filter.apply(message.body);
-			}
-			var id:String = message.nick;
-			ui.isTyping = false;
-			if(!message.time)
-				message.time = new Date();
-			else
-			{
-				if(!lastMessage || message.time.date != lastMessage.time.date)
-					insertNotification(message.time.toLocaleDateString());
-			}
-			ui.history.addUserMessage(id, id, message.body, message.time, message.local ? "user" : null);
-			if(!message.local)
-				ui.increaseMessageCount();
-			lastMessage = message;
-		}
-		
-		protected function runCommand(message:String):Boolean
-		{
-			var segments:Array = message.split(" ");
-			if(!message.charAt(0) == '/')
-				return false;
-			switch((segments.shift() as String).substring(1))
-			{
-				case "away":
-				case "brb":
-					SparkManager.presenceManager.changePresence(Presence.SHOW_AWAY, segments.length > 0 ? segments.join(" ") : "Away");
-					return true;
-				case "back":
-				case "available":
-					SparkManager.presenceManager.changePresence(null, segments.length > 0 ? segments.join(" ") : "Available");
-					return true;
-				
-			}
-			return false;
+			
 		}
 			
 		public function set presence(presence:String):void {
 			_presence = presence;
-			ui.updateIcon();
 		}
 		
 		public function get presence():String {
@@ -199,26 +133,7 @@ package com.jivesoftware.spark
 		}
 		
 		public function insertNotification(body:String, time:Date = null):void {
-			ui.history.addSystemMessage(body, time, null);
-		}
-	
-		public function sendMessage(evt:EditorEvent):void 
-		{
-			var text:String = evt.message;
-			if(text.length == 0)
-				return;
-				
-			//run commands like /away, /clear
-			if(runCommand(text))
-				return;
-			
-			var message:SparkMessage = new SparkMessage(SparkManager.connectionManager.connection.jid, text);
-			message.local = true;
-			message.chat = this;
-			
-			// Send Message
-			transmitMessage(message);
-			insertMessage(message);
+			ui.addNotification(body, time);
 		}
 		
 		//actually does the sending to the connection

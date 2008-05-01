@@ -37,6 +37,7 @@
  
 <mx:Script>
 	<![CDATA[
+		import com.jivesoftware.spark.managers.ChatManager;
 		import org.jivesoftware.xiff.conference.RoomOccupant;
 		import org.jivesoftware.xiff.data.im.Contact;
 		import org.jivesoftware.xiff.events.VCardEvent;
@@ -49,7 +50,6 @@
 		import mx.core.UIComponent;
 		import org.jivesoftware.xiff.events.RosterEvent;
 		import mx.binding.utils.BindingUtils;
-		import com.jivesoftware.spark.ChatContainer;
 		import org.jivesoftware.xiff.data.im.RosterItemVO;
 		import mx.graphics.BitmapFill;
 		import org.jivesoftware.xiff.data.Presence;
@@ -114,7 +114,7 @@
 		public function doubleClicked(event:Event):void 
 		{
 			cancelClickTimer();
-			ChatContainer.window.startChat(jid, true);
+			ChatManager.sharedInstance.startChat(jid, true);
 			event.stopImmediatePropagation();
 		}
 		

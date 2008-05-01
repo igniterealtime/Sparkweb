@@ -15,16 +15,14 @@
  *along with SparkWeb.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.jivesoftware.spark
+package com.jivesoftware.spark.chats
 {
+	import com.jivesoftware.spark.events.ChatEvent;
+	import com.jivesoftware.spark.managers.ChatManager;
 	import com.jivesoftware.spark.managers.Localizator;
 	import com.jivesoftware.spark.managers.MUCManager;
-	import com.jivesoftware.spark.managers.SparkManager;
 	
-	import flash.events.ContextMenuEvent;
 	import flash.events.Event;
-	import flash.ui.ContextMenu;
-	import flash.ui.ContextMenuItem;
 	
 	import mx.collections.ArrayCollection;
 	import mx.events.CollectionEvent;
@@ -75,42 +73,7 @@ package com.jivesoftware.spark
   	    	room.addEventListener(RoomEvent.USER_KICKED, handleUserKicked);
   	    	room.addEventListener(RoomEvent.USER_BANNED, handleUserBanned);
 
-			room.addEventListener(RoomEvent.ROOM_JOIN, setupContextMenu);
   	    }
-  	    
-  	    /**
-		 * Used to setup the room's context menu after the user has joined the room.
-		 * This is done asynchronously since we do not have access to occupant role
-		 * data until this point and we can determine whether to show/hide menu items
-		 * based on the user's role.
-		 */
-  	    public function setupContextMenu(event:RoomEvent):void
-  	    {
-			// Setup the custom context menu
-  	    	var inviteMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.invite.users'));
-			inviteMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(evt:ContextMenuEvent):void { MUCInviteSendWindow.show(room.roomJID); });
-			
-			if (ui.contextMenu == null)
-				ui.contextMenu = new ContextMenu();
-				
-			var contextMenu:ContextMenu = ContextMenu(ui.contextMenu);
-
-			contextMenu.hideBuiltInItems();
-			contextMenu.customItems.push(inviteMenuItem);
-			
-			if (room.affiliation == Room.OWNER_AFFILIATION) {
-				var configureRoomMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.configure.room')); 
-				configureRoomMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT,
-					function(evt:ContextMenuEvent):void
-					{
-						MUCConfigurationWindow.showMUCConfigureWindow(room);
-					});
-				
-				contextMenu.customItems.push(configureRoomMenuItem);
-			}
-			
-			room.removeEventListener(RoomEvent.ROOM_JOIN, setupContextMenu);
-		}
   	    
   	    public override function get jid():JID
   	    {
@@ -169,43 +132,44 @@ package com.jivesoftware.spark
   	    	return room;
   	    }
   	    
-  	    private function error(message:String, name:String):void
+  	    private function error(type:String, close:Boolean = true):void
   	    {
-  	    	ChatContainer.window.closeGroupChatByJID(room.roomJID);
-  	    	SparkManager.displayError(name, message, false);
+  	    	var errEvt:ChatEvent = new ChatEvent(ChatEvent.CHAT_ERROR);
+  	    	errEvt.error = type;
+  	    	errEvt.chat = this;
+  	    	ChatManager.sharedInstance.dispatchEvent(errEvt);
+  	    	ChatManager.sharedInstance.closeChat(this);
   	    	removeErrorEventListeners();
   	    }
   	    
   	    public function handlePasswordError(event:RoomEvent):void
   	    {
-  	    	ChatContainer.window.closeGroupChatByJID(room.roomJID);
-  	    	MUCPasswordRequiredWindow.show(room);
-  	    	removeErrorEventListeners();
+  	    	error(ChatEvent.PASSWORD_ERROR);
   	    }
   	    
   	    public function handleRegistrationReqError(event:RoomEvent):void
   	    {
-  	    	error(Localizator.getText('muc.error.auth'), Localizator.getText('muc.error'));
+  	    	error(ChatEvent.REGISTRATION_REQUIRED_ERROR);
   	    }
   	    
   	    public function handleBannedError(event:RoomEvent):void
   	    {
-  	    	error(Localizator.getText('muc.error.forbidden'), Localizator.getText('muc.error'));
+  	    	error(ChatEvent.BANNED_ERROR);
   	    }
   	    
   	    public function handleNickConflict(event:RoomEvent):void
   	    {
-  	    	error(Localizator.getText('muc.error.conflict'), Localizator.getText('muc.error'));
+  	    	error(ChatEvent.NICK_CONFLICT_ERROR);
   	    }
   	    
   	    public function handleMaxUsersError(event:RoomEvent):void
   	    {
-  	    	error(Localizator.getText('muc.error'), Localizator.getText('muc.error.service.unavailable'));
+  	    	error(ChatEvent.MAX_USERS_ERROR);
   	    }
   	    
   	    public function handleLockedError(event:RoomEvent):void
   	    {
-  	    	error(Localizator.getText('muc.error'), Localizator.getText('muc.error.item.not.found'));
+  	    	error(ChatEvent.ROOM_LOCKED_ERROR);
   	    }
   	    
   	    private function removeErrorEventListeners():void

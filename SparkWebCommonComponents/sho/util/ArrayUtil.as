@@ -137,7 +137,7 @@ package sho.util {
 		public static function binarySearch(array: Array, item: Object, compareFunc: Function = null) : int
 		{
 			if (array == null)
-				return null;
+				return -1;
 
 			if (compareFunc == null)
 				compareFunc = defaultCompare

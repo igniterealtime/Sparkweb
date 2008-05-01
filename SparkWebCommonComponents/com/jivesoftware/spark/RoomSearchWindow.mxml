@@ -24,13 +24,13 @@
 	title="{Localizator.getText('title.room.search.window')}"  >
 	<mx:Script>
 		<![CDATA[
+			import com.jivesoftware.spark.managers.SparkManager;
 			import mx.core.Application;
 			import mx.managers.PopUpManager;
 			import org.jivesoftware.xiff.bookmark.GroupChatBookmark;
 			import org.jivesoftware.xiff.core.JID;
 			import com.jivesoftware.spark.managers.Localizator;
-			import com.jivesoftware.spark.managers.SparkManager;
-			import com.jivesoftware.spark.ChatContainer;
+			import com.jivesoftware.spark.managers.ChatManager;
 			import com.jivesoftware.spark.managers.AbstractSearchManager;
 			import com.jivesoftware.spark.managers.RoomSearchManager;
 			
@@ -54,7 +54,7 @@
             
             protected override function buttonTwoAction():void 
             {
-            	ChatContainer.window.startGroupChat(new JID(userSearchResults.selectedItem.jid));
+            	ChatManager.sharedInstance.joinGroupChat(new JID(userSearchResults.selectedItem.jid));
             	close();
             } 
             

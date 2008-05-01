@@ -37,6 +37,7 @@ package com.jivesoftware.spark.managers
 		private static var _bookmarkManager:BookmarkManager;
 		private static var _sharedGroupsManager:SharedGroupsManager;
 		private static var _inviteListener:InviteListener;
+		
 		private static var _config:Object = {
 			autoLogin: false,
 			 password: "",
@@ -139,7 +140,7 @@ package com.jivesoftware.spark.managers
 			_errorHandler = handler;
 		}
 		
-		public static function displayError(name:String, message:String, fatal:Boolean):void
+		public static function displayError(name:String, message:String, fatal:Boolean = false):void
 		{
 			errorHandler(name, message, fatal);
 		}
