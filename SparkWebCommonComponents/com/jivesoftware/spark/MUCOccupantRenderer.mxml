@@ -94,7 +94,7 @@
 				return tip;	
 			}
 			
-			protected override function getMenu():ContextMenu
+	/*		protected override function getMenu():ContextMenu
 			{
 				var occupantMenu:ContextMenu = new ContextMenu();
 				if(rosterItem)
@@ -127,7 +127,7 @@
 				
 				return occupantMenu;
 			}
-			
+			*/
 			public function kickUser(event:ContextMenuEvent):void {
 				// TODO: Include reason for kick and also report errors when the kick fails (by listenening to RoomEvent.ADMIN_ERROR)
 				room.kickOccupant(occupant.displayName, '');

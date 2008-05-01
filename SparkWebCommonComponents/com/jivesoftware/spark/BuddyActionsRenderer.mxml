@@ -24,42 +24,87 @@
 		filters="{[]}" 
 		verticalScrollPolicy="off" 
 	    horizontalScrollPolicy="off"
+	    color="#355491"
 		width="100%"
-	    height="50"
+	    height="120"
 	    click="event.preventDefault(); event.stopImmediatePropagation();"
 	    doubleClick="event.preventDefault(); event.stopImmediatePropagation();"
 		verticalAlign="middle"
+	    verticalGap="0"
+	    paddingLeft="60"
 	    borderSides="top bottom"
 		implements="mx.managers.IFocusManagerComponent">
  
 <mx:Script>
 	<![CDATA[
+		import com.jivesoftware.spark.managers.SparkManager;
+		import com.jivesoftware.spark.managers.Localizator;
 		import com.jivesoftware.spark.managers.ChatManager;
 		import org.jivesoftware.xiff.data.im.RosterItemVO;
 		import org.jivesoftware.xiff.data.im.Contact;
 		
-		protected var _contact:Contact = null;
+		protected var _contact:RosterItemVO = null;
 		
-		public function startChat():void
+		protected function startChat():void
 		{
 			ChatManager.sharedInstance.startChat(contact.jid, true);
 		}
 		
 		public function set contact(inContact:Contact):void
 		{
-			_contact = inContact;
+			rosterItem = inContact as RosterItemVO;
 		}
 		
 		[Bindable]
 		public function get contact():Contact
 		{
+			return rosterItem;
+		}
+		
+		protected function set rosterItem(r:RosterItemVO):void
+		{
+			_contact = r;
+		}
+		
+		[Bindable]
+		protected function get rosterItem():RosterItemVO
+		{
 			return _contact;
+		}
+		
+		protected function viewProfile():void 
+		{
+			//TODO: CS profile viewing... will need some sort of useful abstraction here
+			ProfileWindow.showProfile(rosterItem);
+		}
+		
+		protected function changeGroup():void
+		{
+			GroupChangeWindow.showGroupChangeWindow(contact.jid);
+		}
+		
+		protected function requestAuth():void 
+		{
+			SparkManager.roster.requestSubscription(contact.jid);
+		} 
+		
+		protected function removeUser():void 
+		{
+			SparkManager.roster.removeContact(rosterItem);
+		}
+		
+		protected function renameUser():void
+		{
+			
 		}
 	]]>
 </mx:Script>
 
-<mx:LinkButton label="View Profile" />
-<mx:LinkButton label="stuff" />
-<mx:LinkButton label="things" />
+<mx:LinkButton fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.contact.start.chat')}" click="startChat()" />
+<mx:LinkButton fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.contact.rename')}" click="renameUser()" />
+<mx:LinkButton fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.contact.remove')}" click="removeUser()" />
+<mx:LinkButton fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.contact.view.profile')}" click="viewProfile()" />
+<mx:LinkButton fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.contact.groups')}" click="changeGroup()" />
+<mx:LinkButton fontWeight="normal" fontSize="11" visible="{rosterItem.pending}" label="{Localizator.getText('menu.contact.rerequest.auth')}" click="requestAuth()" />
 
 </mx:VBox>
