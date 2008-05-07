@@ -12,6 +12,7 @@
 <classEntry path="com.jivesoftware.spark.DragPanel"/>
 <classEntry path="sho.core.LoopResult"/>
 <classEntry path="com.jivesoftware.spark.MUCPasswordRequiredWindow"/>
+<classEntry path="com.jivesoftware.spark.MUCFileRenderer"/>
 <classEntry path="com.jivesoftware.spark.MUCConfigurationWindow"/>
 <classEntry path="com.jivesoftware.spark.MUCInvitePane"/>
 <classEntry path="com.jivesoftware.spark.CreateRoomWindow"/>
@@ -39,6 +40,10 @@
 <classEntry path="com.jivesoftware.spark.ContactListTab"/>
 <classEntry path="com.jivesoftware.spark.RoomSearchWindow"/>
 <classEntry path="com.jivesoftware.spark.ui.Message"/>
+<classEntry path="com.jivesoftware.spark.MiniChatRoomTab"/>
+<classEntry path="com.jivesoftware.spark.ui.MiniMessageHistory"/>
+<classEntry path="com.jivesoftware.spark.MUCUploadPane"/>
+<classEntry path="com.jivesoftware.spark.MiniChatRoomTabBar"/>
 <classEntry path="com.jivesoftware.spark.MUCList"/>
 <classEntry path="com.jivesoftware.spark.ui.Editor"/>
 <classEntry path="com.jivesoftware.spark.UserSearchWindow"/>
@@ -48,6 +53,7 @@
 <classEntry path="com.jivesoftware.spark.MUCInviteSendWindow"/>
 <classEntry path="com.jivesoftware.spark.CreateAccountDialog"/>
 <classEntry path="com.jivesoftware.spark.MUCRoomList"/>
+<classEntry path="com.jivesoftware.spark.ui.MiniMessage"/>
 <classEntry path="com.jivesoftware.spark.MUCOccupantRenderer"/>
 <classEntry path="com.jivesoftware.spark.AddServerWindow"/>
 <classEntry path="com.jivesoftware.spark.events.EditorEvent"/>
@@ -57,7 +63,9 @@
 <classEntry path="com.jivesoftware.spark.MUCRoomListItemRenderer"/>
 <classEntry path="com.jivesoftware.spark.BuddyActionsRenderer"/>
 <classEntry path="com.jivesoftware.spark.LoginDialog"/>
+<classEntry path="com.jivesoftware.spark.ui.MiniMessageBox"/>
 <classEntry path="com.jivesoftware.spark.SearchWindow"/>
+<classEntry path="com.jivesoftware.spark.MiniChatRoom"/>
 <classEntry path="com.jivesoftware.spark.ListGroup"/>
 <classEntry path="com.jivesoftware.spark.ChatContainer"/>
 <classEntry path="com.jivesoftware.spark.TruncatingLabel"/>
@@ -75,17 +83,17 @@
 <resourceEntry destPath="assets/images/bookmark.png" sourcePath="assets/images/bookmark.png"/>
 <resourceEntry destPath="assets/images/emoticons/happy.gif" sourcePath="assets/images/emoticons/happy.gif"/>
 <resourceEntry destPath="assets/images/emoticons/cool.gif" sourcePath="assets/images/emoticons/cool.gif"/>
+<resourceEntry destPath="assets/images/dummyContact.png" sourcePath="assets/images/dummyContact.png"/>
 <resourceEntry destPath="assets/images/profileBuddy.gif" sourcePath="assets/images/profileBuddy.gif"/>
 <resourceEntry destPath="assets/images/emoticons/heart.gif" sourcePath="assets/images/emoticons/heart.gif"/>
 <resourceEntry destPath="assets/images/blueArrowDown.png" sourcePath="assets/images/blueArrowDown.png"/>
-<resourceEntry destPath="assets/images/dummyContact.png" sourcePath="assets/images/dummyContact.png"/>
 <resourceEntry destPath="assets/images/emoticons/laugh.gif" sourcePath="assets/images/emoticons/laugh.gif"/>
 <resourceEntry destPath="assets/images/emoticons/wink.gif" sourcePath="assets/images/emoticons/wink.gif"/>
 <resourceEntry destPath="assets/images/emoticons/angry.gif" sourcePath="assets/images/emoticons/angry.gif"/>
 <resourceEntry destPath="assets/images/tabImage.png" sourcePath="assets/images/tabImage.png"/>
 <resourceEntry destPath="assets/images/speaker_off.png" sourcePath="assets/images/speaker_off.png"/>
-<resourceEntry destPath="assets/images/emoticons/plain.gif" sourcePath="assets/images/emoticons/plain.gif"/>
 <resourceEntry destPath="assets/images/dnd.png" sourcePath="assets/images/dnd.png"/>
+<resourceEntry destPath="assets/images/emoticons/plain.gif" sourcePath="assets/images/emoticons/plain.gif"/>
 <resourceEntry destPath="assets/images/temp_reload_server_black.png" sourcePath="assets/images/temp_reload_server_black.png"/>
 <resourceEntry destPath="assets/images/emoticons/love.gif" sourcePath="assets/images/emoticons/love.gif"/>
 <resourceEntry destPath="assets/images/emoticons/plus.gif" sourcePath="assets/images/emoticons/plus.gif"/>
@@ -115,13 +123,13 @@
 <resourceEntry destPath="assets/images/emoticons/minus.gif" sourcePath="assets/images/emoticons/minus.gif"/>
 <resourceEntry destPath="assets/images/restore.gif" sourcePath="assets/images/restore.gif"/>
 <resourceEntry destPath="assets/images/temp_create_room_button.png" sourcePath="assets/images/temp_create_room_button.png"/>
-<resourceEntry destPath="assets/images/conference_16x16.png" sourcePath="assets/images/conference_16x16.png"/>
 <resourceEntry destPath="assets/images/tiny-search.png" sourcePath="assets/images/tiny-search.png"/>
-<resourceEntry destPath="assets/images/restore.png" sourcePath="assets/images/restore.png"/>
+<resourceEntry destPath="assets/images/conference_16x16.png" sourcePath="assets/images/conference_16x16.png"/>
 <resourceEntry destPath="assets/images/close_dark.png" sourcePath="assets/images/close_dark.png"/>
+<resourceEntry destPath="assets/images/restore.png" sourcePath="assets/images/restore.png"/>
 <resourceEntry destPath="assets/images/tiny-search-white.png" sourcePath="assets/images/tiny-search-white.png"/>
-<resourceEntry destPath="assets/images/message_information.png" sourcePath="assets/images/message_information.png"/>
 <resourceEntry destPath="assets/images/away.png" sourcePath="assets/images/away.png"/>
+<resourceEntry destPath="assets/images/message_information.png" sourcePath="assets/images/message_information.png"/>
 <resourceEntry destPath="assets/images/emoticons/info.gif" sourcePath="assets/images/emoticons/info.gif"/>
 <resourceEntry destPath="assets/images/emoticons/cry.gif" sourcePath="assets/images/emoticons/cry.gif"/>
 <resourceEntry destPath="assets/images/removeBuddy.gif" sourcePath="assets/images/removeBuddy.gif"/>
