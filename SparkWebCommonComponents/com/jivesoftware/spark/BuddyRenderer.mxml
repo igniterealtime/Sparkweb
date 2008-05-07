@@ -29,14 +29,26 @@
 	    height="28"
 	    borderSides="top bottom"
 	    color="black"
+	    effectEnd="finishResize(event)"
+	    resizeEffect="{resizer}"
+	    cornerRadius="{expanded ? 8 : 0}"
 	    backgroundColor="{expanded ? 0xCFCFCF : 0xEEEEEE}"
 	    fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif"
 	    fontStyle="{rosterItem &amp;&amp; rosterItem.show != null &amp;&amp; rosterItem.show != Presence.SHOW_CHAT ? 'italic' : 'normal'}" 
 	    fontWeight="{selected ? 'bold' : 'normal'}"
-		implements="mx.managers.IFocusManagerComponent">
+		implements="mx.managers.IFocusManagerComponent"
+	    creationComplete="callLater(initRenderer)">
  
 <mx:Script>
 	<![CDATA[
+		import mx.events.ListEvent;
+		import mx.events.FlexEvent;
+		import mx.controls.listClasses.ListBase;
+		import mx.effects.IEffectInstance;
+		import mx.effects.Effect;
+		import mx.events.EffectEvent;
+		import mx.events.ResizeEvent;
+		import mx.effects.Resize;
 		import com.jivesoftware.spark.managers.ChatManager;
 		import org.jivesoftware.xiff.conference.RoomOccupant;
 		import org.jivesoftware.xiff.data.im.Contact;
@@ -72,6 +84,34 @@
 		[Embed(source="/assets/images/dummyContact.png")]
 		protected static const dummyIcon:Class;
 		
+		protected static const resizer:Resize = new Resize();
+		
+		protected static const shadowFilter:DropShadowFilter = new DropShadowFilter(1, 90, 0, 0.7, 6, 6);
+		
+		protected var outerList:ListBase = null;
+		protected var listGroup:ListGroup = null;
+		
+		protected function initRenderer():void
+		{
+			outerList = owner as ListBase;
+			if(parentDocument is ListGroup)
+				listGroup = parentDocument as ListGroup;
+
+        	outerList.addEventListener(ListEvent.CHANGE, updateSelected);
+          
+          	addEventListener(FlexEvent.DATA_CHANGE, checkSelected);
+		}
+		
+		private function checkSelected(event:FlexEvent):void
+		{
+			selected = outerList.selectedItem == this.data;
+		}
+  
+		private function updateSelected(event:ListEvent):void
+		{
+			selected = event.itemRenderer == this;
+		}
+		
 		[Bindable]
 		[Bindable(event=dataChanged)]
 		public function get rosterItem():RosterItemVO
@@ -97,7 +137,6 @@
 					close();
 				else
 					expand();
-				selected = !selected;
 			});
 			clickTimer.start();
 		}
@@ -143,6 +182,10 @@
 		{
 			if(value && value is Contact && contact != value)
 			{
+				if(listGroup && listGroup.expandedPaneContact == value && !expanded)
+					expand()
+				else if(getChildAt(0) is BuddyActionsRenderer || getChildAt(0) is RoomOccupantActionsRenderer)
+					close();
 				super.data = value;
 				
 				addListeners();
@@ -247,6 +290,13 @@
 			return tt;
 		}
 		
+/*		public override function set selected(flag:Boolean):void
+		{
+			super.selected = flag;
+			if(!flag)
+				close();
+		}*/
+		
 		public function expand():void {
 			if(contact is RoomOccupant)
 				actionsPane = new RoomOccupantActionsRenderer();
@@ -254,23 +304,53 @@
 				actionsPane = new BuddyActionsRenderer();
 			else
 				throw new Error("Unknown contact type");
+				
+			filters = [shadowFilter];
+				
+			parent.setChildIndex(this, this.parent.numChildren - 1);
 
 			actionsPane.contact = contact;
 			height += actionsPane.height;
 			actionsPane.setStyle("bottom", Number(0));
-			addChild(actionsPane);
+			this.addChildAt(actionsPane, 0);
 			expanded = true;
+			if(listGroup)
+				listGroup.expandedPaneContact = contact;
 		}
 		
 		public function close():void {
+			if(listGroup && listGroup.expandedPaneContact == contact)
+				listGroup.expandedPaneContact = null;
 			height -= actionsPane.height;
-			removeChildAt(this.numChildren - 1);
-			expanded = false;
 		}
+		
+		protected function finishResize(event:EffectEvent):void
+		{
+			if(event.effectInstance.effect != resizer)
+				return; 
+			if(height == 28)
+			{
+				filters = [];
+				removeChildAt(0);
+				expanded = false;
+			}
+		}
+		
+		/*
+		This is an eeeeeeevil hack to avoid having mx:List collapse this back down to 28px high when it re-lays-out
+		*/
+		public override function setActualSize(newWidth:Number, newHeight:Number):void
+		{
+			if(expanded && newHeight == 28)
+				newHeight = height;
+			else
+				super.setActualSize(newWidth, newHeight);
+		}
+
 	]]>
 </mx:Script>
 	<!-- Warning! I know these hardcoded vertical offsets are lame, but don't try to fix it with a nested canvas. It kills roster performance -->
 	<mx:Image id="avatarImage" left="8" top="2" width="24" height="24" source="@Embed(source='/assets/images/dummyContact.png')" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
 	<mx:Image id="presenceIconImage" left="40" top="8" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />
-	<sparkComp:TruncatingLabel left="64" right="0" top="8" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem != null ? rosterItem.status : 'available')}" />
+	<mx:TextArea left="64" borderStyle="none" selectable="false" paddingTop="8" focusThickness="0" height="28" focusEnabled="false" backgroundColor="{expanded ? 0xCFCFCF : 0xEEEEEE}" right="0" top="0" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem != null ? rosterItem.status : 'available')}" />
 </mx:Canvas>

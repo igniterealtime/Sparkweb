@@ -62,11 +62,6 @@
 				_occupant = occ;
 			}
 			
-			public override function singleClicked(event:MouseEvent):void
-			{
-				
-			}
-			
 			public override function doubleClicked(event:Event):void
 			{
 				if(rosterItem)

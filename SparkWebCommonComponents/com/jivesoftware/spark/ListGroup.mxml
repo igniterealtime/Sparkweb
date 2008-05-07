@@ -21,6 +21,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" visible="{dataProvider != null &amp;&amp; dataProvider.length > 0}" maxHeight="{visible ? NaN : 0}" xmlns:spark="com.jivesoftware.spark.*" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" paddingBottom="0" paddingTop="0" borderStyle="none" verticalGap="0">
 <mx:Script>
 	<![CDATA[
+		import mx.events.ListEvent;
 		import mx.events.FlexEvent;
 		import org.jivesoftware.xiff.data.im.Contact;
 		import mx.collections.ICollectionView;
@@ -57,12 +58,36 @@
 		
 		protected var _dataProvider:ListCollectionView = null;
 		
+		protected var _selectionList:ListCollectionView = new ArrayCollection();
+		
+		public var _expandedPaneContact:Contact = null;
+		
+		public function set expandedPaneContact(contact:Contact):void
+		{
+			_expandedPaneContact = contact;
+		}
+		
+		public function get expandedPaneContact():Contact
+		{
+			return _expandedPaneContact;
+		}
+		
+		public function set selectionList(list:ListCollectionView):void
+		{
+			_selectionList = list;
+		}
+		
+		public function get selectionList():ListCollectionView
+		{
+			return _selectionList;
+		}
+		
 		public function set collapsed(flag:Boolean):void
 		{
 			_collapsed = flag;
-			if(_collapsed == false && itemRepeater.dataProvider == null && dataProvider != null)
+			if(_collapsed == false && navBox.dataProvider == null && dataProvider != null)
 			{
-				itemRepeater.dataProvider = _dataProvider;
+				navBox.dataProvider = _dataProvider;
 			}
 		}
 		
@@ -103,7 +128,7 @@
 		[Bindable(event=updateDataProvider)]
 		public function get dataProvider():ListCollectionView
 		{
-		    return itemRepeater.dataProvider ? itemRepeater.dataProvider as ListCollectionView : _dataProvider;
+		    return navBox.dataProvider ? navBox.dataProvider as ListCollectionView : _dataProvider;
 		}
 		
 		protected function defaultFilter(contact:Contact):Boolean
@@ -114,7 +139,7 @@
 		public function filterBy(newFilter:String):void
 		{
 			filter = newFilter;
-		//	if(itemRepeater.dataProvider)
+		//	if(navBox.dataProvider)
 		    	dataProvider.refresh();
 		}
 		
@@ -127,7 +152,7 @@
 			dataProvider.filterFunction = defaultFilter;
 			dataProvider.refresh();
 			if(!collapsed && _dataProvider != null)
-		    	itemRepeater.dataProvider = _dataProvider;
+		    	navBox.dataProvider = _dataProvider;
 		}
 		
 		public function set alternatingItemColors(colors:Array):void
@@ -150,15 +175,17 @@
 	<mx:Label id="title" text="{groupName + ' (' + dataProvider.length + ') '}" height="20" paddingTop="3" fontWeight="bold" color="black" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" fontSize="12" />
 	<mx:Spacer height="100%" width="100%"/>
 </mx:HBox>
-<mx:VBox
-	verticalGap="0"
+<mx:List
 	visible="{(!collapsed || filter != '') &amp;&amp; visible}"
     maxHeight="{navBox.visible ? NaN : 0}" 
 	width="100%" 
-	id="navBox" >
-	<mx:Repeater recycleChildren="true" id="itemRepeater">
-		 	<spark:BuddyRenderer contact="{itemRepeater.currentItem}" />
-	</mx:Repeater>
-</mx:VBox>
+    paddingBottom="0"
+    paddingTop="0"
+    paddingLeft="0"
+    variableRowHeight="false"
+    verticalScrollPolicy="auto"
+    rowCount="{navBox.dataProvider != null ? navBox.dataProvider.length : 0}"
+    itemRenderer="com.jivesoftware.spark.BuddyRenderer"
+	id="navBox" />
 </mx:VBox>
 
