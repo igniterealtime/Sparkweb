@@ -45,7 +45,10 @@
         <mxmlc
                 file="${APP_ROOT}/SparkWeb.mxml"
                 output="${DEPLOY_DIR}/SparkWeb.swf"
+                locale="en_US"
                 keep-generated-actionscript="true"
+                allow-source-path-overlap="true"
+                static-link-runtime-shared-libraries="true"
         >
             <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
 
@@ -55,6 +58,14 @@
             <compiler.source-path path-element="${basedir}/SparkWebCore"/>
             <compiler.source-path path-element="${basedir}/SparkWebCommonComponents"/>
             <compiler.source-path path-element="${basedir}/SparkWeb/src"/>
+
+            <runtime-shared-library-path path-element="${basedir}/SparkWeb/assets/css"> 
+                <url rsl-url="messenger.swf"/> 
+            </runtime-shared-library-path> 
+
+            <compiler.library-path dir="${basedir}/SparkWeb/assets" append="true">
+                <include name="css"/>
+            </compiler.library-path>
 
             <compiler.include-libraries dir="${basedir}/SparkWebCommonComponents/assets/lib" append="true">
                 <include name="corelib.swc"/>
