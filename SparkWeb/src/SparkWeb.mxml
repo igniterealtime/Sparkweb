@@ -93,10 +93,17 @@
 					if(!externalConfig)
 					{
 						externalConfig = {};
+						
+						// First, we will attempt to load from a javascript function called jive_sparkweb_getConfig
 						var tempConfig:Object = ExternalInterface.call("jive_sparkweb_getConfig");
 						for (var extKey:String in tempConfig)
 						{
 							externalConfig[extKey.toLowerCase()] = tempConfig[extKey];
+						}
+						
+						// Next, we will attempt to load passed in flash vars, overriding previous settings
+						for (var extKey:String in Application.application.parameters) {
+							externalConfig[extKey.toLowerCase()] = Application.application.parameters[extKey];
 						}
 					}
 					return externalConfig[key]; 
