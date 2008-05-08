@@ -29,6 +29,7 @@
 		import mx.controls.TextArea;
 		private var _userId:String;
 		private var _type:String;
+		private var _showlabels:Boolean = true;
 		
 		[Bindable]
 		private var _date:Date;
@@ -51,6 +52,7 @@
 		
 		public function set type(type:String):void {
 			this._type = type;
+			showlabels = (type != "system");
 		}
 		
 		public function get type():String {
@@ -67,6 +69,12 @@
 		
 		public function addMessage(message:String, styleName:String = "text"):void {
 			var messageArea:Message = new Message();
+			if (type == "system") {
+				showlabels = false;
+			}
+			else {
+				messageArea.showdate = false;
+			}
 			messageArea.styleName = styleName;
 			message_list.addChild(messageArea);	
 			messageArea.text = message;
@@ -78,15 +86,24 @@
 		}
 		
 		public function setMessageHighlight(usernameColor:String, messageColor:String):void {
-			username_container.setStyle("backgroundColor", (!usernameColor ? "#E7E7E9" : usernameColor));
+			labels_container.setStyle("backgroundColor", (!usernameColor ? "#E7E7E9" : usernameColor));
 			message_list.setStyle("backgroundColor", messageColor);
+		}
+		
+		public function set showlabels(show:Boolean):void {
+			this._showlabels = show;
+		}
+		
+		[Bindable]
+		public function get showlabels():Boolean {
+			return this._showlabels;
 		}
 	]]></mx:Script>
 	<mx:DateFormatter id="DateDisplay" formatString="H:NN A"/>
-	<mx:Canvas id="username_container" height="100%" verticalScrollPolicy="off" horizontalScrollPolicy="off" width="100">
-		<mx:Label id="username_label" truncateToFit="true" styleName="username" top="10" bottom="10" textAlign="right" width="100%"/>
-		<mx:Label id="time_label" width="60" styleName="text" textAlign="right" color="#C9C9C9" text="{DateDisplay.format(_date)}" />
+	<mx:Canvas id="labels_container" visible="{showlabels}" verticalScrollPolicy="off" horizontalScrollPolicy="off" width="100%">
+		<mx:Label id="username_label" truncateToFit="true" left="0" top="0" styleName="username" textAlign="left"/>
+		<mx:Label id="time_label" styleName="text" right="0" top="0" textAlign="right" color="#C9C9C9" text="{DateDisplay.format(_date)}" />
 	</mx:Canvas>
-	<mx:VBox id="message_list" childAdd="dispatchEvent(new ChildExistenceChangedEvent(ChildExistenceChangedEvent.CHILD_ADD));" height="100%" width="100%" verticalGap="3" verticalScrollPolicy="off" paddingTop="10" paddingBottom="10" paddingLeft="2">
+	<mx:VBox id="message_list" childAdd="dispatchEvent(new ChildExistenceChangedEvent(ChildExistenceChangedEvent.CHILD_ADD));" height="100%" width="100%" verticalGap="1" verticalScrollPolicy="off" paddingTop="0" paddingBottom="0" paddingLeft="0">
 	</mx:VBox>
 </mx:VBox>

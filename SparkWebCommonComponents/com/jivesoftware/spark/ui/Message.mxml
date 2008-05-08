@@ -33,6 +33,7 @@
 		private var _date:Date;
 		
 		private var _selected:Boolean = false;
+		private var _showdate:Boolean = true;
 		
 		private static const selectedFilter:GlowFilter = new GlowFilter(0xFF9900,0.9);
 		
@@ -60,8 +61,17 @@
 		public function get date():Date {
 			return this._date;
 		}
+		
+		public function set showdate(show:Boolean):void {
+			this._showdate = show;
+		}
+		
+		[Bindable]
+		public function get showdate():Boolean {
+			return this._showdate;
+		}
 	]]></mx:Script>
 	<mx:DateFormatter id="DateDisplay" formatString="H:NN A"/>
 	<mx:Text filters="{selected ? [selectedFilter] : []}" id="message" selectable="false" width="100%" styleName="text" />
-	<mx:Label id="time_label" width="60" styleName="text" textAlign="right" color="#C9C9C9" text="{DateDisplay.format(_date)}" />
+	<mx:Label id="time_label" visible="{showdate}" width="60" styleName="text" textAlign="right" color="#C9C9C9" text="{DateDisplay.format(_date)}" />
 </mx:HBox>

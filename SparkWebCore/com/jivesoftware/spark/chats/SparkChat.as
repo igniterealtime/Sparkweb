@@ -121,7 +121,7 @@ package com.jivesoftware.spark.chats
 
 		public function insertMessage(message:SparkMessage):void 
 		{		
-			
+			ui.addMessage(message);
 		}
 			
 		public function set presence(presence:String):void {

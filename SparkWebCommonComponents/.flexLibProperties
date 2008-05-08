@@ -2,17 +2,17 @@
 <flexLibProperties version="1">
 <includeClasses>
 <classEntry path="com.jivesoftware.spark.AddUserWindow"/>
-<classEntry path="sho.core.Func"/>
 <classEntry path="com.jivesoftware.spark.ColorShiftingTitleWindow"/>
+<classEntry path="sho.core.Func"/>
 <classEntry path="com.jivesoftware.spark.CanvasButton"/>
-<classEntry path="com.jivesoftware.spark.RoomOccupantActionsRenderer"/>
 <classEntry path="com.jivesoftware.spark.ContactList"/>
-<classEntry path="com.jivesoftware.spark.ui.MessageHistory"/>
+<classEntry path="com.jivesoftware.spark.RoomOccupantActionsRenderer"/>
 <classEntry path="com.jivesoftware.spark.ContactListTabBar"/>
+<classEntry path="com.jivesoftware.spark.ui.MessageHistory"/>
 <classEntry path="com.jivesoftware.spark.DragPanel"/>
-<classEntry path="sho.core.LoopResult"/>
-<classEntry path="com.jivesoftware.spark.MUCPasswordRequiredWindow"/>
 <classEntry path="com.jivesoftware.spark.MUCFileRenderer"/>
+<classEntry path="com.jivesoftware.spark.MUCPasswordRequiredWindow"/>
+<classEntry path="sho.core.LoopResult"/>
 <classEntry path="com.jivesoftware.spark.MUCConfigurationWindow"/>
 <classEntry path="com.jivesoftware.spark.MUCInvitePane"/>
 <classEntry path="com.jivesoftware.spark.CreateRoomWindow"/>
@@ -20,8 +20,8 @@
 <classEntry path="com.jivesoftware.spark.displayfilters.HTMLEscapingFilter"/>
 <classEntry path="com.jivesoftware.spark.BuddyToolTip"/>
 <classEntry path="sho.core.Range"/>
-<classEntry path="com.jivesoftware.spark.utils.UniqueingQueue"/>
 <classEntry path="com.jivesoftware.spark.ProfileWindow"/>
+<classEntry path="com.jivesoftware.spark.utils.UniqueingQueue"/>
 <classEntry path="com.jivesoftware.spark.BuddyRenderer"/>
 <classEntry path="sho.util.ArrayUtil"/>
 <classEntry path="com.jivesoftware.spark.utils.Key"/>
@@ -29,8 +29,8 @@
 <classEntry path="com.jivesoftware.spark.OfflineListGroup"/>
 <classEntry path="com.jivesoftware.spark.ScrollWheelManager"/>
 <classEntry path="com.jivesoftware.spark.MUCInviteReceiveWindow"/>
-<classEntry path="com.jivesoftware.spark.SubscriptionRequestWindow"/>
 <classEntry path="com.jivesoftware.spark.ContactListContainer"/>
+<classEntry path="com.jivesoftware.spark.SubscriptionRequestWindow"/>
 <classEntry path="sho.ui.CompletionInput"/>
 <classEntry path="com.jivesoftware.spark.displayfilters.URLFilter"/>
 <classEntry path="com.jivesoftware.spark.displayfilters.EmoticonFilter"/>
@@ -41,27 +41,26 @@
 <classEntry path="com.jivesoftware.spark.RoomSearchWindow"/>
 <classEntry path="com.jivesoftware.spark.ui.Message"/>
 <classEntry path="com.jivesoftware.spark.MiniChatRoomTab"/>
-<classEntry path="com.jivesoftware.spark.ui.MiniMessageHistory"/>
 <classEntry path="com.jivesoftware.spark.MUCUploadPane"/>
+<classEntry path="com.jivesoftware.spark.ui.MiniMessageHistory"/>
 <classEntry path="com.jivesoftware.spark.MiniChatRoomTabBar"/>
 <classEntry path="com.jivesoftware.spark.MUCList"/>
 <classEntry path="com.jivesoftware.spark.ui.Editor"/>
 <classEntry path="com.jivesoftware.spark.UserSearchWindow"/>
 <classEntry path="com.jivesoftware.spark.GroupChangeWindow"/>
-<classEntry path="com.jivesoftware.spark.IconComboBox"/>
 <classEntry path="com.jivesoftware.spark.AlertWindow"/>
-<classEntry path="com.jivesoftware.spark.MUCInviteSendWindow"/>
+<classEntry path="com.jivesoftware.spark.IconComboBox"/>
 <classEntry path="com.jivesoftware.spark.CreateAccountDialog"/>
+<classEntry path="com.jivesoftware.spark.MUCInviteSendWindow"/>
 <classEntry path="com.jivesoftware.spark.MUCRoomList"/>
-<classEntry path="com.jivesoftware.spark.ui.MiniMessage"/>
 <classEntry path="com.jivesoftware.spark.MUCOccupantRenderer"/>
 <classEntry path="com.jivesoftware.spark.AddServerWindow"/>
-<classEntry path="com.jivesoftware.spark.events.EditorEvent"/>
 <classEntry path="com.jivesoftware.spark.MUCListAccordionHeader"/>
-<classEntry path="com.jivesoftware.spark.ui.MessageBox"/>
-<classEntry path="com.jivesoftware.spark.StatusBox"/>
-<classEntry path="com.jivesoftware.spark.MUCRoomListItemRenderer"/>
+<classEntry path="com.jivesoftware.spark.events.EditorEvent"/>
 <classEntry path="com.jivesoftware.spark.BuddyActionsRenderer"/>
+<classEntry path="com.jivesoftware.spark.MUCRoomListItemRenderer"/>
+<classEntry path="com.jivesoftware.spark.StatusBox"/>
+<classEntry path="com.jivesoftware.spark.ui.MessageBox"/>
 <classEntry path="com.jivesoftware.spark.LoginDialog"/>
 <classEntry path="com.jivesoftware.spark.ui.MiniMessageBox"/>
 <classEntry path="com.jivesoftware.spark.SearchWindow"/>
@@ -76,16 +75,16 @@
 <resourceEntry destPath="assets/images/emoticons/mischief.gif" sourcePath="assets/images/emoticons/mischief.gif"/>
 <resourceEntry destPath="assets/images/emoticons/alert.gif" sourcePath="assets/images/emoticons/alert.gif"/>
 <resourceEntry destPath="assets/images/blueArrowRight.png" sourcePath="assets/images/blueArrowRight.png"/>
-<resourceEntry destPath="assets/images/emoticons/eyeRoll.gif" sourcePath="assets/images/emoticons/eyeRoll.gif"/>
 <resourceEntry destPath="assets/images/sparkweb.png" sourcePath="assets/images/sparkweb.png"/>
+<resourceEntry destPath="assets/images/emoticons/eyeRoll.gif" sourcePath="assets/images/emoticons/eyeRoll.gif"/>
 <resourceEntry destPath="assets/images/speaker_on.png" sourcePath="assets/images/speaker_on.png"/>
 <resourceEntry destPath="assets/images/spark-16x16.png" sourcePath="assets/images/spark-16x16.png"/>
 <resourceEntry destPath="assets/images/bookmark.png" sourcePath="assets/images/bookmark.png"/>
 <resourceEntry destPath="assets/images/emoticons/happy.gif" sourcePath="assets/images/emoticons/happy.gif"/>
 <resourceEntry destPath="assets/images/emoticons/cool.gif" sourcePath="assets/images/emoticons/cool.gif"/>
-<resourceEntry destPath="assets/images/dummyContact.png" sourcePath="assets/images/dummyContact.png"/>
-<resourceEntry destPath="assets/images/profileBuddy.gif" sourcePath="assets/images/profileBuddy.gif"/>
 <resourceEntry destPath="assets/images/emoticons/heart.gif" sourcePath="assets/images/emoticons/heart.gif"/>
+<resourceEntry destPath="assets/images/profileBuddy.gif" sourcePath="assets/images/profileBuddy.gif"/>
+<resourceEntry destPath="assets/images/dummyContact.png" sourcePath="assets/images/dummyContact.png"/>
 <resourceEntry destPath="assets/images/blueArrowDown.png" sourcePath="assets/images/blueArrowDown.png"/>
 <resourceEntry destPath="assets/images/emoticons/laugh.gif" sourcePath="assets/images/emoticons/laugh.gif"/>
 <resourceEntry destPath="assets/images/emoticons/wink.gif" sourcePath="assets/images/emoticons/wink.gif"/>
@@ -97,24 +96,24 @@
 <resourceEntry destPath="assets/images/temp_reload_server_black.png" sourcePath="assets/images/temp_reload_server_black.png"/>
 <resourceEntry destPath="assets/images/emoticons/love.gif" sourcePath="assets/images/emoticons/love.gif"/>
 <resourceEntry destPath="assets/images/emoticons/plus.gif" sourcePath="assets/images/emoticons/plus.gif"/>
-<resourceEntry destPath="assets/images/min.png" sourcePath="assets/images/min.png"/>
 <resourceEntry destPath="assets/lib/flexcapacitor.xml" sourcePath="assets/lib/flexcapacitor.xml"/>
+<resourceEntry destPath="assets/images/min.png" sourcePath="assets/images/min.png"/>
 <resourceEntry destPath="assets/images/emoticons/devil.gif" sourcePath="assets/images/emoticons/devil.gif"/>
 <resourceEntry destPath="assets/images/emoticons/blush.gif" sourcePath="assets/images/emoticons/blush.gif"/>
-<resourceEntry destPath="assets/images/add_server.png" sourcePath="assets/images/add_server.png"/>
 <resourceEntry destPath="assets/images/temp_reload_server.png" sourcePath="assets/images/temp_reload_server.png"/>
-<resourceEntry destPath="assets/images/close_white.png" sourcePath="assets/images/close_white.png"/>
+<resourceEntry destPath="assets/images/add_server.png" sourcePath="assets/images/add_server.png"/>
 <resourceEntry destPath="assets/images/addBuddy.png" sourcePath="assets/images/addBuddy.png"/>
-<resourceEntry destPath="assets/images/min.gif" sourcePath="assets/images/min.gif"/>
-<resourceEntry destPath="assets/images/close.png" sourcePath="assets/images/close.png"/>
+<resourceEntry destPath="assets/images/close_white.png" sourcePath="assets/images/close_white.png"/>
 <resourceEntry destPath="assets/images/blank.png" sourcePath="assets/images/blank.png"/>
-<resourceEntry destPath="assets/images/emoticons/shocked.gif" sourcePath="assets/images/emoticons/shocked.gif"/>
+<resourceEntry destPath="assets/images/close.png" sourcePath="assets/images/close.png"/>
+<resourceEntry destPath="assets/images/min.gif" sourcePath="assets/images/min.gif"/>
 <resourceEntry destPath="assets/images/emoticons/grin.gif" sourcePath="assets/images/emoticons/grin.gif"/>
+<resourceEntry destPath="assets/images/emoticons/shocked.gif" sourcePath="assets/images/emoticons/shocked.gif"/>
 <resourceEntry destPath="assets/images/emoticons/silly.gif" sourcePath="assets/images/emoticons/silly.gif"/>
 <resourceEntry destPath="assets/images/emoticons/sad.gif" sourcePath="assets/images/emoticons/sad.gif"/>
-<resourceEntry destPath="assets/images/available.png" sourcePath="assets/images/available.png"/>
-<resourceEntry destPath="assets/images/restore2.png" sourcePath="assets/images/restore2.png"/>
 <resourceEntry destPath="assets/images/searchBuddy.png" sourcePath="assets/images/searchBuddy.png"/>
+<resourceEntry destPath="assets/images/restore2.png" sourcePath="assets/images/restore2.png"/>
+<resourceEntry destPath="assets/images/available.png" sourcePath="assets/images/available.png"/>
 <resourceEntry destPath="assets/images/emoticons/party.gif" sourcePath="assets/images/emoticons/party.gif"/>
 <resourceEntry destPath="assets/images/emoticons/sleepy.gif" sourcePath="assets/images/emoticons/sleepy.gif"/>
 <resourceEntry destPath="assets/images/max.png" sourcePath="assets/images/max.png"/>
