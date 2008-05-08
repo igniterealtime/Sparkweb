@@ -478,7 +478,6 @@ function jive_sparkweb_getConfig()
 </script>
 <body scroll="no" id="myBody" onLoad="document.getElementById('${application}').focus();">
 
-<script type="text/javascript" src="history.js"></script>
 <script type="text/javascript">
 <!--
 // Version check for the Flash Player that has the ability to start Player Product Install (6.0r65)
@@ -526,7 +525,6 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			"bgcolor", "${bgcolor}",
 			"name", "${application}",
 			"wmode", "opaque",
-			"flashvars",'historyUrl=history.htm%3F&lconid=' + lc_id + '',
 			"allowScriptAccess","sameDomain",
 			"type", "application/x-shockwave-flash",
 			"pluginspage", "http://www.adobe.com/go/getflashplayer"
@@ -558,8 +556,5 @@ if ( hasProductInstall && !hasRequestedVersion ) {
 			</embed>
 	</object>
 </noscript>
-
-
-<iframe name="_history" src="history.htm" frameborder="0" scrolling="no" width="22" height="0"></iframe>
 </body>
 </html>
