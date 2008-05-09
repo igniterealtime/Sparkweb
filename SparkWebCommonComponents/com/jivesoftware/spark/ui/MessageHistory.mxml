@@ -33,7 +33,7 @@
 	
 		private var _userMessageHighlight:Object = {
 			user: [null, "#FFFFDB"],
-			selected: ["#D8E9F9", "#DDF0FF"]
+			selected: [null, "#F2F9FF"]
 		}
 		
 		private var _currentMessageBox:MessageBox;
@@ -198,24 +198,6 @@
 			{
 				if ((element is MessageBox) && (element as MessageBox).userId == userId) {
 					(element as MessageBox).setMessageHighlight(userColor, messageColor);
-				}
-			}
-		}
-		
-		public function highlightUser(name:String):void
-		{
-			for each(var element:UIComponent in history.getChildren())
-			{
-				if(element is MessageBox)
-				{
-					if((element as MessageBox).username == name)
-					{
-						element.setStyle("backgroundColor", "#F2F9FF");
-					}
-					else
-					{
-						element.setStyle("backgroundColor", "#FFFFFF");
-					}
 				}
 			}
 		}

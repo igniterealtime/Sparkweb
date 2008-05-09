@@ -68,7 +68,7 @@
 		}
 		
 		public function setMessageHighlight(usernameColor:String, messageColor:String):void {
-			username_container.setStyle("backgroundColor", (!usernameColor ? "#E7E7E9" : usernameColor));
+			username_container.setStyle("backgroundColor", (!usernameColor ? "#F5F6FB" : usernameColor));
 			message_list.setStyle("backgroundColor", messageColor);
 		}
 	]]></mx:Script>

@@ -33,6 +33,7 @@
 	     
 	<mx:Script>
 		<![CDATA[
+			import org.jivesoftware.xiff.data.im.Contact;
 			import mx.events.ListEvent;
 			import com.jivesoftware.spark.managers.Localizator;
 			import org.jivesoftware.xiff.events.RoomEvent;
@@ -71,6 +72,8 @@
 			[Embed(source="/assets/images/conference_16x16.png")]
 			private static const conferenceIcon:Class;
 			
+			private var selectedUser:Contact = null;
+			
 			protected function setup():void
 			{
 				occupantList.addEventListener("change", highlightUser);
@@ -99,7 +102,12 @@
 			
 			protected function highlightUser(event:ListEvent):void
 			{
-				history.highlightUser((event.itemRenderer as BuddyRenderer).contact.displayName);
+				if(selectedUser)
+					history.setUserMessageType(selectedUser.displayName, SparkManager.me.displayName == selectedUser.displayName ? "user" : null);
+				
+				selectedUser = (event.itemRenderer as BuddyRenderer).contact;
+				
+				history.setUserMessageType(selectedUser.displayName, "selected");
 			}
 			
 			protected function setupDateChangeEvent():void
@@ -128,7 +136,7 @@
 					if(!lastMessage || message.time.date != lastMessage.time.date)
 						addNotification(message.time.toLocaleDateString());
 				}
-				history.addUserMessage(id, id, message.body, message.time, message.local ? "user" : null);
+				history.addUserMessage(id, id, message.body, message.time, message.local ? id == selectedUser.displayName ? "selected" : "user" : null);
 				if(!message.local)
 					increaseMessageCount();
 				lastMessage = message;
