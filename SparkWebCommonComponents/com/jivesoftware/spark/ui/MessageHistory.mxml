@@ -181,7 +181,9 @@
 				_currentMessageBox.setMessageHighlight(_userMessageHighlight[type][0], _userMessageHighlight[type][1]);
 			}
 			
-			_currentMessageBox.addMessage(messageText, messageDate);
+			var mentioned:Boolean = messageText.toLowerCase().indexOf(username.toLowerCase()) >= 0 && type != "user";
+			
+			_currentMessageBox.addMessage(messageText, messageDate, mentioned ? "highlight" : "text");
 		}
 		
 		public function setUserMessageType(userId:String, type:String = null):void {

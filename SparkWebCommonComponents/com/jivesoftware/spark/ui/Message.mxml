@@ -26,7 +26,8 @@
 	verticalGap="0">
 	<mx:Style>
    		.text { }
-   		.system {font-style: italic; color: green} 
+   		.system {font-style: italic; color: #BBBBBB;}
+   		.highlight {border-style:solid; border-color:red;}
 	</mx:Style>
 	<mx:Script><![CDATA[
 		[Bindable]
