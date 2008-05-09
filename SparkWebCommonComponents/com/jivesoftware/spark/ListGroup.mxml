@@ -56,11 +56,30 @@
 		protected var filter:String = "";
 		protected var itemColors:Array = undefined;
 		
+		[Bindable]
+		public var headerHeight:Number = 20;
+		
+		[Bindable]
+		public var headerFontSize:Number = 12;
+		
+		[Bindable]
+		public var _headerFontColors:ArrayCollection = new ArrayCollection([0x000000, 0x000000]);
+		
 		protected var _dataProvider:ListCollectionView = null;
 		
 		protected var _selectionList:ListCollectionView = new ArrayCollection();
 		
 		public var _expandedPaneContact:Contact = null;
+		
+		public function set headerFontColors(colors:Array):void
+		{
+			_headerFontColors = new ArrayCollection(colors);
+		}
+		
+		public function get headerFontColors():Array
+		{
+			return _headerFontColors.toArray();
+		}
 		
 		public function set expandedPaneContact(contact:Contact):void
 		{
@@ -164,18 +183,24 @@
 		{
 			return dp != null && count > 0;
 		}
+		
+		public function getHTMLFormattedGroupTitle(title:String, count:Number):String
+		{
+			return "<font color='" + _headerFontColors.getItemAt(0) + "'>" + groupName + ":</font><font color='" + _headerFontColors.getItemAt(1) + "'> " + count + " </font>";
+		}
 	]]>
 </mx:Script>
 
 <!-- Collapsible Item -->
-<mx:HBox width="100%" id="innerBox" filters="{[]}" backgroundColor="#DDDDDD" cornerRadius="5" verticalAlign="middle" horizontalGap="0" click="collapsed = !collapsed" paddingBottom="0" paddingTop="0">
+<mx:HBox width="100%" id="innerBox" filters="{[]}" borderSides="bottom" borderStyle="solid" backgroundColor="#DDDDDD" height="{headerHeight}" verticalAlign="middle" horizontalGap="0" click="collapsed = !collapsed" paddingBottom="0" paddingTop="0">
 	<mx:Spacer height="100%" width="5"/>
 	<mx:Image id="arrows" source="{collapsable ? (collapsed ? blueArrowRight : blueArrowDown) : null}" />
 	<mx:Spacer height="100%" width="5"/>
-	<mx:Label id="title" text="{groupName + ' (' + dataProvider.length + ') '}" height="20" paddingTop="3" fontWeight="bold" color="black" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" fontSize="12" />
+	<mx:Label id="title" htmlText="{getHTMLFormattedGroupTitle(groupName, dataProvider.length)}" paddingTop="3" fontWeight="bold" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" fontSize="{headerFontSize}" />
 	<mx:Spacer height="100%" width="100%"/>
 </mx:HBox>
 <mx:List
+    borderStyle="none"
 	visible="{(!collapsed || filter != '') &amp;&amp; visible}"
     maxHeight="{navBox.visible ? NaN : 0}" 
 	width="100%" 
