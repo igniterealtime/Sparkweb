@@ -33,6 +33,7 @@
 	     
 	<mx:Script>
 		<![CDATA[
+			import mx.events.ListEvent;
 			import com.jivesoftware.spark.managers.Localizator;
 			import org.jivesoftware.xiff.events.RoomEvent;
 			import org.jivesoftware.xiff.conference.Room;
@@ -72,6 +73,7 @@
 			
 			protected function setup():void
 			{
+				occupantList.addEventListener("change", highlightUser);
 				editor.addEventListener(EditorEvent.MESSAGE_CREATED, function(evt:EditorEvent):void {
 					var text:String = evt.message;
 					if(text.length == 0)
@@ -93,6 +95,11 @@
 					setupDateChangeEvent();
 				});
 				setupDateChangeEvent();
+			}
+			
+			protected function highlightUser(event:ListEvent):void
+			{
+				history.highlightUser((event.itemRenderer as BuddyRenderer).contact.displayName);
 			}
 			
 			protected function setupDateChangeEvent():void

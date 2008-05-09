@@ -71,6 +71,11 @@
 		
 		public var _expandedPaneContact:Contact = null;
 		
+		protected function postChange(event:ListEvent):void
+		{
+			dispatchEvent(event);
+		}
+		
 		public function set headerFontColors(colors:Array):void
 		{
 			_headerFontColors = new ArrayCollection(colors);
@@ -207,6 +212,7 @@
     paddingBottom="0"
     paddingTop="0"
     paddingLeft="0"
+    change="postChange(event)"
     variableRowHeight="false"
     verticalScrollPolicy="auto"
     rowCount="{navBox.dataProvider != null ? navBox.dataProvider.length : 0}"

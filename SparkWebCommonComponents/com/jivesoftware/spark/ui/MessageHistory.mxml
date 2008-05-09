@@ -202,6 +202,24 @@
 			}
 		}
 		
+		public function highlightUser(name:String):void
+		{
+			for each(var element:UIComponent in history.getChildren())
+			{
+				if(element is MessageBox)
+				{
+					if((element as MessageBox).username == name)
+					{
+						element.setStyle("backgroundColor", "#F2F9FF");
+					}
+					else
+					{
+						element.setStyle("backgroundColor", "#FFFFFF");
+					}
+				}
+			}
+		}
+		
 		private function _createMessageBox():MessageBox {
 			var messageBox:MessageBox = new MessageBox();
 			var queueScroll:Function = function():void { 
