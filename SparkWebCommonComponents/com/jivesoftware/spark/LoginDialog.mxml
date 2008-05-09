@@ -31,9 +31,15 @@
 		color: black;
 		font-weight:bold;
 	}
+	.titleText {
+		font-size: 14;
+		color: black;
+		font-weight:bold;
+	}
 </mx:Style>
 <mx:Script>
 	<![CDATA[
+		import mx.controls.Image;
 		import mx.core.UIComponent;
 		import org.jivesoftware.xiff.events.LoginEvent;
 		import com.jivesoftware.spark.utils.UniqueingQueue;
@@ -59,6 +65,14 @@
 		
 		[Bindable]
 		private var dropShadowFilters:Array = [new DropShadowFilter(0, 45, 0.0, 1.0, 6.0)];
+	
+		[Embed(source='/assets/images/sparkweb.png')]
+		private static const defaultTitleImage:Class;
+		
+		private var _showTitleBar:Boolean = true;
+		private var _titleImage:Object = defaultTitleImage;
+		private var _titleText:String = null;
+		private var _showCreateAccount:Boolean = true;
 
 		private function loginToServer():void {
 			if(userNameField.length == 0 || passwordField.length == 0 || serverBox.text == "") 
@@ -167,12 +181,58 @@
 			return savedServers;
 		}
 		
+		public function set titleImage(image:Object):void
+		{
+			_titleImage = (image != "" ? image : null);
+		}		
+
+		[Bindable]
+		public function get titleImage():Object 
+		{
+			return _titleImage;
+		}
+		
+		public function set titleText(text:String):void
+		{
+			_titleText = (text != "" ? text : null);
+		}		
+
+		[Bindable]
+		public function get titleText():String 
+		{
+			return _titleText;
+		}
+		
+		public function set showTitleBar(setting:Boolean):void
+		{
+			_showTitleBar = setting;
+		}		
+
+		[Bindable]
+		public function get showTitleBar():Boolean 
+		{
+			return _showTitleBar;
+		}
+		
+		public function set showCreateAccount(setting:Boolean):void
+		{
+			_showCreateAccount = setting;
+		}		
+
+		[Bindable]
+		public function get showCreateAccount():Boolean 
+		{
+			return _showCreateAccount;
+		}
+		
+		
 	]]>
 </mx:Script>
-<mx:HBox width="100%" paddingLeft="20" paddingTop="10" paddingRight="12">
-<mx:Image source="@Embed(source='/assets/images/sparkweb.png')"/>
-<mx:Spacer width="100%" />
-<mx:LinkButton alpha="0.5" selectionColor="#AAAAAA" color="white" rollOverColor="#888888" textRollOverColor="white" id="registerButton" label="{Localizator.getText('message.create.account')}" click="Application.application.showCreateAccount();" />	
+<mx:HBox width="100%" paddingLeft="20" paddingTop="10" paddingRight="12" visible="{showTitleBar}">
+	<mx:Image source="{titleImage}" visible="{titleImage != null}"/>
+	<mx:Text color="white" filters="{dropShadowFilters}" text="{titleText}" visible="{titleText != null}" styleName="titleText"/>
+	<mx:Spacer width="100%" />
+	<mx:LinkButton alpha="0.5" selectionColor="#AAAAAA" color="white" rollOverColor="#888888" textRollOverColor="white" id="registerButton" label="{Localizator.getText('message.create.account')}" click="Application.application.showCreateAccount();" visible="{showCreateAccount}" />	
 </mx:HBox>
 <mx:Grid id="grid" verticalGap="1" horizontalGap="0" width="100%" height="100%" paddingLeft="20" paddingRight="20" paddingTop="17" paddingBottom="15" styleName="canvas"  >
         
