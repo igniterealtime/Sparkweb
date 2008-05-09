@@ -298,7 +298,7 @@
 		}*/
 		
 		public function expand():void {
-			if(contact is RoomOccupant)
+	/*		if(contact is RoomOccupant)
 				actionsPane = new RoomOccupantActionsRenderer();
 			else if(contact is RosterItemVO)
 				actionsPane = new BuddyActionsRenderer();
@@ -315,13 +315,13 @@
 			this.addChildAt(actionsPane, 0);
 			expanded = true;
 			if(listGroup)
-				listGroup.expandedPaneContact = contact;
+				listGroup.expandedPaneContact = contact;*/
 		}
 		
-		public function close():void {
+		public function close():void {/*
 			if(listGroup && listGroup.expandedPaneContact == contact)
 				listGroup.expandedPaneContact = null;
-			height -= actionsPane.height;
+			height -= actionsPane.height;*/
 		}
 		
 		protected function finishResize(event:EffectEvent):void
@@ -351,6 +351,6 @@
 </mx:Script>
 	<!-- Warning! I know these hardcoded vertical offsets are lame, but don't try to fix it with a nested canvas. It kills roster performance -->
 	<mx:Image id="avatarImage" left="8" top="2" width="24" height="24" source="@Embed(source='/assets/images/dummyContact.png')" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
-	<mx:Image id="presenceIconImage" left="40" top="8" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />
-	<mx:TextArea left="64" borderStyle="none" selectable="false" paddingTop="8" focusThickness="0" height="28" focusEnabled="false" backgroundColor="{expanded ? 0xCFCFCF : 0xEEEEEE}" right="0" top="0" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem != null ? rosterItem.status : 'available')}" />
+	<!--<mx:Image id="presenceIconImage" left="40" top="8" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />-->
+	<mx:TextArea left="48" borderStyle="none" selectable="false" paddingTop="8" focusThickness="0" height="28" focusEnabled="false" backgroundColor="{expanded ? 0xCFCFCF : 0xEEEEEE}" right="0" top="0" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem != null ? rosterItem.status : 'available')}" />
 </mx:Canvas>
