@@ -316,17 +316,17 @@
 		</mx:VBox>
 		
 		<mx:VDividedBox id="sidebarDivider" verticalScrollPolicy="off" horizontalScrollPolicy="off" height="100%" maxHeight="{contentDivider.height}" borderSides="right bottom" borderStyle="solid" width="{chat is SparkGroupChat ? 225 : 0}">
-			<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucControls" height="100%" maxHeight="{contentDivider.height}" borderSides="right left bottom" borderStyle="solid" width="100%">
+			<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucControls" height="100%" maxHeight="{contentDivider.height}" borderSides="right left" borderStyle="solid" width="100%">
 				<spark:ListGroup headerHeight="25" headerFontSize="13" headerFontColors="{['#666666', '#333333']}" borderStyle="none" alternatingItemColors="{[0xDDDDDD, 0xEEEEEE]}" collapsable="false" maxHeight="{mucControls.height}" verticalScrollPolicy="auto" groupName="Participants" id="occupantList" dataProvider="{chat.room ? chat.room : null}"/>
 				<spark:MUCInvitePane visible="false" id="invitePane" creationComplete="{invitePane.addEventListener('close', function(evt:*):void {invitePane.visible = false; occupantList.visible = true; inviteButton.visible = true;});}" width="{mucControls.width}" room="{chat.room}"/>
 				<mx:LinkButton id="inviteButton" click="{occupantList.visible = false; inviteButton.visible = false; invitePane.visible = true; invitePane.rebuildCompletionList();}" label="Invite" color="#555555" textDecoration="underline" right="0" top="0"/>
 			</mx:Canvas>
 			
-			<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucFiles" height="150" maxHeight="{contentDivider.height}" borderSides="right left top bottom" borderStyle="solid" width="100%">
+			<!--<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucFiles" height="150" maxHeight="{contentDivider.height}" borderSides="right left" borderStyle="solid" width="100%">
 				<spark:ListGroup headerHeight="25" headerFontSize="13" headerFontColors="{['#666666', '#333333']}" borderStyle="none" alternatingItemColors="{[0xDDDDDD, 0xEEEEEE]}" collapsable="false" maxHeight="{mucControls.height}" verticalScrollPolicy="auto" groupName="Recent Files" id="fileList" dataProvider="{chat.files ? chat.files : null}"/>
 				<spark:MUCUploadPane visible="false" id="uploadPane" creationComplete="{uploadPane.addEventListener('close', function(evt:*):void {uploadPane.visible = false; fileList.visible = true; uploadButton.visible = true;});}" width="{mucControls.width}" room="{chat.room}"/>
 				<mx:LinkButton id="uploadButton" click="{fileList.visible = false; uploadButton.visible = false; uploadPane.visible = true;}" label="Upload" color="#555555" textDecoration="underline" right="0" top="0"/>				
-			</mx:Canvas>
+			</mx:Canvas>-->
 		</mx:VDividedBox>
 	
 	</mx:HDividedBox>
