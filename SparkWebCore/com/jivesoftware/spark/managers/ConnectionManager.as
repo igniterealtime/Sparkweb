@@ -84,7 +84,7 @@ package com.jivesoftware.spark.managers
 				SparkManager.me = RosterItemVO.get(con.jid, true);
 			});
 			
-			var timer:Timer = new Timer(15000, 15000);
+			var timer:Timer = new Timer(15000);
 			timer.addEventListener(TimerEvent.TIMER, checkKeepAlive);
 			timer.start();
 		}
