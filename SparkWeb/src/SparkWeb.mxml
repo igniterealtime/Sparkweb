@@ -102,8 +102,8 @@
 						}
 						
 						// Next, we will attempt to load passed in flash vars, overriding previous settings
-						for (var extKey:String in Application.application.parameters) {
-							externalConfig[extKey.toLowerCase()] = Application.application.parameters[extKey];
+						for (var extParam:String in Application.application.parameters) {
+							externalConfig[extParam.toLowerCase()] = Application.application.parameters[extParam];
 						}
 					}
 					return externalConfig[key]; 

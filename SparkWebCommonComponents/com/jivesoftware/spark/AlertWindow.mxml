@@ -54,7 +54,7 @@
 		]]>
 	</mx:Script>
 	
-	<mx:Text id="alertText" width="250"/>
+	<mx:Text id="alertText" width="250" color="black"/>
     
 	<mx:ControlBar horizontalAlign="right">
 		<mx:Button color="white" filters="{dropShadowFilters}" label="{Localizator.getText('label.ok')}" click="{close();}" />
