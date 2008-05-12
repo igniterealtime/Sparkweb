@@ -136,7 +136,9 @@
 					if(!lastMessage || message.time.date != lastMessage.time.date)
 						addNotification(message.time.toLocaleDateString());
 				}
-				history.addUserMessage(id, id, message.body, message.time, message.local ? id == selectedUser.displayName ? "selected" : "user" : null);
+				
+				history.addUserMessage(id, id, message.body, message.time, message.local ? (selectedUser && id == selectedUser.displayName) ? "selected" : "user" : null);
+				
 				if(!message.local)
 					increaseMessageCount();
 				lastMessage = message;
@@ -309,7 +311,7 @@
    <mx:HDividedBox id="contentDivider" filters="{[topshadow]}" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="0" y="0" height="82%" width="100%" horizontalGap="{chat is SparkGroupChat ? 10 : 0}">
    
 		<mx:VBox verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" height="100%">
-			<mx:TextArea width="100%" borderSides="right left" borderStyle="solid" fontSize="13" color="#666666" htmlText="{getTopicHTMLText(chat is SparkGroupChat &amp;&amp; chat.room.subject ? chat.room.subject : '')}" height="{chat is SparkGroupChat ? 25 : 0}" paddingLeft="5" backgroundColor="#DDDDDD" paddingTop="3" fontWeight="bold" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" />
+			<mx:TextArea width="100%" borderSides="right left" borderStyle="solid" fontSize="13" color="#666666" maxHeight="{chat is SparkGroupChat &amp;&amp; chat.room.subject ? NaN : 0}" htmlText="{getTopicHTMLText(chat is SparkGroupChat &amp;&amp; chat.room.subject ? chat.room.subject : '')}" height="{chat is SparkGroupChat ? 25 : 0}" paddingLeft="5" backgroundColor="#DDDDDD" paddingTop="3" fontWeight="bold" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" />
 			<jive:MessageHistory id="history" borderStyle="solid" creationComplete="ScrollWheelManager.registerForScrollEvents(history.history)" height="100%"  width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="auto" />
 		</mx:VBox>
 		
