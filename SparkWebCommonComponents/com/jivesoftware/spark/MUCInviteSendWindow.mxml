@@ -38,6 +38,7 @@
 			import mx.managers.FocusManager;
 			import mx.collections.ArrayCollection;
 			import mx.managers.PopUpManager;
+			import flash.ui.ContextMenu;
 
 			import com.jivesoftware.spark.chats.SparkGroupChat;
 			import com.jivesoftware.spark.managers.Localizator;
@@ -65,8 +66,11 @@
            		var removeMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('label.remove'));
 				removeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, removeRecipient);
            		jidList.contextMenu = new ContextMenu();
-           		jidList.contextMenu.hideBuiltInItems();
-           		jidList.contextMenu.customItems.push(removeMenuItem);
+           		if (jidList.contextMenu is ContextMenu)
+           		{
+	           		(jidList.contextMenu as ContextMenu).hideBuiltInItems();
+	           		(jidList.contextMenu as ContextMenu).customItems.push(removeMenuItem);
+	           	}
             }
             
             private function close():void {

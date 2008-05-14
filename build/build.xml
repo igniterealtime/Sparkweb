@@ -87,6 +87,7 @@
             <compiler.source-path path-element="${basedir}/SparkWebCore"/>
             <compiler.source-path path-element="${basedir}/SparkWebCommonComponents"/>
             <compiler.source-path path-element="${basedir}/Spark/src"/>
+            <compiler.source-path path-element="${basedir}/SparkWebCore/locale"/>
 
             <compiler.include-libraries dir="${basedir}/SparkWebCommonComponents/assets/lib" append="true">
                 <include name="corelib.swc"/>

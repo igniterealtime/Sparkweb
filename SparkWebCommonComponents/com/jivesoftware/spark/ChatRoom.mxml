@@ -217,8 +217,11 @@
 				if (contextMenu == null)
 					contextMenu = new ContextMenu();
 	
-				contextMenu.hideBuiltInItems();
-				contextMenu.customItems.push(inviteMenuItem);
+           		if (contextMenu is ContextMenu)
+           		{
+					(contextMenu as ContextMenu).hideBuiltInItems();
+					(contextMenu as ContextMenu).customItems.push(inviteMenuItem);
+           		}
 				
 				if (chat.room.affiliation == Room.OWNER_AFFILIATION) {
 					var configureRoomMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.configure.room')); 
@@ -228,7 +231,10 @@
 							MUCConfigurationWindow.showMUCConfigureWindow(chat.room);
 						});
 					
-					contextMenu.customItems.push(configureRoomMenuItem);
+	           		if (contextMenu is ContextMenu)
+           			{
+						(contextMenu as ContextMenu).customItems.push(configureRoomMenuItem);
+           			}
 				}
 				
 				chat.room.removeEventListener(RoomEvent.ROOM_JOIN, setupContextMenu);
