@@ -23,30 +23,57 @@
 
     <!-- Set up build paths -->
     <property name="target.dir" value="${basedir}/target"/>  
-    <property name="lib.dir" value="${target.dir}/lib"/>  
+    <property name="release.dir" value="${target.dir}/release"/>  
 
     <!-- Set up Flex environment variables -->
     <property name="FLEX_HOME" value="/Applications/Adobe Flex Builder 3/sdks/3.0.0"/>
     <property name="SPARKWEB_APP_ROOT" value="${basedir}/SparkWeb/src"/>  
+    <property name="SPARKWEB_DEPLOY_ROOT" value="${target.dir}/sparkweb"/>  
     <property name="SPARK_APP_ROOT" value="${basedir}/Spark/src"/>  
-    <property name="DEPLOY_DIR" value="${target.dir}/default-war"/>  
 
     <!-- Add Flex ANT tasks -->
     <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
 
     <!-- Clean up -->
-    <target name="clean">
+    <target name="clean" depends="-clean-deploy-root">
         <delete dir="${basedir}/target"/>
+    </target>
+
+    <!-- Clean up sparkweb deploymant root -->
+    <target name="-clean-deploy-root">
+        <delete dir="${SPARKWEB_DEPLOY_ROOT}"/>
     </target>
 
     <!-- Build all (default) -->
     <target name="all" depends="sparkweb"/>
 
-    <!-- Build sparkweb, work in progress to streamline build -->
-    <target name="sparkweb">
+    <!-- Build HTML wrapper for SparkWeb -->
+    <target name="-sparkweb-html-wrapper" depends="-clean-deploy-root">
+        <mkdir dir="${SPARKWEB_DEPLOY_ROOT}" />
+
+        <copy todir="${SPARKWEB_DEPLOY_ROOT}">
+            <fileset dir="${basedir}/SparkWeb/html-template">
+                <exclude name="index.template.html"/>
+            </fileset>
+        </copy>
+
+        <copy file="${basedir}/SparkWeb/html-template/index.template.html" tofile="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" />
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${swf}" value="SparkWeb"/>
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${width}" value="100%"/>
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${height}" value="100%"/>
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${bgcolor}" value="#869ca7"/>
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${application}" value="SparkWeb"/>
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${version_major}" value="9"/>
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${version_minor}" value="0"/>
+        <replace file="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.html" token="$${version_revision}" value="28"/>
+    </target>
+
+    <!-- Build SparkWeb -->
+    <target name="sparkweb" depends="-sparkweb-html-wrapper">
+        <mkdir dir="${SPARKWEB_DEPLOY_ROOT}" />
         <mxmlc
             file="${SPARKWEB_APP_ROOT}/SparkWeb.mxml"
-            output="${DEPLOY_DIR}/SparkWeb.swf"
+            output="${SPARKWEB_DEPLOY_ROOT}/SparkWeb.swf"
             locale="en_US"
             keep-generated-actionscript="true"
             allow-source-path-overlap="true"
@@ -69,11 +96,12 @@
         </mxmlc>
     </target>  
 
-    <!-- Build spark, work in progress to streamline build -->
+    <!-- Build Spark -->
     <target name="spark">
+        <mkdir dir="${release.dir}" />
         <mxmlc
                 file="${SPARK_APP_ROOT}/Spark.mxml"
-                output="${DEPLOY_DIR}/Spark.swf"
+                output="${release.dir}/Spark"
                 locale="en_US"
                 keep-generated-actionscript="true"
                 allow-source-path-overlap="true"
@@ -95,5 +123,27 @@
             </compiler.include-libraries>
         </mxmlc>
     </target>  
+
+    <!-- Build the SparkWeb war -->
+    <target name="sparkweb.war" depends="sparkweb">
+        <war destfile="${release.dir}/sparkweb.war" needxmlfile="false">
+            <fileset dir="${SPARKWEB_DEPLOY_ROOT}"/>
+        </war>
+    </target>  
+
+    <!-- Build the SparkWeb zip file -->
+    <target name="sparkweb.zip" depends="sparkweb">
+        <zip destfile="${release.dir}/sparkweb.zip" basedir="${SPARKWEB_DEPLOY_ROOT}"/>
+    </target>  
+
+    <!-- Build all release files -->
+    <target name="release" depends="release-sparkweb,release-spark"/>
+
+    <!-- Build sparkweb release files -->
+    <target name="release-sparkweb" depends="sparkweb.war,sparkweb.zip"/>
+
+    <!-- Build spark release files -->
+    <target name="release-spark" depends="spark"/>
+
 </project>
 
