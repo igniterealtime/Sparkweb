@@ -47,7 +47,8 @@ package com.jivesoftware.spark.managers
 	   connectionType:"socket",
 	   			  red:"1",
 	   			 blue:"1",
-	   			green:"1"
+	   			green:"1",
+	   		 resource:"sparkweb"
 		};
 		
 		protected static var _errorHandler:Function;
