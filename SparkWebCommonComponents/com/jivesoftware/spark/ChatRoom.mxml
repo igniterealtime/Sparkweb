@@ -217,6 +217,7 @@
 				if (contextMenu == null)
 					contextMenu = new ContextMenu();
 	
+				// TODO: This needs to be figured out properly at some point.  Air apps don't have customItems or hideBuiltInItems
            		if (contextMenu is ContextMenu)
            		{
 					(contextMenu as ContextMenu).hideBuiltInItems();
@@ -231,6 +232,7 @@
 							MUCConfigurationWindow.showMUCConfigureWindow(chat.room);
 						});
 					
+					// TODO: This needs to be figured out properly at some point.  Air apps don't have customItems.
 	           		if (contextMenu is ContextMenu)
            			{
 						(contextMenu as ContextMenu).customItems.push(configureRoomMenuItem);

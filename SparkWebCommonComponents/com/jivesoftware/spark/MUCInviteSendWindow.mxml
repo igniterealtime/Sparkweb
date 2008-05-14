@@ -66,6 +66,7 @@
            		var removeMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('label.remove'));
 				removeMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, removeRecipient);
            		jidList.contextMenu = new ContextMenu();
+   				// TODO: This needs to be figured out properly at some point.  Air apps don't have customItems or hideBuiltInItems
            		if (jidList.contextMenu is ContextMenu)
            		{
 	           		(jidList.contextMenu as ContextMenu).hideBuiltInItems();
