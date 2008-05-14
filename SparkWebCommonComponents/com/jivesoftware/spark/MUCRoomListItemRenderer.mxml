@@ -47,7 +47,7 @@
 	
 		//TODO: refactor this and BuddyRenderer to have a common superclass
 		
-		[Embed(source="assets/images/bookmark.png")]
+		[Embed(source="/assets/images/bookmark.png")]
 		private static const bookmarkIcon:Class;
 		
 		public override function set data(value:Object):void

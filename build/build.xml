@@ -15,10 +15,10 @@
         * Ant 1.6 or 1.7 (including optional tasks)
 -->
 
-<project name="SparkWeb" default="sparkweb" basedir="..">
+<project name="SparkFlex" default="all" basedir="..">
 
     <description>
-        SparkWeb XMPP client.
+        SparkWeb and Spark Flex-based XMPP clients.
     </description>
 
     <!-- Set up build paths -->
@@ -27,28 +27,30 @@
 
     <!-- Set up Flex environment variables -->
     <property name="FLEX_HOME" value="/Applications/Adobe Flex Builder 3/sdks/3.0.0"/>
-    <property name="APP_ROOT" value="${basedir}/SparkWeb/src"/>  
+    <property name="SPARKWEB_APP_ROOT" value="${basedir}/SparkWeb/src"/>  
+    <property name="SPARK_APP_ROOT" value="${basedir}/Spark/src"/>  
     <property name="DEPLOY_DIR" value="${target.dir}/default-war"/>  
 
     <!-- Add Flex ANT tasks -->
     <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar" />
 
-    <!-- Build SparkWeb asset bundle --> 
-    <target name="_sparkweb-assets">
-        <compc output="${lib.dir}/messenger.swc">
-            <include-file name="messenger.swf" path="${basedir}/SparkWeb/assets/css/messenger.swf"/>
-        </compc>        
+    <!-- Clean up -->
+    <target name="clean">
+        <delete dir="${basedir}/target"/>
     </target>
 
-    <!-- Build sparkweb -->
-    <target name="sparkweb" depends="_sparkweb-assets">
+    <!-- Build all (default) -->
+    <target name="all" depends="sparkweb"/>
+
+    <!-- Build sparkweb, work in progress to streamline build -->
+    <target name="sparkweb">
         <mxmlc
-                file="${APP_ROOT}/SparkWeb.mxml"
-                output="${DEPLOY_DIR}/SparkWeb.swf"
-                locale="en_US"
-                keep-generated-actionscript="true"
-                allow-source-path-overlap="true"
-                static-link-runtime-shared-libraries="true"
+            file="${SPARKWEB_APP_ROOT}/SparkWeb.mxml"
+            output="${DEPLOY_DIR}/SparkWeb.swf"
+            locale="en_US"
+            keep-generated-actionscript="true"
+            allow-source-path-overlap="true"
+            static-link-runtime-shared-libraries="true"
         >
             <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
 
@@ -58,24 +60,38 @@
             <compiler.source-path path-element="${basedir}/SparkWebCore"/>
             <compiler.source-path path-element="${basedir}/SparkWebCommonComponents"/>
             <compiler.source-path path-element="${basedir}/SparkWeb/src"/>
-
-            <runtime-shared-library-path path-element="${basedir}/SparkWeb/assets/css"> 
-                <url rsl-url="messenger.swf"/> 
-            </runtime-shared-library-path> 
-
-            <compiler.library-path dir="${basedir}/SparkWeb/assets" append="true">
-                <include name="css"/>
-            </compiler.library-path>
+            <compiler.source-path path-element="${basedir}/SparkWebCore/locale"/>
 
             <compiler.include-libraries dir="${basedir}/SparkWebCommonComponents/assets/lib" append="true">
                 <include name="corelib.swc"/>
                 <include name="flexlib.swc"/>
             </compiler.include-libraries>
+        </mxmlc>
+    </target>  
 
-            <compiler.include-libraries dir="${lib.dir}">
-                <include name="messenger.swc"/>
+    <!-- Build spark, work in progress to streamline build -->
+    <target name="spark">
+        <mxmlc
+                file="${SPARK_APP_ROOT}/Spark.mxml"
+                output="${DEPLOY_DIR}/Spark.swf"
+                locale="en_US"
+                keep-generated-actionscript="true"
+                allow-source-path-overlap="true"
+                static-link-runtime-shared-libraries="true"
+        >
+            <load-config filename="${FLEX_HOME}/frameworks/air-config.xml"/>
+
+            <source-path path-element="${FLEX_HOME}/frameworks"/>
+
+            <compiler.source-path path-element="${basedir}/xiff/src"/>
+            <compiler.source-path path-element="${basedir}/SparkWebCore"/>
+            <compiler.source-path path-element="${basedir}/SparkWebCommonComponents"/>
+            <compiler.source-path path-element="${basedir}/Spark/src"/>
+
+            <compiler.include-libraries dir="${basedir}/SparkWebCommonComponents/assets/lib" append="true">
+                <include name="corelib.swc"/>
+                <include name="flexlib.swc"/>
             </compiler.include-libraries>
-
         </mxmlc>
     </target>  
 </project>

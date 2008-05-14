@@ -373,11 +373,11 @@ package sho.ui
 					if (_ignoreThe && prefix.length > 0)
 					{
 						var prefixWithThe : String = "the " + prefix;
-						var range2 : Range = ArrayUtil.binarySearchForRange(sortedCandidates, prefixWithThe, searchFunction );
+						var range3 : Range = ArrayUtil.binarySearchForRange(sortedCandidates, prefixWithThe, searchFunction );
 						
-						if (range2 != null)
+						if (range3 != null)
 						{
-							for (i = range2.lo; i <= range2.hi; i++)
+							for (i = range3.lo; i <= range3.hi; i++)
 							{
 								_completions.push(sortedCandidates[i]);
 							}
