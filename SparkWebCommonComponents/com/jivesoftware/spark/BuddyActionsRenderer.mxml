@@ -31,6 +31,7 @@
 	    doubleClick="event.preventDefault(); event.stopImmediatePropagation();"
 		verticalAlign="middle"
 	    verticalGap="0"
+	    paddingTop="5"
 	    paddingLeft="60"
 	    borderSides="top bottom"
 		implements="mx.managers.IFocusManagerComponent">

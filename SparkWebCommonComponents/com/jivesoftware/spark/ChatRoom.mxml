@@ -320,14 +320,41 @@
    
 		<mx:VBox verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" height="100%">
 			<mx:TextArea width="100%" borderSides="right left" editable="false" borderStyle="solid" fontSize="13" color="#666666" maxHeight="{chat is SparkGroupChat &amp;&amp; chat.room.subject ? NaN : 0}" htmlText="{getTopicHTMLText(chat is SparkGroupChat &amp;&amp; chat.room.subject ? chat.room.subject : '')}" height="{chat is SparkGroupChat ? 25 : 0}" paddingLeft="5" backgroundColor="#DDDDDD" paddingTop="3" fontWeight="bold" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" />
-			<jive:MessageHistory id="history" borderStyle="solid" creationComplete="ScrollWheelManager.registerForScrollEvents(history.history)" height="100%"  width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="auto" />
+			<jive:MessageHistory id="history" borderStyle="solid" height="100%"  width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="auto" />
 		</mx:VBox>
 		
 		<mx:VDividedBox id="sidebarDivider" verticalScrollPolicy="off" horizontalScrollPolicy="off" height="100%" maxHeight="{contentDivider.height}" borderSides="right bottom" borderStyle="solid" width="{chat is SparkGroupChat ? 225 : 0}">
 			<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucControls" height="100%" maxHeight="{contentDivider.height}" borderSides="right left" borderStyle="solid" width="100%">
-				<spark:ListGroup headerHeight="25" headerFontSize="13" headerFontColors="{['#666666', '#333333']}" borderStyle="none" alternatingItemColors="{[0xDDDDDD, 0xEEEEEE]}" collapsable="false" maxHeight="{mucControls.height}" verticalScrollPolicy="auto" groupName="Participants" id="occupantList" dataProvider="{chat.room ? chat.room : null}"/>
-				<spark:MUCInvitePane visible="false" id="invitePane" creationComplete="{invitePane.addEventListener('close', function(evt:*):void {invitePane.visible = false; occupantList.visible = true; inviteButton.visible = true;});}" width="{mucControls.width}" room="{chat.room}"/>
-				<mx:LinkButton id="inviteButton" click="{occupantList.visible = false; inviteButton.visible = false; invitePane.visible = true; invitePane.rebuildCompletionList();}" label="Invite" color="#555555" textDecoration="underline" right="0" top="0"/>
+				<spark:ListGroup 
+					creationComplete="{ScrollWheelManager.registerForScrollEvents(occupantList.navBox)}" 
+					headerHeight="25" 
+					headerFontSize="13" 
+					headerFontColors="{['#666666', '#333333']}" 
+					borderStyle="none"
+					collapsable="false" 
+					maxHeight="{mucControls.height}"
+					groupName="Participants" 
+					id="occupantList"
+					left="0"
+					right="0"
+					top="0"
+					bottom="0"
+					dataProvider="{chat.room ? chat.room : null}"/>
+				<spark:MUCInvitePane 
+					visible="false" 
+					id="invitePane" 
+					creationComplete="{invitePane.addEventListener('close', function(evt:*):void {invitePane.visible = false; occupantList.visible = true; inviteButton.visible = true;});}" 
+					left="0"
+					right="0"
+					room="{chat.room}"/>
+				<mx:LinkButton 
+					id="inviteButton" 
+					click="{occupantList.visible = false; inviteButton.visible = false; invitePane.visible = true; invitePane.rebuildCompletionList();}" 
+					label="Invite" 
+					color="#555555" 
+					textDecoration="underline" 
+					right="0" 
+					top="0"/>
 			</mx:Canvas>
 			
 			<!--<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucFiles" height="150" maxHeight="{contentDivider.height}" borderSides="right left" borderStyle="solid" width="100%">

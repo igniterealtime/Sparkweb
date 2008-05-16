@@ -18,7 +18,7 @@
 -->
 
 
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="auto" backgroundColor="white" mouseDown="beginSelectionRect(event)" mouseUp="endSelectionRect(event)" mouseMove="updateSelectionRect(event)" creationComplete="init()">
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="off" backgroundColor="white" mouseDown="beginSelectionRect(event)" mouseUp="endSelectionRect(event)" mouseMove="updateSelectionRect(event)" creationComplete="init()">
 	<mx:Script><![CDATA[
 		import com.jivesoftware.spark.ScrollWheelManager;
 		import com.jivesoftware.spark.utils.UniqueingQueue;
@@ -222,14 +222,9 @@
 		}
 		
 		private function _adjustHistory(event:Event=null, force:Boolean=false):void {
-			if(force || verticalScrollPosition >= maxVerticalScrollPosition - 500)
-				verticalScrollPosition = maxVerticalScrollPosition;
-			var rightPadding:int = history.getStyle("paddingRight");
-			if(verticalScrollBar && rightPadding < 20)
-				history.setStyle("paddingRight", Number(20));
-			else if(!verticalScrollBar && rightPadding >= 20)
-				history.setStyle("paddingRight", Number(0));
+			if(force || history.verticalScrollPosition >= history.maxVerticalScrollPosition - 300)
+				history.verticalScrollPosition = history.maxVerticalScrollPosition;
 		}
 	]]></mx:Script>
-	<mx:VBox id="history" keyDown="handleKeys(event)" verticalScrollPolicy="off" focusEnabled="true" width="100%" verticalGap="0" horizontalGap="0" left="0" top="0" creationComplete="callLater(_adjustHistory, [event, true])"/>
+	<mx:VBox id="history" keyDown="handleKeys(event)" verticalScrollPolicy="on" focusEnabled="true" verticalGap="0" horizontalGap="0" left="0" right="0" top="0" bottom="0" creationComplete="callLater(_adjustHistory, [event, true])"/>
 </mx:Canvas>

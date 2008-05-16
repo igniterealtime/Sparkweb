@@ -69,8 +69,6 @@
 		
 		protected var _selectionList:ListCollectionView = new ArrayCollection();
 		
-		public var _expandedPaneContact:Contact = null;
-		
 		protected function postChange(event:ListEvent):void
 		{
 			dispatchEvent(event);
@@ -84,16 +82,6 @@
 		public function get headerFontColors():Array
 		{
 			return _headerFontColors.toArray();
-		}
-		
-		public function set expandedPaneContact(contact:Contact):void
-		{
-			_expandedPaneContact = contact;
-		}
-		
-		public function get expandedPaneContact():Contact
-		{
-			return _expandedPaneContact;
 		}
 		
 		public function set selectionList(list:ListCollectionView):void
@@ -207,7 +195,7 @@
 <mx:List
     borderStyle="none"
 	visible="{(!collapsed || filter != '') &amp;&amp; visible}"
-    maxHeight="{navBox.visible ? NaN : 0}" 
+    maxHeight="{navBox.visible ? maxHeight - innerBox.height : 0}" 
 	width="100%" 
     paddingBottom="0"
     paddingTop="0"

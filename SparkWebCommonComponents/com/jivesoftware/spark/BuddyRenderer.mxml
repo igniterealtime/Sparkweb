@@ -21,7 +21,7 @@
 <mx:Canvas
 		xmlns:mx="http://www.adobe.com/2006/mxml" 
 		xmlns:sparkComp="com.jivesoftware.spark.*"
-		filters="{[]}" 
+		filters="{expanded ? [shadowFilter] : []}" 
 		verticalScrollPolicy="off" 
 	    horizontalScrollPolicy="off"
 		width="100%" 
@@ -29,14 +29,13 @@
 	    height="28"
 	    borderSides="top bottom"
 	    color="black"
-	    effectEnd="finishResize(event)"
-	    resizeEffect="{resizer}"
 	    cornerRadius="{expanded ? 8 : 0}"
 	    backgroundColor="{expanded ? 0xCFCFCF : 0xEEEEEE}"
 	    fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif"
 	    fontStyle="{rosterItem &amp;&amp; rosterItem.show != null &amp;&amp; rosterItem.show != Presence.SHOW_CHAT ? 'italic' : 'normal'}" 
 	    fontWeight="{selected ? 'bold' : 'normal'}"
 		implements="mx.managers.IFocusManagerComponent"
+	    clipContent="false"
 	    creationComplete="callLater(initRenderer)">
  
 <mx:Script>
@@ -182,10 +181,6 @@
 		{
 			if(value && value is Contact && contact != value)
 			{
-				if(listGroup && listGroup.expandedPaneContact == value && !expanded)
-					expand()
-				else if(getChildAt(0) is BuddyActionsRenderer || getChildAt(0) is RoomOccupantActionsRenderer)
-					close();
 				super.data = value;
 				
 				addListeners();
@@ -212,11 +207,11 @@
 		
 		/**** Setters ****/
 
-		public function set selected(selected:Boolean):void 
+		public function set selected(flag:Boolean):void 
 		{
-			if(selected == _selected)
+			if(flag == _selected)
 				return;
-			_selected = selected;
+			_selected = flag;
 		}
 		
 		public function set nick(n:String):void 
@@ -290,61 +285,32 @@
 			return tt;
 		}
 		
-/*		public override function set selected(flag:Boolean):void
+		public function expand():void 
 		{
-			super.selected = flag;
-			if(!flag)
-				close();
-		}*/
-		
-		public function expand():void {
-	/*		if(contact is RoomOccupant)
+			if(contact is RoomOccupant)
 				actionsPane = new RoomOccupantActionsRenderer();
 			else if(contact is RosterItemVO)
 				actionsPane = new BuddyActionsRenderer();
 			else
 				throw new Error("Unknown contact type");
 				
-			filters = [shadowFilter];
+			expanded = true;
 				
-			parent.setChildIndex(this, this.parent.numChildren - 1);
+			parent.setChildIndex(this, parent.numChildren - 1);
 
 			actionsPane.contact = contact;
-			height += actionsPane.height;
-			actionsPane.setStyle("bottom", Number(0));
-			this.addChildAt(actionsPane, 0);
-			expanded = true;
-			if(listGroup)
-				listGroup.expandedPaneContact = contact;*/
+			actionsPane.setStyle("top", height);
+			actionsPane.setStyle("backgroundColor", getStyle("backgroundColor"));
+			addChildAt(actionsPane, 0);
+			
 		}
 		
-		public function close():void {/*
-			if(listGroup && listGroup.expandedPaneContact == contact)
-				listGroup.expandedPaneContact = null;
-			height -= actionsPane.height;*/
-		}
-		
-		protected function finishResize(event:EffectEvent):void
+		public function close():void 
 		{
-			if(event.effectInstance.effect != resizer)
-				return; 
-			if(height == 28)
-			{
-				filters = [];
-				removeChildAt(0);
-				expanded = false;
-			}
-		}
-		
-		/*
-		This is an eeeeeeevil hack to avoid having mx:List collapse this back down to 28px high when it re-lays-out
-		*/
-		public override function setActualSize(newWidth:Number, newHeight:Number):void
-		{
-			if(expanded && newHeight == 28)
-				newHeight = height;
-			else
-				super.setActualSize(newWidth, newHeight);
+			if(!expanded)
+				return;
+			removeChild(actionsPane);
+			expanded = false;
 		}
 
 	]]>
