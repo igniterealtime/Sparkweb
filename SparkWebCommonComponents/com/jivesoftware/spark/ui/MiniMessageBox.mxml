@@ -68,7 +68,7 @@
 		}
 		
 		public function addMessage(message:String, styleName:String = "text"):void {
-			var messageArea:Message = new Message();
+			var messageArea:MessageElement = new MessageElement();
 			if (type == "system") {
 				showlabels = false;
 			}

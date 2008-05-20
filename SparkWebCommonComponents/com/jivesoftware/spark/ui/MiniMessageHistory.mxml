@@ -113,7 +113,7 @@
 			{
 				if(element is MiniMessageBox)
 				{
-					for each(var message:Message in (element as MiniMessageBox).messageElements)
+					for each(var message:MessageElement in (element as MiniMessageBox).messageElements)
 					{
 						if(message.selected)
 							results.push(message);
@@ -150,7 +150,7 @@
 			{
 				if(element is MiniMessageBox)
 				{
-					for each(var message:Message in (element as MiniMessageBox).messageElements)
+					for each(var message:MessageElement in (element as MiniMessageBox).messageElements)
 					{
 						message.selected = message.getRect(stage).intersects(rect);
 					}

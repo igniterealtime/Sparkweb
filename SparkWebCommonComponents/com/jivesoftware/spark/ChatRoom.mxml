@@ -41,7 +41,7 @@
 			import org.jivesoftware.xiff.data.im.RosterItemVO;
 			import com.jivesoftware.spark.chats.*;
 			import com.jivesoftware.spark.events.EditorEvent;
-			import com.jivesoftware.spark.ui.Message;
+			import com.jivesoftware.spark.ui.MessageElement;
 			import org.jivesoftware.xiff.data.Presence;
 			import com.jivesoftware.spark.managers.SparkManager;
 			import com.jivesoftware.spark.displayfilters.EmoticonFilter;

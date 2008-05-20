@@ -30,11 +30,15 @@
    		.highlight {border-style:solid; border-color:red;}
 	</mx:Style>
 	<mx:Script><![CDATA[
+		import com.jivesoftware.spark.utils.SimpleDateFormatter;
 		[Bindable]
 		private var _date:Date;
 		
 		private var _selected:Boolean = false;
 		private var _showdate:Boolean = true;
+		
+		[Bindable]
+		public static var timeFormat:String = "h:mm a";
 		
 		private static const selectedFilter:GlowFilter = new GlowFilter(0xFF9900,0.9);
 		
@@ -72,7 +76,6 @@
 			return this._showdate;
 		}
 	]]></mx:Script>
-	<mx:DateFormatter id="DateDisplay" formatString="H:NN A"/>
 	<mx:Text filters="{selected ? [selectedFilter] : []}" id="message" selectable="false" width="100%" styleName="text" />
-	<mx:Label id="time_label" visible="{showdate}" width="60" styleName="text" textAlign="right" color="#C9C9C9" text="{DateDisplay.format(_date)}" />
+	<mx:Label id="time_label" visible="{showdate}" width="60" styleName="text" textAlign="right" color="#C9C9C9" text="{SimpleDateFormatter.formatDate(_date, timeFormat)}" />
 </mx:HBox>

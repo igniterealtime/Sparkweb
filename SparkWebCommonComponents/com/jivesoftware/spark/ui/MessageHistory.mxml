@@ -113,7 +113,7 @@
 			{
 				if(element is MessageBox)
 				{
-					for each(var message:Message in (element as MessageBox).messageElements)
+					for each(var message:MessageElement in (element as MessageBox).messageElements)
 					{
 						if(message.selected)
 							results.push(message);
@@ -150,7 +150,7 @@
 			{
 				if(element is MessageBox)
 				{
-					for each(var message:Message in (element as MessageBox).messageElements)
+					for each(var message:MessageElement in (element as MessageBox).messageElements)
 					{
 						message.selected = message.getRect(stage).intersects(rect);
 					}

@@ -55,7 +55,7 @@
 		}
 		
 		public function addMessage(message:String, date:Date, styleName:String = "text"):void {
-			var messageArea:Message = new Message();
+			var messageArea:MessageElement = new MessageElement();
 			messageArea.styleName = styleName;
 			message_list.addChild(messageArea);	
 			messageArea.text = message;
