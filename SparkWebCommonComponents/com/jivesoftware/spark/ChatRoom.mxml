@@ -318,10 +318,34 @@
     <!-- Add Top UI -->
    <mx:HDividedBox id="contentDivider" filters="{[topshadow]}" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="0" y="0" height="82%" width="100%" horizontalGap="{chat is SparkGroupChat ? 10 : 0}">
    
-		<mx:VBox verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" height="100%">
-			<mx:TextArea width="100%" borderSides="right left" editable="false" borderStyle="solid" fontSize="13" color="#666666" maxHeight="{chat is SparkGroupChat &amp;&amp; chat.room.subject ? NaN : 0}" htmlText="{getTopicHTMLText(chat is SparkGroupChat &amp;&amp; chat.room.subject ? chat.room.subject : '')}" height="{chat is SparkGroupChat ? 25 : 0}" paddingLeft="5" backgroundColor="#DDDDDD" paddingTop="3" fontWeight="bold" fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" />
-			<jive:MessageHistory id="history" borderStyle="solid" height="100%"  width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="auto" />
-		</mx:VBox>
+		<mx:Canvas id="mainContentBox" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" height="100%">
+			<mx:TextArea 
+				id="topicBox" 
+				top="0" 
+				left="0" 
+				right="0" 
+				borderSides="right left" 
+				editable="false" 
+				borderStyle="solid" 
+				fontSize="13" 
+				color="#666666" 
+				maxHeight="{chat is SparkGroupChat &amp;&amp; chat.room.subject ? NaN : 0}" 
+				htmlText="{getTopicHTMLText(chat is SparkGroupChat &amp;&amp; chat.room.subject ? chat.room.subject : '')}" 
+				height="{chat is SparkGroupChat ? 25 : 0}" 
+				paddingLeft="5" 
+				backgroundColor="#DDDDDD" 
+				paddingTop="3" 
+				fontWeight="bold" 
+				fontFamily="Lucida Sans, Myriad Pro, Arial, sans serif" />
+			<jive:MessageHistory
+			    top="{topicBox.height}"
+				id="history" 
+				height="{mainContentBox.height - topicBox.height}" 
+				width="{mainContentBox.width}"
+				borderStyle="solid" 
+				horizontalScrollPolicy="off"
+			    verticalScrollPolicy="on" />
+		</mx:Canvas>
 		
 		<mx:VDividedBox id="sidebarDivider" verticalScrollPolicy="off" horizontalScrollPolicy="off" height="100%" maxHeight="{contentDivider.height}" borderSides="right bottom" borderStyle="solid" width="{chat is SparkGroupChat ? 225 : 0}">
 			<mx:Canvas horizontalScrollPolicy="off" verticalScrollPolicy="off" id="mucControls" height="100%" maxHeight="{contentDivider.height}" borderSides="right left" borderStyle="solid" width="100%">
