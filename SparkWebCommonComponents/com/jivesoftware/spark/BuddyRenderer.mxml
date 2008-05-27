@@ -40,6 +40,7 @@
  
 <mx:Script>
 	<![CDATA[
+		import org.jivesoftware.xiff.conference.Room;
 		import mx.events.ListEvent;
 		import mx.events.FlexEvent;
 		import mx.controls.listClasses.ListBase;
@@ -79,6 +80,7 @@
 		protected var actionsPane:* = null;
 		[Bindable]
 		protected var expanded:Boolean = false;
+		protected var showModeratorControls:Boolean = false;
 		
 		[Embed(source="/assets/images/dummyContact.png")]
 		protected static const dummyIcon:Class;
@@ -89,6 +91,14 @@
 		
 		protected var outerList:ListBase = null;
 		protected var listGroup:ListGroup = null;
+		
+		[Embed(source="/assets/images/blueArrowRight.png")]
+		protected static const closedArrow:Class;
+		
+		[Embed(source="/assets/images/blueArrowDown.png")]
+		protected static const openArrow:Class;
+		
+		protected var expandArrow:Button = null;
 		
 		protected function initRenderer():void
 		{
@@ -126,6 +136,42 @@
 		public function set rosterItem(ri:RosterItemVO):void
 		{
 			data = ri;
+		}
+		
+		protected function toggleExpanded(evt:*=null):void
+		{
+			if(expanded) {
+				close();
+				//expandArrow.source = closedArrow;
+			}  else {
+				expand();
+				//expandArrow.source = openArrow;
+			}
+		}
+		
+		protected function hover(flag:Boolean):void
+		{
+			if(flag /*&& showModeratorControls*/)
+			{
+				if(!expandArrow)
+				{
+					expandArrow = new Button();
+				//	expandArrow.
+					expandArrow.setStyle("right", Number(30));
+					expandArrow.setStyle("top", Number(10));
+					expandArrow.removeEventListener(MouseEvent.CLICK, toggleExpanded);
+					expandArrow.addEventListener(MouseEvent.CLICK, toggleExpanded);
+					addChildAt(expandArrow, 0);
+				}
+			}
+			else
+			{
+				if(expandArrow)
+				{
+					removeChild(expandArrow);
+					expandArrow = null;
+				}
+			}
 		}
 		
 		public function singleClicked(event:MouseEvent):void 
@@ -182,6 +228,18 @@
 			if(value && value is Contact && contact != value)
 			{
 				super.data = value;
+				
+				var updateModeratorStatus:Function;
+				updateModeratorStatus = function(evt:Event=null):void {
+					if(!(contact is RoomOccupant))
+						return;
+					var room:Room = (contact as RoomOccupant).room;
+					showModeratorControls = room.role == "moderator";
+					room.removeEventListener("roleChanged", updateModeratorStatus);
+					room.addEventListener("roleChanged", updateModeratorStatus);
+				};
+				
+				updateModeratorStatus();
 				
 				addListeners();
 					
@@ -288,7 +346,13 @@
 		public function expand():void 
 		{
 			if(contact is RoomOccupant)
+			{
 				actionsPane = new RoomOccupantActionsRenderer();
+				var room:Room = (contact as RoomOccupant).room;
+				if(room.role != Room.MODERATOR_ROLE && room.affiliation != Room.ADMIN_AFFILIATION && room.affiliation != Room.OWNER_AFFILIATION)
+					return;
+				(actionsPane as RoomOccupantActionsRenderer).room = room;
+			}
 			else if(contact is RosterItemVO)
 				actionsPane = new BuddyActionsRenderer();
 			else
@@ -316,7 +380,7 @@
 	]]>
 </mx:Script>
 	<!-- Warning! I know these hardcoded vertical offsets are lame, but don't try to fix it with a nested canvas. It kills roster performance -->
-	<mx:Image id="avatarImage" left="8" top="2" width="24" height="24" source="@Embed(source='/assets/images/dummyContact.png')" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
+	<mx:Image id="avatarImage" left="8" top="2" width="24" height="24" source="{dummyIcon}" maxWidth="{rosterItem != null ? NaN : 0}" visible="{rosterItem != null}" />
 	<!--<mx:Image id="presenceIconImage" left="40" top="8" source="{SparkManager.presenceManager.getIconFromRosterItem(rosterItem != null ? rosterItem : data, data.show, data.online)}" />-->
 	<mx:TextArea left="48" borderStyle="none" selectable="false" paddingTop="8" focusThickness="0" height="28" focusEnabled="false" backgroundColor="{expanded ? 0xCFCFCF : 0xEEEEEE}" right="0" top="0" toolTipCreate="event.toolTip = createProfileToolTip()" id="statusLabel" fontSize="13" htmlText="{formatLabel(data.displayName, rosterItem != null ? rosterItem.status : 'available')}" />
 </mx:Canvas>

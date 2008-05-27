@@ -49,18 +49,13 @@
 		protected var _occupant:RoomOccupant = null;
 		protected var _room:Room = null;
 		
-		protected function startChat():void
-		{
-			ChatManager.sharedInstance.startChat(contact.jid, true);
-		}
-		
-		protected function set room(r:Room):void
+		public function set room(r:Room):void
 		{
 			_room = r;
 		}
 		
 		[Bindable]
-		protected function get room():Room
+		public function get room():Room
 		{
 			return _room;
 		}
@@ -90,12 +85,6 @@
 			return _contact;
 		}
 		
-		protected function viewProfile():void 
-		{
-			//TODO: CS profile viewing... will need some sort of useful abstraction here
-			ProfileWindow.showProfile(rosterItem);
-		}
-		
 		public function kickUser():void {
 			// TODO: Include reason for kick and also report errors when the kick fails (by listenening to RoomEvent.ADMIN_ERROR)
 			room.kickOccupant(contact.displayName, '');
@@ -112,9 +101,7 @@
 	]]>
 </mx:Script>
 
-<mx:LinkButton visible="{rosterItem != null}" fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.contact.start.chat')}" click="startChat()" />
-<mx:LinkButton visible="{rosterItem != null}" fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.contact.view.profile')}" click="viewProfile()" />
-<mx:LinkButton visible="{room.role == Room.MODERATOR_ROLE}" fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.groupchat.kick.user')}" click="kickUser()" />
-<mx:LinkButton visible="{room.affiliation == Room.OWNER_AFFILIATION || room.affiliation == Room.ADMIN_AFFILIATION}" fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.groupchat.ban.user')}" click="banUser()" />
+<mx:LinkButton enabled="{room.role == Room.MODERATOR_ROLE}" fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.groupchat.kick.user')}" click="kickUser()" />
+<mx:LinkButton enabled="{room.affiliation == Room.OWNER_AFFILIATION || room.affiliation == Room.ADMIN_AFFILIATION}" fontWeight="normal" fontSize="11" label="{Localizator.getText('menu.groupchat.ban.user')}" click="banUser()" />
 
 </mx:VBox>
