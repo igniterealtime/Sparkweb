@@ -522,9 +522,9 @@ package sho.ui
 					}
 					else
 					{
-						newText = _completions[index].label;
-						_selectedItem = _completions[index].item;
-						_selectedIndex = _completions[index].index;
+						newText = _completions[index].jid;
+						_selectedItem = _completions[index];
+						_selectedIndex = _completions.indexOf(_selectedItem);
 					}
 						
 					this.text = newText;
