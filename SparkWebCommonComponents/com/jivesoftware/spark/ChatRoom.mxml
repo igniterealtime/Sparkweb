@@ -331,7 +331,7 @@
 				color="#666666" 
 				maxHeight="{chat is SparkGroupChat &amp;&amp; chat.room.subject ? NaN : 0}" 
 				htmlText="{getTopicHTMLText(chat is SparkGroupChat &amp;&amp; chat.room.subject ? chat.room.subject : '')}" 
-				height="{chat is SparkGroupChat ? 25 : 0}" 
+				height="{chat.room.subject ? 25 : 0}" 
 				paddingLeft="5" 
 				backgroundColor="#DDDDDD" 
 				paddingTop="3" 
