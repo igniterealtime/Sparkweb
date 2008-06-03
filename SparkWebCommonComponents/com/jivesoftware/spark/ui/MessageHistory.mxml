@@ -33,8 +33,8 @@
 		private var scrollTimer:Timer = new Timer(100, 1);
 	
 		private var _userMessageHighlight:Object = {
-			user: [null, "#F2F9FF"],
-			selected: [null, "#FFFFDB"]
+			user: ["#E9F1FB", "#F2F9FF"],
+			selected: ["#F7F8E1", "#FFFFDB"]
 		}
 		
 		private var _currentMessageBox:MessageBox;
