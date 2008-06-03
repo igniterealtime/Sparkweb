@@ -49,7 +49,7 @@
 	</mx:Script>
 
 	<mx:HBox width="100%" paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
-		<mx:Image id="presenceIconImage" source="{SparkManager.presenceManager.getIconFromRosterItem(contact, contact.show, contact.online, contact.pending)}" />
+		<mx:Image id="presenceIconImage" maxWidth="{contact.online ? NaN : 0}" source="{SparkManager.presenceManager.getIconFromRosterItem(contact, contact.show, contact.online, contact.pending)}" />
 		<mx:VBox verticalGap="1">
 			<mx:HBox width="100%" verticalAlign="middle" horizontalGap="0">
 				<mx:Label text="{contact.displayName}" fontWeight="bold" fontSize="11" />
