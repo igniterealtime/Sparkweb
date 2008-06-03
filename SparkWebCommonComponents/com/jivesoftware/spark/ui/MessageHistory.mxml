@@ -20,6 +20,7 @@
 
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="on" verticalGap="0" horizontalGap="0" backgroundColor="white" keyDown="handleKeys(event)" mouseDown="beginSelectionRect(event)" mouseUp="endSelectionRect(event)" mouseMove="updateSelectionRect(event)" creationComplete="init()">
 	<mx:Script><![CDATA[
+		import com.jivesoftware.spark.managers.SparkManager;
 		import com.jivesoftware.spark.ScrollWheelManager;
 		import com.jivesoftware.spark.utils.UniqueingQueue;
 		import com.jivesoftware.spark.utils.Key;
@@ -32,8 +33,8 @@
 		private var scrollTimer:Timer = new Timer(100, 1);
 	
 		private var _userMessageHighlight:Object = {
-			user: [null, "#FFFFDB"],
-			selected: [null, "#F2F9FF"]
+			user: [null, "#F2F9FF"],
+			selected: [null, "#FFFFDB"]
 		}
 		
 		private var _currentMessageBox:MessageBox;
@@ -184,8 +185,10 @@
 			
 			var mentioned:Boolean = false;
 			
+			
+			
 			if(username && username.length > 0 && userId && userId.length > 0)
-				mentioned = messageText.toLowerCase().indexOf(username.toLowerCase()) >= 0 && type != "user";
+				mentioned = messageText.toLowerCase().indexOf(SparkManager.me.displayName.toLowerCase()) >= 0 && type != "user";
 			
 			_currentMessageBox.addMessage(messageText, messageDate, mentioned ? "highlight" : "text");
 		}
@@ -200,8 +203,11 @@
 			
 			for each(var element:UIComponent in getChildren())
 			{
-				if ((element is MessageBox) && (element as MessageBox).userId == userId) {
-					(element as MessageBox).setMessageHighlight(userColor, messageColor);
+				if(!(element is MessageBox))
+					continue;
+				var box:MessageBox = element as MessageBox;
+				if (box.userId && box.userId.toLowerCase() == userId.toLowerCase()) {
+					box.setMessageHighlight(userColor, messageColor);
 				}
 			}
 		}
