@@ -74,8 +74,7 @@
 			
 			protected function setup():void
 			{
-				ScrollWheelManager.registerForScrollEvents(chatContainer);
-				ScrollWheelManager.registerForScrollEvents(occupantsContainer);
+				//ScrollWheelManager.registerForScrollEvents(occupantsContainer);
 				tabs.insertTabAt("View the Chat", 0);
 				tabs.insertTabAt("See Who's Chatting", 1);
 				tabs.selectedTabIndex = 0;
@@ -312,7 +311,6 @@
 	    visible="true"
 	    verticalScrollPolicy="off"
 	    horizontalScrollPolicy="off"
-		focusEnabled="false" 
 		top="0" 
 		left="0" 
 		right="0"
@@ -341,10 +339,16 @@
 		    id="chatContainer" 
 			bottom="0">
 	   
-			<mx:VBox verticalGap="0" horizontalScrollPolicy="off" verticalScrollPolicy="off" width="100%" height="100%">
-				<jive:MiniMessageHistory id="history" borderStyle="solid" creationComplete="ScrollWheelManager.registerForScrollEvents(history.history)" height="82%"  width="100%" horizontalScrollPolicy="off" verticalScrollPolicy="auto" />						
-				<jive:Editor resetCompletion="resetCompletion()" completeWord="completeWord(event)" borderStyle="none" id="editor" bottom="0" height="18%" width="100%" />	
-			</mx:VBox>
+			<jive:MiniMessageHistory 
+			    top="0"
+				id="history" 
+				height="{chatContainer.height - editor.height}" 
+				width="{chatContainer.width}"
+				borderStyle="solid" 
+				horizontalScrollPolicy="off"
+			    verticalScrollPolicy="on" />
+			    
+			<jive:Editor enabled="{chat.room ? chat.room.isActive : true}" resetCompletion="resetCompletion()" completeWord="completeWord(event)" borderStyle="none" id="editor" bottom="0" height="18%" width="100%" />	
 		</mx:Canvas>	
 	
 	    <mx:Canvas  

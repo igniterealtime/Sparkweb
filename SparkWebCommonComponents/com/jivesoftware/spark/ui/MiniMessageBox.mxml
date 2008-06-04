@@ -24,6 +24,7 @@
    		.username { font-weight:bold;}
 	</mx:Style>
 	<mx:Script><![CDATA[
+		import com.jivesoftware.spark.utils.SimpleDateFormatter;
 		import mx.events.FlexEvent;
 		import mx.events.ChildExistenceChangedEvent;
 		import mx.controls.TextArea;
@@ -33,6 +34,9 @@
 		
 		[Bindable]
 		private var _date:Date;
+		
+		[Bindable]
+		public static var timeFormat:String = "h:mm a";
 		
 		public function set userId(userId:String):void {
 			this._userId = userId;
@@ -99,10 +103,9 @@
 			return this._showlabels;
 		}
 	]]></mx:Script>
-	<mx:DateFormatter id="DateDisplay" formatString="H:NN A"/>
 	<mx:Canvas id="labels_container" visible="{showlabels}" verticalScrollPolicy="off" horizontalScrollPolicy="off" width="100%">
 		<mx:Label id="username_label" truncateToFit="true" left="0" top="0" styleName="username" textAlign="left"/>
-		<mx:Label id="time_label" styleName="text" right="0" top="0" textAlign="right" color="#C9C9C9" text="{DateDisplay.format(_date)}" />
+		<mx:Label id="time_label" right="0" top="0" styleName="text" textAlign="right" color="#C9C9C9" text="{SimpleDateFormatter.formatDate(_date, timeFormat)}" />
 	</mx:Canvas>
 	<mx:VBox id="message_list" childAdd="dispatchEvent(new ChildExistenceChangedEvent(ChildExistenceChangedEvent.CHILD_ADD));" height="100%" width="100%" verticalGap="1" verticalScrollPolicy="off" paddingTop="0" paddingBottom="0" paddingLeft="0">
 	</mx:VBox>

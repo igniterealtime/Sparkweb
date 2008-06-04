@@ -185,8 +185,6 @@
 			
 			var mentioned:Boolean = false;
 			
-			
-			
 			if(username && username.length > 0 && userId && userId.length > 0)
 				mentioned = messageText.toLowerCase().indexOf(SparkManager.me.displayName.toLowerCase()) >= 0 && type != "user";
 			

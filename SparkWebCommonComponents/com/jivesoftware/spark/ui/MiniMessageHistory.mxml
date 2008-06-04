@@ -18,8 +18,8 @@
 -->
 
 
-<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="auto" backgroundColor="white" mouseDown="beginSelectionRect(event)" mouseUp="endSelectionRect(event)" mouseMove="updateSelectionRect(event)" creationComplete="init()">
-	<mx:Script><![CDATA[
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="on" verticalGap="0" horizontalGap="0" backgroundColor="white" keyDown="handleKeys(event)" mouseDown="beginSelectionRect(event)" mouseUp="endSelectionRect(event)" mouseMove="updateSelectionRect(event)" creationComplete="init()">
+<mx:Script><![CDATA[
 		import com.jivesoftware.spark.ScrollWheelManager;
 		import com.jivesoftware.spark.utils.UniqueingQueue;
 		import com.jivesoftware.spark.utils.Key;
@@ -32,8 +32,8 @@
 		private var scrollTimer:Timer = new Timer(100, 1);
 	
 		private var _userMessageHighlight:Object = {
-			user: [null, "#FFFFDB"],
-			selected: ["#D8E9F9", "#DDF0FF"]
+			user: ["#E9F1FB", "#F2F9FF"],
+			selected: ["#F7F8E1", "#FFFFDB"]
 		}
 		
 		private var _currentMessageBox:MiniMessageBox;
@@ -60,7 +60,8 @@
 					}
 				}
 			});*/
-			scrollTimer.addEventListener(TimerEvent.TIMER_COMPLETE, _adjustHistory)
+			scrollTimer.addEventListener(TimerEvent.TIMER_COMPLETE, _adjustHistory);
+			callLater(_adjustHistory, [true]);
 		}
 		
 		public function getMostRecentlyActiveUserName(prefix:String = "", startUserName:String = null):String
@@ -109,7 +110,7 @@
 		public function get selectedMessages():Array
 		{
 			var results:Array = [];
-			for each(var element:* in history.getChildren())
+			for each(var element:* in getChildren())
 			{
 				if(element is MiniMessageBox)
 				{
@@ -146,7 +147,7 @@
 		
 		protected function selectMessagesInRect(rect:Rectangle):void
 		{
-			for each(var element:* in history.getChildren())
+			for each(var element:* in getChildren())
 			{
 				if(element is MiniMessageBox)
 				{
@@ -192,7 +193,7 @@
 			var userColor:String = (type ? _userMessageHighlight[type][0] : null);
 			var messageColor:String = (type ? _userMessageHighlight[type][1] : null);
 			
-			for each(var element:UIComponent in history.getChildren())
+			for each(var element:UIComponent in getChildren())
 			{
 				if ((element is MiniMessageBox) && (element as MiniMessageBox).userId == userId) {
 					(element as MiniMessageBox).setMessageHighlight(userColor, messageColor);
@@ -210,22 +211,19 @@
 			messageBox.addEventListener(FlexEvent.CREATION_COMPLETE, queueScroll);
 			messageBox.addEventListener(ChildExistenceChangedEvent.CHILD_ADD, queueScroll);
 			messageBox.percentWidth = 100;
-			history.addChild(messageBox);
-			var rule:HRule = new HRule();
-			rule.percentWidth = 100;
-			history.addChild(rule);
+			if(numChildren > 0)
+			{
+				var rule:HRule = new HRule();
+				rule.percentWidth = 100;
+				addChild(rule);
+			}
+			addChild(messageBox)
 			return messageBox;
 		}
 		
-		private function _adjustHistory(event:Event=null, force:Boolean=false):void {
+		private function _adjustHistory(force:Boolean=false):void {
 			if(force || verticalScrollPosition >= maxVerticalScrollPosition - 500)
 				verticalScrollPosition = maxVerticalScrollPosition;
-			var rightPadding:int = history.getStyle("paddingRight");
-			if(verticalScrollBar && rightPadding < 20)
-				history.setStyle("paddingRight", Number(20));
-			else if(!verticalScrollBar && rightPadding >= 20)
-				history.setStyle("paddingRight", Number(0));
 		}
 	]]></mx:Script>
-	<mx:VBox id="history" keyDown="handleKeys(event)" verticalScrollPolicy="off" focusEnabled="true" width="100%" verticalGap="0" horizontalGap="0" left="0" top="0" creationComplete="callLater(_adjustHistory, [event, true])"/>
-</mx:Canvas>
+</mx:VBox>
