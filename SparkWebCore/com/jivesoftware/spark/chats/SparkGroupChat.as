@@ -59,8 +59,10 @@ package com.jivesoftware.spark.chats
   	    	room.addEventListener(RoomEvent.MAX_USERS_ERROR, handleMaxUsersError);
   	    	room.addEventListener(RoomEvent.LOCKED_ERROR, handleLockedError);
   	    	
-  	    	if(!room.join())
-  	    		throw new Error("Couldn't join the room");
+  	    	if(!room.join()) {
+  	    		dispatchEvent(new Event("joinFailed"));
+  	    		return;
+  	    	}
   	    	
   	    	room.addEventListener(CollectionEvent.COLLECTION_CHANGE, function(evt:CollectionEvent):void {
   	    		dispatchEvent(new Event("occupantsChanged"));
