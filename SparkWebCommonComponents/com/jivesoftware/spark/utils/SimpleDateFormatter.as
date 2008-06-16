@@ -65,9 +65,9 @@ package com.jivesoftware.spark.utils
 		 *  "MMM dd, yyyy hh:mm:ssa" matches: "January 01, 2000 12:30:45AM"
 		 */
 		
-		static var MONTH_NAMES=new Array('January','February','March','April','May','June','July','August','September','October','November','December','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
-		static var DAY_NAMES=new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sun','Mon','Tue','Wed','Thu','Fri','Sat');
-		static function LZ(x) {return(x<0||x>9?"":"0")+x}
+		public static var MONTH_NAMES:Array=new Array('January','February','March','April','May','June','July','August','September','October','November','December','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
+		public static var DAY_NAMES:Array=new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sun','Mon','Tue','Wed','Thu','Fri','Sat');
+		public static function LZ(x:Number) : Number {return(x<0||x>9?"":"0")+x}
 		
 		
 		
@@ -80,24 +80,24 @@ package com.jivesoftware.spark.utils
 		public static function formatDate( date:Date, format:String ):String 
 		{
 			format=format+"";
-			var result="";
-			var i_format=0;
-			var c="";
-			var token="";
-			var y=date.getFullYear()+"";
-			var M=date.getMonth()+1;
-			var d=date.getDate();
-			var E=date.getDay();
-			var H=date.getHours();
-			var m=date.getMinutes();
-			var s=date.getSeconds();
+			var result:String="";
+			var i_format:int=0;
+			var c:String="";
+			var token:String="";
+			var y:Number=date.getFullYear();
+			var M:Number=date.getMonth()+1;
+			var d:Number=date.getDate();
+			var E:Number=date.getDay();
+			var H:Number=date.getHours();
+			var m:Number=date.getMinutes();
+			var s:Number=date.getSeconds();
 			// var yyyy,yy,MMM,MM,dd,hh,h,mm,ss,ampm,HH,H,KK,K,kk,k;
 			// Convert real date parts into formatted versions
-			var value=new Object();
-			if (y.length < 4) {y=""+(y-0+1900);}
+			var value:Object=new Object();
+			if (String(y).length < 4) {y=(y-0+1900);}
 			value["y"]=""+y;
 			value["yyyy"]=y;
-			value["yy"]=y.substring(2,4);
+			value["yy"]=String(y).substring(2,4);
 			value["M"]=M;
 			value["MM"]=LZ(M);
 			value["MMM"]=MONTH_NAMES[M-1];
@@ -146,10 +146,10 @@ package com.jivesoftware.spark.utils
 		 * @return true if date string matches format of format string and
 		 * is a valid date. Else returns false.
 		 */
-		public static function isDate( val:String, format:String ) 
+		public static function isDate( val:String, format:String ) : Boolean
 		{
-			var date=getDateFromFormat( val,format );
-			if ( date==0 ) 
+			var date:Date=getDateFromFormat( val,format );
+			if ( date==null ) 
 			{
 				 return false; 
 			}
@@ -166,9 +166,9 @@ package com.jivesoftware.spark.utils
 		 */
 		public static function compareDates( date1:String, dateformat1:String, date2:String, dateformat2:String ):Number
 		{
-			var d1=getDateFromFormat(date1,dateformat1);
-			var d2=getDateFromFormat(date2,dateformat2);
-			if (d1==0 || d2==0) 
+			var d1:Date=getDateFromFormat(date1,dateformat1);
+			var d2:Date=getDateFromFormat(date2,dateformat2);
+			if (d1==null || d2==null) 
 			{
 				return -1;
 			}
@@ -185,23 +185,25 @@ package com.jivesoftware.spark.utils
 		 * @param format The format of the date object.
 		 * @return The date in the given format, or null if the value doesn't match the given format.
 		 */
-		public static function getDateFromFormat( val:String, format:String ) {
+		public static function getDateFromFormat( val:String, format:String ) : Date {
 			val=val+"";
 			format=format+"";
-			var i_val=0;
-			var i_format=0;
-			var c="";
-			var token="";
-			var token2="";
-			var x,y;
-			var now=new Date();
-			var year=now.getYear();
-			var month=now.getMonth()+1;
-			var date=1;
-			var hh=now.getHours();
-			var mm=now.getMinutes();
-			var ss=now.getSeconds();
-			var ampm="";
+			var i_val:int=0;
+			var i_format:int=0;
+			var c:String="";
+			var token:String="";
+			var token2:String="";
+			var x:int;
+			var y:int;
+			var now:Date=new Date();
+			var year:Number=now.getFullYear();
+			var month:Number=now.getMonth()+1;
+			var date:int=1;
+			var hh:Number=now.getHours();
+			var mm:Number=now.getMinutes();
+			var ss:Number=now.getSeconds();
+			var ampm:String="";
+			var i:int=0;
 			
 			while (i_format < format.length) 
 			{
@@ -219,9 +221,8 @@ package com.jivesoftware.spark.utils
 					if (token=="yy")   { x=2;y=2; }
 					if (token=="y")    { x=2;y=4; }
 					year=_getInt(val,i_val,x,y);
-					if (year==null) { return null; }
-					i_val += year.length;
-					if (year.length==2) 
+					i_val += String(year).length;
+					if (String(year).length==2) 
 					{
 						if (year > 70) { year=1900+(year-0); }
 						else { year=2000+(year-0); }
@@ -230,9 +231,9 @@ package com.jivesoftware.spark.utils
 				else if (token=="MMM"||token=="NNN")
 				{
 					month=0;
-					for (var i=0; i<MONTH_NAMES.length; i++) 
+					for (i=0; i<MONTH_NAMES.length; i++) 
 					{
-						var month_name=MONTH_NAMES[i];
+						var month_name:String=MONTH_NAMES[i];
 						if (val.substring(i_val,i_val+month_name.length).toLowerCase()==month_name.toLowerCase())
 						{
 							if (token=="MMM"||(token=="NNN"&&i>11)) 
@@ -248,9 +249,9 @@ package com.jivesoftware.spark.utils
 				}
 				else if (token=="EE"||token=="E")
 				{
-					for (var i=0; i<DAY_NAMES.length; i++) 
+					for (i=0; i<DAY_NAMES.length; i++) 
 					{
-						var day_name=DAY_NAMES[i];
+						var day_name:String=DAY_NAMES[i];
 						if (val.substring(i_val,i_val+day_name.length).toLowerCase()==day_name.toLowerCase()) 
 						{
 							i_val += day_name.length;
@@ -261,50 +262,50 @@ package com.jivesoftware.spark.utils
 				else if (token=="MM"||token=="M") 
 				{
 					month=_getInt(val,i_val,token.length,2);
-					if(month==null||(month<1)||(month>12)){return null;}
-					i_val+=month.length;
+					if((month<1)||(month>12)){return null;}
+					i_val+=String(month).length;
 					}
 				else if (token=="dd"||token=="d") 
 				{
 					date=_getInt(val,i_val,token.length,2);
-					if(date==null||(date<1)||(date>31)){return null;}
-					i_val+=date.length;
+					if((date<1)||(date>31)){return null;}
+					i_val+=String(date).length;
 					}
 				else if (token=="hh"||token=="h") 
 				{
 					hh=_getInt(val,i_val,token.length,2);
-					if(hh==null||(hh<1)||(hh>12)){return null;}
-					i_val+=hh.length;
+					if((hh<1)||(hh>12)){return null;}
+					i_val+=String(hh).length;
 					}
 				else if (token=="HH"||token=="H") 
 				{
 					hh=_getInt(val,i_val,token.length,2);
-					if(hh==null||(hh<0)||(hh>23)){return null;}
-					i_val+=hh.length;
+					if((hh<0)||(hh>23)){return null;}
+					i_val+=String(hh).length;
 				}
 				else if (token=="KK"||token=="K") 
 				{
 					hh=_getInt(val,i_val,token.length,2);
-					if(hh==null||(hh<0)||(hh>11)){return null;}
-					i_val+=hh.length;
+					if((hh<0)||(hh>11)){return null;}
+					i_val+=String(hh).length;
 				}
 				else if (token=="kk"||token=="k") 
 				{
 					hh=_getInt(val,i_val,token.length,2);
-					if(hh==null||(hh<1)||(hh>24)){return null;}
-					i_val+=hh.length;hh--;
+					if((hh<1)||(hh>24)){return null;}
+					i_val+=String(hh).length;hh--;
 				}
 				else if (token=="mm"||token=="m") 
 				{
 					mm=_getInt(val,i_val,token.length,2);
-					if(mm==null||(mm<0)||(mm>59)){return null;}
-					i_val+=mm.length;
+					if((mm<0)||(mm>59)){return null;}
+					i_val+=String(mm).length;
 				}
 				else if (token=="ss"||token=="s") 
 				{
 					ss=_getInt(val,i_val,token.length,2);
-					if(ss==null||(ss<0)||(ss>59)){return null;}
-					i_val+=ss.length;
+					if((ss<0)||(ss>59)){return null;}
+					i_val+=String(ss).length;
 				}
 				else if (token=="a") 
 				{
@@ -338,7 +339,7 @@ package com.jivesoftware.spark.utils
 			// Correct hours value
 			if (hh<12 && ampm=="PM") { hh=hh-0+12; }
 			else if (hh>11 && ampm=="AM") { hh-=12; }
-			var newdate = new Date(year,month-1,date,hh,mm,ss);
+			var newdate:Date = new Date(year,month-1,date,hh,mm,ss);
 			return newdate;
 		}
 		
@@ -347,10 +348,10 @@ package com.jivesoftware.spark.utils
 		/**
 		 * @return True if the value is an integer; false otherwise.
 		 */
-		private static function _isInteger(val) : Boolean 
+		private static function _isInteger(val:String) : Boolean 
 		{
-			var digits="1234567890";
-			for (var i=0; i < val.length; i++) 
+			var digits:String="1234567890";
+			for (var i:int=0; i < val.length; i++) 
 			{
 				if (digits.indexOf(val.charAt(i))==-1) 
 				{ 
@@ -361,21 +362,21 @@ package com.jivesoftware.spark.utils
 		}
 		
 	 
-		private static function _getInt(str,i,minlength,maxlength) : Number 
+		private static function _getInt(str:String,i:int,minlength:int,maxlength:int) : Number 
 		{
-			for (var x=maxlength; x>=minlength; x--) 
+			for (var x:int=maxlength; x>=minlength; x--) 
 			{
-				var token=str.substring(i,i+x);
+				var token:String=str.substring(i,i+x);
 				if (token.length < minlength) 
 				{
-					return null; 
+					return NaN; 
 				}
 				if (_isInteger(token)) 
 				{ 
-					return token; 
+					return Number(token); 
 				}
 			}
-			return null;
+			return NaN;
 		}
 	}
 }

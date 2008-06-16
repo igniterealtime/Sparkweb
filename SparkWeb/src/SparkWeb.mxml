@@ -76,6 +76,7 @@
 			import org.jivesoftware.xiff.util.*;
 			import com.kebinger.flexlayout.*;
 			import org.jivesoftware.xiff.core.XMPPBOSHConnection;
+			import org.jivesoftware.xiff.auth.External;
  			
  			private var connectionManager:ConnectionManager;
  			
@@ -84,6 +85,7 @@
  			private static const layoutDebug:Boolean = false;
  			[Bindable]
  			private var shouldShowLoginWindow:Boolean = true;
+			private var shouldUseExternal:Boolean = false;
  			private static var externalConfig:Object;
 			
 			public function presetup():void 
@@ -121,6 +123,10 @@
 				Security.allowDomain( "*" );
 				Security.allowInsecureDomain("*");
 				shouldShowLoginWindow = SparkManager.getConfigValueForKey("autoLogin") != "true";
+				shouldUseExternal = SparkManager.getConfigValueForKey("useExternalAuth") == "true";
+				if(shouldUseExternal) {
+					XMPPBOSHConnection.registerSASLMechanism("EXTERNAL",External);
+				}
 				XMPPBOSHConnection.disableSASLMechanism("ANONYMOUS");
 			}
 			

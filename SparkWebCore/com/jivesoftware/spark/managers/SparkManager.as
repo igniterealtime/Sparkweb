@@ -44,6 +44,7 @@ package com.jivesoftware.spark.managers
 			 username: "",
 			   server: "igniterealtime.org",
 			 location: "",
+	          useExternalAuth: false,
 	   connectionType:"socket",
 	   			  red:"1",
 	   			 blue:"1",
