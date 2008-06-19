@@ -55,6 +55,8 @@
 			import com.jivesoftware.spark.managers.SparkManager;
 			import com.jivesoftware.spark.managers.Localizator;
 			
+			private var errorFilters:Array = [new GlowFilter(0xFF9B26)];
+			
 			[Event(name="close", type="flash.events.Event")]
 			
 			public var room:Room;
@@ -159,13 +161,17 @@
             protected function send():void 
             {
             	var name:String = nameField.text;
-            	if(!name)
+            	if(!name) {
+            		nameField.filters = errorFilters;
             		return;
+            	}
             	if(name.indexOf("@") == -1)
-            		name = name + SparkManager.connectionManager.connection.jid.domain;
+            		name = name + "@" + SparkManager.connectionManager.connection.jid.domain;
             	var inviteJID:JID = new JID(name);
-            	if(!inviteJID)
-            		return;
+            	if(!inviteJID) {
+            		nameField.filters = errorFilters;
+               		return;
+            	}
             	
             	room.invite(inviteJID, "Please join me to talk about " + room.subject);
             	nameField.text = "";
@@ -176,7 +182,7 @@
 	
 	
 	<mx:TextArea borderStyle="none" width="{width - 16}" focusEnabled="false" backgroundAlpha="0.0" text="Type the name of the person you'd like to invite" />
-	<sho:CompletionInput width="{width - 16}" itemRenderer="com.jivesoftware.spark.BuddyRenderer" change="{searchForContacts()}" id="nameField" />
+	<sho:CompletionInput width="{width - 16}" itemRenderer="com.jivesoftware.spark.BuddyRenderer" focusIn="{nameField.filters = []}" change="{searchForContacts()}" id="nameField" />
 	<mx:HBox>
 		<mx:Button click="dispatchEvent(new Event('close'))" label="Cancel"/>
 		<mx:Button click="send()" label="Invite"/>
