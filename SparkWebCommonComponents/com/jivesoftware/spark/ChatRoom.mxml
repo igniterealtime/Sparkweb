@@ -94,7 +94,7 @@
 					chat.insertMessage(message);
 				});
 				dayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(evt:TimerEvent):void {
-					addNotification(new Date().toLocaleDateString());
+					addSystemMessage(new Date().toLocaleDateString());
 					setupDateChangeEvent();
 				});
 				setupDateChangeEvent();
@@ -134,7 +134,7 @@
 				else
 				{
 					if(!lastMessage || message.time.date != lastMessage.time.date)
-						addNotification(message.time.toLocaleDateString());
+						addSystemMessage(message.time.toLocaleDateString());
 				}
 				
 				history.addUserMessage(id, id, message.body, message.time, message.local ? (selectedUser && id == selectedUser.displayName) ? "selected" : "user" : null);
@@ -242,7 +242,7 @@
 				chat.room.removeEventListener(RoomEvent.ROOM_JOIN, setupContextMenu);
 			}
 			
-			public function addNotification(body:String, time:Date = null):void {
+			public function addSystemMessage(body:String, time:Date = null):void {
 				history.addSystemMessage(body, time, null);
 			}
 			
@@ -309,6 +309,11 @@
 			public function getTopicHTMLText(text:String):String
 			{
 				return "<font color='#666666'>Topic:</font> <font color='#333333'>" + StringUtils.escapeHTML(text) + "</font>";
+			}
+			
+			public function addNotification(text:String, color:String):void
+			{
+				history.addNotification(text, color);
 			}
 		]]>
 	</mx:Script>

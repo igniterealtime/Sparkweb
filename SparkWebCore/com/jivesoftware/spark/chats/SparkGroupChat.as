@@ -190,14 +190,14 @@ package com.jivesoftware.spark.chats
   	    	if (recentlyChangedNicks != null) {
   	    		var nickChange:Array = recentlyChangedNicks[event.nickname];
   	    		if (nickChange != null) {
-  	    			insertNotification(Localizator.getTextWithParams('muc.notification.nick.change', nickChange));
+  	    			insertSystemMessage(Localizator.getTextWithParams('muc.notification.nick.change', nickChange));
   	    			delete recentlyChangedNicks[event.nickname];
   	    			return;
   	    		}
   	    	}
   	    	
   	    	if (event.nickname != myNickName)
-  	    		insertNotification(Localizator.getTextWithParams('muc.notification.join', [event.nickname]));
+  	    		insertSystemMessage(Localizator.getTextWithParams('muc.notification.join', [event.nickname]));
   	    }
   	    
   	    public function handleUserDeparture(event:RoomEvent):void
@@ -212,17 +212,17 @@ package com.jivesoftware.spark.chats
 				return;
 			}
 
-  	    	insertNotification(Localizator.getTextWithParams('muc.notification.departure', [event.nickname]));
+  	    	insertSystemMessage(Localizator.getTextWithParams('muc.notification.departure', [event.nickname]));
   	    }
   	    
   	    public function handleUserKicked(event:RoomEvent):void
   	    {
-  	    	insertNotification(Localizator.getTextWithParams('muc.notification.kicked', [event.nickname]));
+  	    	insertSystemMessage(Localizator.getTextWithParams('muc.notification.kicked', [event.nickname]));
   	    }
   	    
   	    public function handleUserBanned(event:RoomEvent):void
   	    {
-  	    	insertNotification(Localizator.getTextWithParams('muc.notification.banned', [event.nickname]));
+  	    	insertSystemMessage(Localizator.getTextWithParams('muc.notification.banned', [event.nickname]));
   	    }
   	    
   	    private function removeCommonEventListeners():void

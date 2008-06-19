@@ -6,6 +6,7 @@ package com.jivesoftware.spark.chats
 		function set isTyping(flag:Boolean):void;
 		
 		function addMessage(message:SparkMessage):void;
-		function addNotification(body:String, time:Date = null):void;
+		function addNotification(notification:String, color:String):void;
+		function addSystemMessage(body:String, time:Date = null):void;
 	}
 }

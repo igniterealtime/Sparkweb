@@ -132,8 +132,8 @@ package com.jivesoftware.spark.chats
 			return _presence;
 		}
 		
-		public function insertNotification(body:String, time:Date = null):void {
-			ui.addNotification(body, time);
+		public function insertSystemMessage(body:String, time:Date = null):void {
+			ui.addSystemMessage(body, time);
 		}
 		
 		//actually does the sending to the connection

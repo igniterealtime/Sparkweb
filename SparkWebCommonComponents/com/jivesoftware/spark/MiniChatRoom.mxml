@@ -96,7 +96,7 @@
 					chat.insertMessage(message);
 				});
 				dayTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(evt:TimerEvent):void {
-					addNotification(new Date().toLocaleDateString());
+					addSystemMessage(new Date().toLocaleDateString());
 					setupDateChangeEvent();
 				});
 				setupDateChangeEvent();
@@ -141,7 +141,7 @@
 				else
 				{
 					if(!lastMessage || message.time.date != lastMessage.time.date)
-						addNotification(message.time.toLocaleDateString());
+						addSystemMessage(message.time.toLocaleDateString());
 				}
 				history.addUserMessage(id, id, message.body, message.time, message.local ? "user" : null);
 				if(!message.local)
@@ -239,12 +239,17 @@
 				chat.room.removeEventListener(RoomEvent.ROOM_JOIN, setupContextMenu);
 			}
 			
-			public function addNotification(body:String, time:Date = null):void {
+			public function addSystemMessage(body:String, time:Date = null):void {
 				history.addSystemMessage(body, time, null);
+   			}
+   		
+   			public function addNotification(text:String, color:String):void
+			{
+				history.addNotification(text, color);
 			}
-			
-			//todo: figure out how to make this statically typed without breaking bindings
-			[Bindable]
+   		
+   			//todo: figure out how to make this statically typed without breaking bindings
+   			[Bindable]
 			public function get chat():*
 			{
 				return _chat;

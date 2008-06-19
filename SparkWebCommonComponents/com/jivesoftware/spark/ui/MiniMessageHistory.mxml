@@ -158,9 +158,20 @@
 				}
 			}
 		}
+		
+		public function addNotification(messageText:String, messageColor:String):void {
+			if(!_currentMessageBox || _currentMessageBox.type == "system" || _currentMessageBox.type == "notification" ||  _currentMessageBox.userId != null) {
+				_currentMessageBox = _createMessageBox(new Date());
+				_currentMessageBox.type = "notification";
+			}
+			
+			_currentMessageBox.setMessageHighlight(messageColor, messageColor);
+			
+			_currentMessageBox.addMessage(messageText, "text", "darkDate");
+		}
 
-		public function addSystemMessage(messageText:String, messageDate:Date, userId:String = void):void {
-			if(!_currentMessageBox || _currentMessageBox.type == "system" ||  _currentMessageBox.userId != null) {
+		public function addSystemMessage(messageText:String, messageDate:Date, userId:String = null):void {
+			if(!_currentMessageBox || _currentMessageBox.type == "system" || _currentMessageBox.type == "notification" || _currentMessageBox.userId != null) {
 				_currentMessageBox = _createMessageBox(messageDate);
 				if(userId) {
 					_currentMessageBox.userId = userId;
@@ -170,7 +181,7 @@
 			_currentMessageBox.addMessage(messageText, "system");
 		}
 		
-		public function addUserMessage(userId:String, username:String, messageText:String, messageDate:Date, type:String = void):void {
+		public function addUserMessage(userId:String, username:String, messageText:String, messageDate:Date, type:String = null):void {
 			activityHistory.unshift(username);
 			if(!_currentMessageBox || _currentMessageBox.type == "system" || _currentMessageBox.userId != userId) {
 				_currentMessageBox = _createMessageBox(messageDate);

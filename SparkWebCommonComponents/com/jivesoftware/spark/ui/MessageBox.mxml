@@ -54,9 +54,11 @@
 			return this._type;
 		}
 		
-		public function addMessage(message:String, date:Date, styleName:String = "text"):void {
+		public function addMessage(message:String, date:Date, styleName:String = "text", dateStyleName:String = null):void {
 			var messageArea:MessageElement = new MessageElement();
 			messageArea.styleName = styleName;
+			if(dateStyleName)
+				messageArea.dateStyleName = dateStyleName;
 			message_list.addChild(messageArea);	
 			messageArea.text = message;
 			messageArea.date = date;
