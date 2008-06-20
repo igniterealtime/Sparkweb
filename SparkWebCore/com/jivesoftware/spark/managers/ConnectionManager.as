@@ -80,7 +80,7 @@ package com.jivesoftware.spark.managers
 			con.password = password;
 			con.domain = domain;
 			con.resource = resource;
-			if (!server)
+			if (server)
 				con.server = server;
 			con.addEventListener("outgoingData", packetSent);
 			con.connect( "terminatedFlash");
