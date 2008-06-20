@@ -69,14 +69,19 @@ package com.jivesoftware.spark.managers
 		 * Log into server.
 		 * @param username the username of the account.
 		 * @param password the user password.
-		 * @param server the server domain.
+		 * @param domain the server domain.
+		 * @param resource an optional resource to connect with
+		 * @param server an optional specific server hostname to connect to (otherwise domain will be used for connection)
+		 * @param port an optional specific port to connect to (otherwise default will be used, 5222 for tcp, 8080 for http binding, 8443 for https binding)
 		 */
-		public function login(username:String, password:String, server:String, resource:String="sparkweb"):void 
+		public function login(username:String, password:String, domain:String, resource:String="sparkweb", server:String=null):void 
 		{
 			con.username = username;
 			con.password = password;
-			con.server = server;
+			con.domain = domain;
 			con.resource = resource;
+			if (!server)
+				con.server = server;
 			con.addEventListener("outgoingData", packetSent);
 			con.connect( "terminatedFlash");
 				
