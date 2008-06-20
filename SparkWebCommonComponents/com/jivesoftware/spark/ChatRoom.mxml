@@ -29,7 +29,7 @@
 	     creationComplete="setup()"
 	     icon="{getIcon(chat.presence, isTyping, unreadMessageCount)}"
 	     backgroundColor="#EDEDED"
-	     implements="com.jivesoftware.spark.chats.ChatUI" xmlns:filters="flash.filters.*">
+	     implements="com.jivesoftware.spark.chats.ChatUI" xmlns:filts="flash.filters.*">
 	     
 	<mx:Script>
 		<![CDATA[
@@ -57,7 +57,7 @@
 			//fire an event at midnight each day so we can post a divider message to chats
  			protected static var dayTimer:Timer = new Timer(0,1);
 		
-			protected static var filters:Array = [HTMLEscapingFilter, URLFilter, EmoticonFilter];
+			protected static var displayFilters:Array = [HTMLEscapingFilter, URLFilter, EmoticonFilter];
 			
 			private var completionPrefix:String = null;
 			private var lastCompletedString:String = null;
@@ -123,7 +123,7 @@
 			
 			public function addMessage(message:SparkMessage):void
 			{
-				for each(var filter:* in filters)
+				for each(var filter:* in displayFilters)
 				{
 					message.body = filter.apply(message.body);
 				}
@@ -318,7 +318,7 @@
 		]]>
 	</mx:Script>
 
-	<filters:DropShadowFilter alpha="0.2" angle="90" blurY="7" blurX="3" inner="true" id="topshadow"/>
+	<filts:DropShadowFilter alpha="0.2" angle="90" blurY="7" blurX="3" inner="true" id="topshadow"/>
 
     <!-- Add Top UI -->
    <mx:HDividedBox id="contentDivider" filters="{[topshadow]}" verticalScrollPolicy="off" horizontalScrollPolicy="off" x="0" y="0" height="82%" width="100%" horizontalGap="{chat is SparkGroupChat ? 10 : 0}">
