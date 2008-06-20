@@ -64,6 +64,7 @@
 			showlabels = (type != "system");
 		}
 		
+		[Bindable]
 		public function get type():String {
 			return this._type;
 		}
@@ -111,7 +112,7 @@
 		}
 	]]></mx:Script>
 	<mx:Canvas id="labels_container" visible="{showlabels}" verticalScrollPolicy="off" horizontalScrollPolicy="off" width="100%">
-		<mx:Label id="username_label" truncateToFit="true" left="0" top="0" styleName="username" textAlign="left"/>
+		<mx:Label id="username_label" truncateToFit="true" left="0" top="0" color="{type == 'user' ? 0x3152A6 : 0x454857}" styleName="username" textAlign="left"/>
 		<mx:Label id="time_label" right="0" top="0" styleName="{dateStyleName}" textAlign="right" text="{SimpleDateFormatter.formatDate(_date, timeFormat)}" />
 	</mx:Canvas>
 	<mx:VBox id="message_list" childAdd="dispatchEvent(new ChildExistenceChangedEvent(ChildExistenceChangedEvent.CHILD_ADD));" height="100%" width="100%" verticalGap="1" verticalScrollPolicy="off" paddingTop="0" paddingBottom="0" paddingLeft="0">

@@ -188,6 +188,7 @@
 				_currentMessageBox = _createMessageBox();
 				_currentMessageBox.userId = userId;
 				_currentMessageBox.username = username;
+				_currentMessageBox.type = type;
 			}
 			
 			if(_userMessageHighlight[type]) {
