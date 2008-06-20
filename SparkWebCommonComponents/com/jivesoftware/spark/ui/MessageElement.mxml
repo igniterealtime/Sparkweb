@@ -81,6 +81,6 @@
 			return this._showdate;
 		}
 	]]></mx:Script>
-	<mx:Text filters="{selected ? [selectedFilter] : []}" id="message" selectable="false" width="100%" styleName="text" />
+	<mx:Text filters="{selected ? [selectedFilter] : []}" id="message" selectable="true" width="100%" styleName="text" />
 	<mx:Label id="time_label" visible="{showdate}" width="60" styleName="{dateStyleName}" textAlign="right" text="{SimpleDateFormatter.formatDate(_date, timeFormat)}" />
 </mx:HBox>

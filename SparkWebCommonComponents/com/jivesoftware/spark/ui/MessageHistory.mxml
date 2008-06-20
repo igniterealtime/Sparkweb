@@ -18,7 +18,7 @@
 -->
 
 
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="on" verticalGap="0" horizontalGap="0" backgroundColor="white" keyDown="handleKeys(event)" mouseDown="beginSelectionRect(event)" mouseUp="endSelectionRect(event)" mouseMove="updateSelectionRect(event)" creationComplete="init()">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" verticalScrollPolicy="on" verticalGap="0" horizontalGap="0" backgroundColor="white" creationComplete="init()">
 	<mx:Script><![CDATA[
 		import com.jivesoftware.spark.managers.SparkManager;
 		import com.jivesoftware.spark.ScrollWheelManager;
