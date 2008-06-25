@@ -74,6 +74,7 @@
 			
 			protected function setup():void
 			{
+			
 				//ScrollWheelManager.registerForScrollEvents(occupantsContainer);
 				tabs.insertTabAt("Chat", 0);
 				tabs.insertTabAt("Participants", 1);
