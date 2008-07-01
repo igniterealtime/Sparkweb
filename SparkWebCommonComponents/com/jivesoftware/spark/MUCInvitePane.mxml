@@ -173,7 +173,8 @@
                		return;
             	}
             	
-            	room.invite(inviteJID, "Please join me to talk about " + room.subject);
+            	var inviteMessage:String = (room.subject && room.subject.length > 0) ? Localizator.getTextWithParams('invite.text.hassubject', [room.subject]) : Localizator.getTextWithParams('invite.text.nosubject', [room.roomName]);
+            	room.invite(inviteJID, inviteMessage);
             	nameField.text = "";
             	dispatchEvent(new Event('close'));
             }
@@ -181,7 +182,7 @@
 	</mx:Script>
 	
 	
-	<mx:TextArea borderStyle="none" width="{width - 16}" focusEnabled="false" backgroundAlpha="0.0" text="Type the name of the person you'd like to invite" />
+	<mx:TextArea borderStyle="none" width="{width - 16}" focusEnabled="false" backgroundAlpha="0.0" text="{Localizator.getText('invite.label')}" />
 	<sho:CompletionInput width="{width - 16}" itemRenderer="com.jivesoftware.spark.BuddyRenderer" focusIn="{nameField.filters = []}" change="{searchForContacts()}" id="nameField" />
 	<mx:HBox>
 		<mx:Button click="dispatchEvent(new Event('close'))" label="Cancel"/>
