@@ -109,7 +109,7 @@
 				if(!searchManager || !searchManager.searchReady)
 					return;
 				
-				var fields:Array = searchManager.getDataFormFields(searchManager.services[0].JID);
+				var fields:Array = searchManager.getDataFormFields(searchManager.services[0].JID.unescaped);
 				for each(var field:FormField in fields)
 				{
 					if(field.name.toLowerCase().indexOf("name") > -1 && field.type == "boolean")
@@ -121,7 +121,7 @@
 						field.value = nameField.text + "*";
 					}
 				}
-				searchManager.performDataFormSearch(searchManager.services[0].JID, fields, new Callback(this, populateFromSearch));	
+				searchManager.performDataFormSearch(searchManager.services[0].JID.unescaped, fields, new Callback(this, populateFromSearch));	
 			}
 			
 			protected function populateFromSearch(resultsIq:XMPPStanza):void

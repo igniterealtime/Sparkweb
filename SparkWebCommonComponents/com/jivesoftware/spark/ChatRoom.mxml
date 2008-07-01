@@ -210,9 +210,9 @@
 			 */
 	  	    public function setupContextMenu(event:RoomEvent):void
 	  	    {
-				// Setup the custom context menu
-	  	    	var inviteMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.invite.users'));
-				inviteMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(evt:ContextMenuEvent):void { MUCInviteSendWindow.show(chat.room.roomJID); });
+				//// Setup the custom context menu
+	  	    	//var inviteMenuItem:ContextMenuItem = new ContextMenuItem(Localizator.getText('menu.groupchat.invite.users'));
+				//inviteMenuItem.addEventListener(ContextMenuEvent.MENU_ITEM_SELECT, function(evt:ContextMenuEvent):void { MUCInviteSendWindow.show(chat.room.roomJID); });
 				
 				if (contextMenu == null)
 					contextMenu = new ContextMenu();
@@ -221,7 +221,7 @@
            		if (contextMenu is ContextMenu)
            		{
 					(contextMenu as ContextMenu).hideBuiltInItems();
-					(contextMenu as ContextMenu).customItems.push(inviteMenuItem);
+			//		(contextMenu as ContextMenu).customItems.push(inviteMenuItem);
            		}
 				
 				if (chat.room.affiliation == Room.OWNER_AFFILIATION) {
