@@ -67,7 +67,12 @@ package com.jivesoftware.spark.utils
 		
 		public static var MONTH_NAMES:Array=new Array('January','February','March','April','May','June','July','August','September','October','November','December','Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec');
 		public static var DAY_NAMES:Array=new Array('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sun','Mon','Tue','Wed','Thu','Fri','Sat');
-		public static function LZ(x:Number) : Number {return(x<0||x>9?"":"0")+x}
+		public static function LZ(x:Number) : String {
+			var res:String = x.toString();
+			if(x >= 0 && x <= 9)
+				res = "0" + res;
+			return res;
+		}
 		
 		
 		
