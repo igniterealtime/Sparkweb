@@ -107,11 +107,11 @@
  			{
  				switch(tabs.selectedTab.text)
  				{
- 					case "View the Chat":
+ 					case "Chat":
  						chatContainer.setVisible(true);
  						occupantsContainer.setVisible(false);
  						break;
- 					case "See Who's Chatting":
+ 					case "Participants":
  						chatContainer.setVisible(false);
  						occupantsContainer.setVisible(true);
  						break;

@@ -40,6 +40,7 @@
  
 <mx:Script>
 	<![CDATA[
+		import org.jivesoftware.xiff.core.UnescapedJID;
 		import org.jivesoftware.xiff.conference.Room;
 		import mx.events.ListEvent;
 		import mx.events.FlexEvent;
@@ -53,7 +54,6 @@
 		import org.jivesoftware.xiff.conference.RoomOccupant;
 		import org.jivesoftware.xiff.data.im.Contact;
 		import org.jivesoftware.xiff.events.VCardEvent;
-		import org.jivesoftware.xiff.core.JID;
 		import com.jivesoftware.spark.managers.Localizator;
 		import com.jivesoftware.spark.ProfileWindow;
 		import com.jivesoftware.spark.GroupChangeWindow;
@@ -295,7 +295,7 @@
 		
 		/**** Getters ****/
 		
-		public function get jid():JID { return rosterItem ? rosterItem.jid : null; }
+		public function get jid():UnescapedJID { return rosterItem ? rosterItem.jid : null; }
 		
 		[Bindable]
 		public function get changingName():Boolean { return _changingName; }

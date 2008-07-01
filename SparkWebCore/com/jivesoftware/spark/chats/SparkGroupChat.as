@@ -28,7 +28,7 @@ package com.jivesoftware.spark.chats
 	import mx.events.CollectionEvent;
 	
 	import org.jivesoftware.xiff.conference.Room;
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.data.muc.MUCItem;
 	import org.jivesoftware.xiff.data.muc.MUCUserExtension;
 	import org.jivesoftware.xiff.events.RoomEvent;
@@ -39,12 +39,12 @@ package com.jivesoftware.spark.chats
   	    private var roomPassword:String = null;
   	    private var recentlyChangedNicks:Object = null;
   	    
-  	    public function SparkGroupChat(j:JID)
+  	    public function SparkGroupChat(j:UnescapedJID)
   	    {
   	    	super(j);
   	    }
   	    
-  	    public override function setup(j:JID):void
+  	    public override function setup(j:UnescapedJID):void
   	    {
   	    	room = MUCManager.manager.getRoom(j);
   	    	displayName = room.roomJID.toString();
@@ -77,7 +77,7 @@ package com.jivesoftware.spark.chats
 
   	    }
   	    
-  	    public override function get jid():JID
+  	    public override function get jid():UnescapedJID
   	    {
   	    	return room.roomJID;
   	    }

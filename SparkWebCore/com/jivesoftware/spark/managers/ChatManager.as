@@ -25,7 +25,7 @@ package com.jivesoftware.spark.managers
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.UnescapedJID;
 	
 	public class ChatManager extends EventDispatcher
 	{
@@ -52,7 +52,7 @@ package com.jivesoftware.spark.managers
 		 * @param activate whether the chat should become the active chat
 		 * @return the SparkGroupChat that was created, or null
 		 */
-		public function joinGroupChat(jid:JID, activate:Boolean = true, password:String = null):SparkGroupChat
+		public function joinGroupChat(jid:UnescapedJID, activate:Boolean = true, password:String = null):SparkGroupChat
 		{
 			if(!jid)
 				return null;
@@ -60,7 +60,7 @@ package com.jivesoftware.spark.managers
 			if(!chat)
 				chat = new SparkGroupChat(jid);
 				
-			chats[jid.toBareJID()] = chat;
+			chats[jid.bareJID] = chat;
 				
 			if (password != null)
 				chat.password = password;
@@ -76,9 +76,9 @@ package com.jivesoftware.spark.managers
 		 * Gets a chat
 		 * @param jid the JID of the chat to get
 		 */
-		public function getChat(jid:JID):SparkChat 
+		public function getChat(jid:UnescapedJID):SparkChat 
 		{
-			return chats[jid.toBareJID()];
+			return chats[jid.bareJID];
 		}
 		
 		/**
@@ -87,7 +87,7 @@ package com.jivesoftware.spark.managers
 		 * @param activate whether the chat should become the active chat
 		 * @return the SparkChat that was created, or null
 		 */
-		public function startChat(jid:JID, activate:Boolean = true):SparkChat
+		public function startChat(jid:UnescapedJID, activate:Boolean = true):SparkChat
 		{
 			if(!jid)
 				return null;
@@ -95,7 +95,7 @@ package com.jivesoftware.spark.managers
 			if(!chat)
 				chat = new SparkChat(jid);
 				
-			chats[jid.toBareJID()] = chat;
+			chats[jid.bareJID] = chat;
 			
 			var evt:ChatEvent = new ChatEvent(ChatEvent.CHAT_STARTED);
 			evt.activate = activate;
@@ -114,14 +114,14 @@ package com.jivesoftware.spark.managers
 			evt.chat = chat;
 			chat.close();
 			dispatchEvent(evt);
-			chats[chat.jid.toBareJID()] = null;
+			chats[chat.jid.bareJID] = null;
 		}
 		
 		/**
 		 * Queues a room for rate-limited auto-joining. This avoids perceived performance issues from blocking the UI
 		 * @param jid the JID of the room to join
 		 */
-		public function queueRoom(jid:JID):void
+		public function queueRoom(jid:UnescapedJID):void
 		{
 			queuedRooms.push(jid);
 			if(!autoJoinTimer)

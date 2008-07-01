@@ -29,9 +29,9 @@
 	</mx:Style>
     <mx:Script>
         <![CDATA[
+        	import org.jivesoftware.xiff.core.UnescapedJID;
         	import mx.core.Application;
         	import org.jivesoftware.xiff.bookmark.GroupChatBookmark;
-        	import org.jivesoftware.xiff.core.JID;
         	import com.jivesoftware.spark.utils.UniqueingQueue;
         	import com.jivesoftware.spark.MUCRoomList;
         	import org.jivesoftware.xiff.bookmark.GroupChatBookmark;
@@ -47,12 +47,12 @@
             // Event handler for the OK button.
             private function addServer():void 
             {
-				var jid:JID = new JID(serverField.text);
-				MUCManager.manager.findConferenceService(jid, function(conferenceJID:JID):void {
+				var jid:UnescapedJID = new UnescapedJID(serverField.text);
+				MUCManager.manager.findConferenceService(jid, function(conferenceJID:UnescapedJID):void {
 					if(canceled)
 						return;
 					jid = conferenceJID;
-					SparkManager.bookmarkManager.addGroupChatBookmark(new GroupChatBookmark(jid.toString(), jid));
+					SparkManager.bookmarkManager.addGroupChatBookmark(new GroupChatBookmark(jid.toString(), jid.escaped));
 					ContactListContainer.conferenceList.addConferenceServer(jid);
 					(ContactListContainer.conferenceList.selectedChild as MUCRoomList).populate(false);
 					var so:SharedObject = SharedObject.getLocal("savedData");

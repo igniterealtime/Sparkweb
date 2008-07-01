@@ -32,9 +32,9 @@
 
 	<mx:Script>
 		<![CDATA[
+			import org.jivesoftware.xiff.core.UnescapedJID;
 			import mx.core.Application;
 			import org.jivesoftware.xiff.data.im.RosterGroup;
-			import org.jivesoftware.xiff.core.JID;
 			import org.jivesoftware.xiff.events.RosterEvent;
 			import org.jivesoftware.xiff.data.im.RosterItemVO;
 			import mx.collections.ArrayCollection;
@@ -46,7 +46,7 @@
 			import com.jivesoftware.spark.managers.Localizator;
 			import com.jivesoftware.spark.managers.SparkManager;
 			
-			private var fromJid:JID;
+			private var fromJid:UnescapedJID;
 
 			private function init():void 
 			{
@@ -57,7 +57,7 @@
             /**
              * Performs runtime custimizations to the dialog when it becomes visible.
              */
-            public function show(j:JID):void 
+            public function show(j:UnescapedJID):void 
             {
             	fromJid = j;
             	usernameLabel.text = fromJid.toString(); 
@@ -114,7 +114,7 @@
             
             public static function showSubscriptionRequestWindow(event:RosterEvent):void 
             {
-            	var fromJid:JID = event.jid;
+            	var fromJid:UnescapedJID = event.jid;
             	
             	var subscriptionRequestWindow:SubscriptionRequestWindow = SubscriptionRequestWindow(PopUpManager.createPopUp(DisplayObjectContainer(Application.application), SubscriptionRequestWindow));
             	PopUpManager.centerPopUp(subscriptionRequestWindow);

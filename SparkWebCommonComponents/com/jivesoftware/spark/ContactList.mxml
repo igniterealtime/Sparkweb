@@ -28,7 +28,6 @@
 			import mx.events.CollectionEventKind;
 			import mx.events.CollectionEvent;
 			import com.jivesoftware.spark.OfflineListGroup;
-			import org.jivesoftware.xiff.core.JID;
 			import org.jivesoftware.xiff.data.im.RosterGroup;
 			import com.jivesoftware.spark.chats.SparkChat;
 			import org.jivesoftware.xiff.im.Roster;

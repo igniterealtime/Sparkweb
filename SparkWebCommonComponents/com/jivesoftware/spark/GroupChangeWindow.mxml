@@ -33,10 +33,10 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.jivesoftware.xiff.core.UnescapedJID;
 			import mx.collections.ListCollectionView;
 			import mx.core.Application;
 			import org.jivesoftware.xiff.data.im.RosterGroup;
-			import org.jivesoftware.xiff.core.JID;
 			import mx.controls.TextInput;
 			import mx.containers.ControlBar;
 			import mx.containers.HBox;
@@ -142,7 +142,7 @@
             /**
              * Performs runtime custimizations to the dialog when it becomes visible.
              */
-            public function show(jid:JID):void 
+            public function show(jid:UnescapedJID):void 
             {
             	contact = RosterItemVO.get(jid, true);
 
@@ -158,7 +158,7 @@
             	PopUpManager.removePopUp(this);
             }
             
-            public static function showGroupChangeWindow(jid:JID):void 
+            public static function showGroupChangeWindow(jid:UnescapedJID):void 
             {
             	var groupChangeWindow:GroupChangeWindow = GroupChangeWindow(PopUpManager.createPopUp(DisplayObjectContainer(Application.application), GroupChangeWindow));
             	PopUpManager.centerPopUp(groupChangeWindow);

@@ -27,7 +27,7 @@
 	headerHeight="0">
     <mx:Script>
         <![CDATA[
-        	import org.jivesoftware.xiff.core.JID;
+        	import org.jivesoftware.xiff.core.UnescapedJID;
         	import org.jivesoftware.xiff.vcard.VCard;
         	import com.jivesoftware.spark.managers.SparkManager;
         	import org.jivesoftware.xiff.data.im.RosterItemVO;
@@ -40,7 +40,7 @@
             
             public function set text(value:String):void
             {
-            	contact = RosterItemVO.get(new JID(value), true);
+            	contact = RosterItemVO.get(new UnescapedJID(value), true);
             	contactVCard = VCard.getVCard(SparkManager.connectionManager.connection, contact);
             }
             

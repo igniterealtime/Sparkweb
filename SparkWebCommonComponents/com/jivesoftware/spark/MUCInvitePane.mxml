@@ -29,6 +29,7 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.jivesoftware.xiff.core.UnescapedJID;
 			import org.jivesoftware.xiff.data.im.RosterItem;
 			import com.jivesoftware.spark.utils.UniqueingQueue;
 			import org.jivesoftware.xiff.data.forms.FormExtension;
@@ -46,7 +47,6 @@
 			import mx.collections.ListCollectionView;
 			import org.jivesoftware.xiff.conference.Room;
 			import mx.core.Application;
-			import org.jivesoftware.xiff.core.JID;
 			import mx.core.UITextField;
 			import mx.managers.FocusManager;
 			import mx.collections.ArrayCollection;
@@ -141,7 +141,7 @@
 						{
 							if(field.name.toLowerCase() == "jid")
 							{
-								var item:RosterItemVO = RosterItemVO.get(new JID(field.value), true);
+								var item:RosterItemVO = RosterItemVO.get(new UnescapedJID(field.value), true);
 								if(completionChoices.indexOf(item) == -1)
 									completionChoices.concat(item);
 							}
@@ -167,7 +167,7 @@
             	}
             	if(name.indexOf("@") == -1)
             		name = name + "@" + SparkManager.connectionManager.connection.jid.domain;
-            	var inviteJID:JID = new JID(name);
+            	var inviteJID:UnescapedJID = new UnescapedJID(name);
             	if(!inviteJID) {
             		nameField.filters = errorFilters;
                		return;

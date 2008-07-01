@@ -31,14 +31,14 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.jivesoftware.xiff.core.UnescapedJID;
 			import com.jivesoftware.spark.managers.ChatManager;
 			import mx.core.Application;
-			import org.jivesoftware.xiff.core.JID;
 			import org.jivesoftware.xiff.events.InviteEvent;
 			import com.jivesoftware.spark.managers.Localizator;
 			import org.jivesoftware.xiff.conference.Room;
 			import mx.managers.PopUpManager;
-			private var roomJid:JID;
+			private var roomJid:UnescapedJID;
 			
 			protected function init():void {
             	this.titleTextField.filters = [new DropShadowFilter(0, 45, 0.0, 1.0, 6.0)];
@@ -53,7 +53,7 @@
             	ChatManager.sharedInstance.joinGroupChat(roomJid);
             }
             
-            protected function showWindow(fromJid:JID, room:Room, reason:String=''):void 
+            protected function showWindow(fromJid:UnescapedJID, room:Room, reason:String=''):void 
             {
             	invitationToLabel.text = room.roomJID.toString();
             	invitationFromLabel.text = fromJid.toString();

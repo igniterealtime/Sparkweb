@@ -26,7 +26,7 @@
 	creationComplete="setup()">
 	<mx:Script>
 	<![CDATA[
-		import org.jivesoftware.xiff.core.JID;
+		import org.jivesoftware.xiff.core.UnescapedJID;
 		import com.jivesoftware.spark.MUCRoomList;
 		import com.jivesoftware.spark.ContactListContainer;
 		import com.jivesoftware.spark.managers.*;
@@ -56,9 +56,9 @@
 			}
 		}
 		
-		public function get jid():JID
+		public function get jid():UnescapedJID
 		{
-			return new JID(label);
+			return new UnescapedJID(label);
 		}
 		
 		private function removeServerBookmark(event:ContextMenuEvent):void 

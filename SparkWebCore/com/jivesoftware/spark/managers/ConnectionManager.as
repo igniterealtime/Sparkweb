@@ -22,7 +22,7 @@ package com.jivesoftware.spark.managers
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.core.XMPPBOSHConnection;
 	import org.jivesoftware.xiff.core.XMPPConnection;
 	import org.jivesoftware.xiff.data.Message;
@@ -121,11 +121,11 @@ package com.jivesoftware.spark.managers
 		 * @param jid the jid to send the message to.
 		 * @param body the body of the message to send.
 		 */
-		public function sendMessage(jid:JID, body:String):void 
+		public function sendMessage(jid:UnescapedJID, body:String):void 
 		{
 			var message:Message = new Message();
 			message.addExtension(new MessageEventExtension());
-			message.to = jid;
+			message.to = jid.escaped;
 			message.body = body;
 			message.type = Message.CHAT_TYPE;
 			con.send(message);

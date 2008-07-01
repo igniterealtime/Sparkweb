@@ -28,8 +28,9 @@
 	</mx:Style>
 	 <mx:Script>
         <![CDATA[
+        	import org.jivesoftware.xiff.core.EscapedJID;
+        	import org.jivesoftware.xiff.core.UnescapedJID;
         	import mx.managers.IFocusManagerComponent;
-        	import org.jivesoftware.xiff.core.JID;
         	import mx.controls.dataGridClasses.DataGridColumn;
         	import org.jivesoftware.xiff.data.forms.FormExtension;
         	import org.jivesoftware.xiff.data.forms.FormField;
@@ -72,13 +73,13 @@
             	
             }
             
-            private function get selectedServiceJID():JID
+            private function get selectedServiceJID():EscapedJID
             {
             	var item:* = userSearchService.selectedItem;
             	if (!item)
             		return null;
             	
-            	return new JID(searchManager.dataFormsActive ? item.JID : item.jid);
+            	return new EscapedJID(searchManager.dataFormsActive ? item.JID : item.jid);
             }
             
             // Resets and closes the search window, called by the Close button as well as
@@ -147,7 +148,7 @@
             
             private function updateSearchFieldsDataForms():Boolean
             {
-            	var jid:JID = new JID(userSearchService.selectedItem.JID);
+            	var jid:UnescapedJID = new UnescapedJID(userSearchService.selectedItem.JID);
         		var fields:Array = searchManager.getDataFormFields(jid);
         		
         		if (!fields)
@@ -193,7 +194,7 @@
         	{
         		userSearchFields.removeAllChildren();
 
-            	var jid:JID = new JID(userSearchService.selectedItem.JID);
+            	var jid:UnescapedJID = new UnescapedJID(userSearchService.selectedItem.JID);
         		var fields:Array = searchManager.getFields(jid);
 
             	if (!fields)
@@ -295,7 +296,7 @@
 			
 			private function performDataFormsSearch():void
 			{
-				var service:JID = selectedServiceJID;
+				var service:UnescapedJID = selectedServiceJID.unescaped;
 				var formFields:Array = [];
 					
 				for each (var formItem:FormItem in getDynamicFormItems())
@@ -323,7 +324,7 @@
 			
 			private function performGenericSearch():void
 			{
-				var service:JID = selectedServiceJID;
+				var service:UnescapedJID = selectedServiceJID.unescaped;
 				// Setup the columns in the search results data grid
 				var newColumns:Array = [new DataGridColumn("JID"),
 										new DataGridColumn("Name"),

@@ -32,7 +32,7 @@
 	</mx:Style>
     <mx:Script>
         <![CDATA[
-        	import org.jivesoftware.xiff.core.JID;
+        	import org.jivesoftware.xiff.core.UnescapedJID;
         	import mx.core.Application;
         	import com.jivesoftware.spark.ContactListContainer;
         	import com.jivesoftware.spark.MUCRoomListItemRenderer;
@@ -62,7 +62,7 @@
             	
                 var roomName:String = nameField.text;
                 var room:Room = new Room(SparkManager.connectionManager.connection);
-                room.roomJID = new JID(roomName + "@" + conferenceServer);
+                room.roomJID = new UnescapedJID(roomName + "@" + conferenceServer);
                 
                 if (configType.selectedValue == "custom")
                 {

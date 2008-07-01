@@ -17,16 +17,13 @@
 
 package com.jivesoftware.spark.chats
 {
-	import com.jivesoftware.spark.chats.SparkChat;
-	import com.jivesoftware.spark.chats.SparkGroupChat;
-	
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.data.Message;
 	import org.jivesoftware.xiff.data.im.RosterItemVO;
 	
 	public class SparkMessage {
 		
-		private var _from:JID;
+		private var _from:UnescapedJID;
 		private var _nick:String;
 		private var _color:String;
 		private var _body:String; 
@@ -35,7 +32,7 @@ package com.jivesoftware.spark.chats
 		public var consecutive:Boolean;
 		private var _chat:SparkChat;
 		 
-		public function SparkMessage(from:JID, body:String, nick:String = null, color:String = null, time:Date = null, chat:SparkChat=null)
+		public function SparkMessage(from:UnescapedJID, body:String, nick:String = null, color:String = null, time:Date = null, chat:SparkChat=null)
 		{
 			_from = from;
 			_nick = nick;
@@ -47,16 +44,16 @@ package com.jivesoftware.spark.chats
 		
 		public static function fromMessage(message:Message, chat:SparkChat, local:Boolean = false) : SparkMessage
 		{
-			var msg:SparkMessage = new SparkMessage(message.from, message.body, null, null, message.time, chat);
+			var msg:SparkMessage = new SparkMessage(message.from.unescaped, message.body, null, null, message.time, chat);
 			msg.local = local;
 			return msg;
 		}
 		 
-		public function set from(from:JID):void {
+		public function set from(from:UnescapedJID):void {
 			_from = from;
 		}
 		
-		public function get from():JID {
+		public function get from():UnescapedJID {
 			return _from;
 		}
 		

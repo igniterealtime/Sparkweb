@@ -31,7 +31,6 @@
 			import mx.controls.ToolTip;
 			import mx.core.IToolTip;
 			import org.jivesoftware.xiff.conference.RoomOccupant
-			import org.jivesoftware.xiff.core.JID;
 			import com.jivesoftware.spark.managers.MUCManager;
 			import org.jivesoftware.xiff.conference.Room;
 			import com.jivesoftware.spark.managers.Localizator;

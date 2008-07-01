@@ -16,7 +16,7 @@
  */
 
 package com.jivesoftware.spark.managers {
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.EscapedJID;
 	import org.jivesoftware.xiff.core.XMPPConnection;
 	import org.jivesoftware.xiff.data.IQ;
 	import org.jivesoftware.xiff.data.register.RegisterExtension;
@@ -33,7 +33,7 @@ package com.jivesoftware.spark.managers {
 		
 		public function createAccount(username:String, password:String, callBackFunction:Function):void 
 		{
-			var iq:IQ = new IQ(new JID(_connection.server), IQ.SET_TYPE);
+			var iq:IQ = new IQ(new EscapedJID(_connection.server), IQ.SET_TYPE);
 		    iq.callbackName = "handleRegistration";
 		    iq.callbackScope = this;
 			

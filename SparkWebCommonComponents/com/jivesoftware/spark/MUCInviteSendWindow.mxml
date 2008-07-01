@@ -31,9 +31,9 @@
 	
 	<mx:Script>
 		<![CDATA[
+			import org.jivesoftware.xiff.core.UnescapedJID;
 			import com.jivesoftware.spark.managers.ChatManager;
 			import mx.core.Application;
-			import org.jivesoftware.xiff.core.JID;
 			import mx.core.UITextField;
 			import mx.managers.FocusManager;
 			import mx.collections.ArrayCollection;
@@ -81,17 +81,17 @@
             /**
              * Performs runtime custimizations to the dialog when it becomes visible.
              */
-            public function showWindow(roomJid:JID):void {
+            public function showWindow(roomJid:UnescapedJID):void {
             	roomJidLabel.text = roomJid.toString();
             }
             
             private function addRecipient():void 
             {
-            	var j:JID;
+            	var j:UnescapedJID;
             	try
             	{
             		//Does no actual validation right now; Fix JID validation, then add true as the second argument
-            		j = new JID(jidTextInput.text);
+            		j = new UnescapedJID(jidTextInput.text);
             	}
             	catch(e:*)
             	{
@@ -114,7 +114,7 @@
         		for each(var item:* in event.data) 
         		{
         			var found:Boolean = false;
-        			for each(var recip:JID in invitationRecipients)
+        			for each(var recip:UnescapedJID in invitationRecipients)
         			{
         				if(recip.equals(item.jid, false))
         				{
@@ -143,10 +143,10 @@
              */
             private function send():void 
             {
-            	var groupChat:SparkGroupChat = ChatManager.sharedInstance.getChat(new JID(roomJidLabel.text)) as SparkGroupChat;
+            	var groupChat:SparkGroupChat = ChatManager.sharedInstance.getChat(new UnescapedJID(roomJidLabel.text)) as SparkGroupChat;
             	
             	if (groupChat && groupChat.room) {
-            		for each(var recipient:JID in invitationRecipients) {
+            		for each(var recipient:UnescapedJID in invitationRecipients) {
             			groupChat.room.invite(recipient, reasonTextInput.text);
             		}
             	}
@@ -191,7 +191,7 @@
 				PopUpManager.centerPopUp(mucInviteSendRosterWindow);
 			}
 			
-			public static function show(roomJID:JID):void
+			public static function show(roomJID:UnescapedJID):void
 	  	    {
 	  	    	var mucInviteSendWindow:MUCInviteSendWindow = MUCInviteSendWindow(PopUpManager.createPopUp(DisplayObjectContainer(Application.application), MUCInviteSendWindow));
 				PopUpManager.centerPopUp(mucInviteSendWindow);

@@ -27,7 +27,7 @@ package com.jivesoftware.spark.chats
 	import mx.controls.*;
 	import mx.events.PropertyChangeEvent;
 	
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.data.Message;
 	import org.jivesoftware.xiff.data.im.RosterItemVO;
 	import org.jivesoftware.xiff.util.*;
@@ -36,7 +36,7 @@ package com.jivesoftware.spark.chats
 	public class SparkChat extends EventDispatcher
 	{
 		private var _ui:ChatUI
-		protected var _jid:JID;
+		protected var _jid:UnescapedJID;
 		protected var _nickname:String;
 		protected var windowID:String;
 		
@@ -46,7 +46,7 @@ package com.jivesoftware.spark.chats
 				
 		
 		
-		public function SparkChat(j:JID)
+		public function SparkChat(j:UnescapedJID)
 		{
 			_jid = j;
 		}
@@ -64,7 +64,7 @@ package com.jivesoftware.spark.chats
 			setup(_jid);
 		}
 		
-		public function setup(j:JID):void
+		public function setup(j:UnescapedJID):void
 		{
 			var rosterItem:RosterItemVO = RosterItemVO.get(j, true);
 			
@@ -102,7 +102,7 @@ package com.jivesoftware.spark.chats
 			return new ArrayCollection([{nick : myNickName}, {nick : displayName}]);
 		}
 		
-		public function get jid():JID {
+		public function get jid():UnescapedJID {
 			return _jid;
 		}
 		

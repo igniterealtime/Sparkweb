@@ -19,7 +19,8 @@ package com.jivesoftware.spark.managers
 {
 	import org.jivesoftware.xiff.conference.Room;
 	import org.jivesoftware.xiff.core.Browser;
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.EscapedJID;
+	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.data.IQ;
 	import org.jivesoftware.xiff.data.disco.InfoDiscoExtension;
 	import org.jivesoftware.xiff.data.disco.ItemDiscoExtension;
@@ -47,31 +48,31 @@ package com.jivesoftware.spark.managers
 			super();
 		}
 		
-		public function getRoom(roomJID:JID, name:String=null):Room
+		public function getRoom(roomJID:UnescapedJID, name:String=null):Room
 		{
-			var room:Room = rooms[roomJID.toBareJID()];
+			var room:Room = rooms[roomJID.bareJID];
 			if(!room)
 			{
 				room = new Room(SparkManager.connectionManager.connection);
 				room.roomJID = roomJID;
 				room.addEventListener(RoomEvent.ROOM_LEAVE, function(evt:RoomEvent):void {
-					rooms[roomJID.toBareJID()] = null;
+					rooms[roomJID.bareJID] = null;
 				});
 				if(name)
 					room.roomName = name;
-				rooms[roomJID.toBareJID()] = room;
+				rooms[roomJID.bareJID] = room;
 			}
 			return room;
 		}
 		
-		public function findConferenceService(server:JID, callback:Function):void
+		public function findConferenceService(server:UnescapedJID, callback:Function):void
 		{
 			if(!observers[server])
 			{
 				observers[server] = [];
 			}
 			observers[server].push(callback);
-			new Browser(SparkManager.connectionManager.connection).getServiceInfo(server, "handleSpeculativeInfoReply", this);
+			new Browser(SparkManager.connectionManager.connection).getServiceInfo(server.escaped, "handleSpeculativeInfoReply", this);
 		}
 		
 		public function handleServiceList(iq:IQ):void
@@ -82,12 +83,12 @@ package com.jivesoftware.spark.managers
 				
 			var extension:ItemDiscoExtension = extensions[0];
 			
-			var server:JID = iq.from;
+			var server:UnescapedJID = iq.from.unescaped;
 			
 			for each(var item:* in extension.items) 
 			{
 				serviceJIDStoServerJIDS[item.jid] = server;
-				new Browser(SparkManager.connectionManager.connection).getServiceInfo(new JID(item.jid), "handleInfoReply", this);
+				new Browser(SparkManager.connectionManager.connection).getServiceInfo(new EscapedJID(item.jid), "handleInfoReply", this);
 			}
 		}
 		

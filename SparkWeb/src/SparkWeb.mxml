@@ -153,7 +153,7 @@
 				var foo:NotifyEvent
 				chatContainer.addEventListener(NotifyEvent.NEW_MESSAGE, function(evt:NotifyEvent):void {
 					var message:Message = evt.message;
-					ExternalInterface.call("alertTitle", "SparkWeb", RosterItemVO.get(message.from, false).displayName+"!");
+					ExternalInterface.call("alertTitle", "SparkWeb", RosterItemVO.get(message.from.unescaped, false).displayName+"!");
 				});
  			}
  			

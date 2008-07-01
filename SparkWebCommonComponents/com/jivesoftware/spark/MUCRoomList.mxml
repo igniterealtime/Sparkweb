@@ -21,7 +21,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" creationComplete="setup()" verticalGap="0" xmlns:flexlib = "flexlib.controls.*">
 	<mx:Script>
 		<![CDATA[
-			import org.jivesoftware.xiff.core.JID;
+			import org.jivesoftware.xiff.core.UnescapedJID;
 			import mx.collections.SortField;
 			import mx.collections.Sort;
 			import mx.collections.ArrayCollection;
@@ -35,13 +35,13 @@
 			
 			private var selectedRoom:MUCRoomListItemRenderer;	
 			public var populated:Boolean=false;
-			private var _jid:JID;
+			private var _jid:UnescapedJID;
 			private var searchString:String;
 
 			[Bindable]
 			private var rooms:ArrayCollection = new ArrayCollection();
 			
-			public function set jid(j:JID):void 
+			public function set jid(j:UnescapedJID):void 
 			{
 				_jid = j;
 				label = j.toString();
@@ -55,7 +55,7 @@
 				rooms.refresh();
 			}
 			
-			public function get jid():JID {
+			public function get jid():UnescapedJID {
 				return _jid;
 			}
 			
@@ -64,7 +64,7 @@
  				if(!populated || force) 
  				{
  					populated = true; //set it here rather than in populate, since populate is asynchronous
- 					new Browser(SparkManager.connectionManager.connection).getServiceItems(jid, "finishPopulate", this);
+ 					new Browser(SparkManager.connectionManager.connection).getServiceItems(jid.escaped, "finishPopulate", this);
  				}
  			}
 			
@@ -74,7 +74,7 @@
 				var items:Array = iq.getAllExtensions()[0].items;
 				for each(var item:Object in items)
 				{
-					item.jid = new JID(item.jid);
+					item.jid = new UnescapedJID(item.jid);
 				}
 				addItems(items);
 			}

@@ -37,10 +37,10 @@
 	implements="mx.managers.IFocusManagerComponent, mx.controls.listClasses.IListItemRenderer">
 <mx:Script>
 	<![CDATA[
+		import org.jivesoftware.xiff.core.UnescapedJID;
 		import com.jivesoftware.spark.managers.ChatManager;
 		import org.jivesoftware.xiff.bookmark.GroupChatBookmark;
 		import org.jivesoftware.xiff.events.BookmarkChangedEvent;
-		import org.jivesoftware.xiff.core.JID;
 		import org.jivesoftware.xiff.conference.Room;
 		import com.jivesoftware.spark.managers.SparkManager;
 		import com.jivesoftware.spark.managers.Localizator;
@@ -105,7 +105,7 @@
 
 		private function addBookmark(event:ContextMenuEvent):void 
 		{
-			SparkManager.bookmarkManager.addGroupChatBookmark(new GroupChatBookmark(roomName, jid));
+			SparkManager.bookmarkManager.addGroupChatBookmark(new GroupChatBookmark(roomName, jid.escaped));
 		}
 		
 		private function removeBookmark(event:ContextMenuEvent):void
@@ -132,7 +132,7 @@
 		}
 		
 		[Bindable(event=dataUpdated)]
-		public function get jid():JID
+		public function get jid():UnescapedJID
 		{
 			return data.jid;
 		}

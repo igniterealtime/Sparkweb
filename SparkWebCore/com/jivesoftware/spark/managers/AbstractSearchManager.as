@@ -21,7 +21,8 @@ package com.jivesoftware.spark.managers
 	import mx.containers.Panel;
 	
 	import org.jivesoftware.xiff.core.Browser;
-	import org.jivesoftware.xiff.core.JID;
+	import org.jivesoftware.xiff.core.EscapedJID;
+	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.core.XMPPConnection;
 	import org.jivesoftware.xiff.data.IQ;
 	import org.jivesoftware.xiff.data.disco.InfoDiscoExtension;
@@ -67,7 +68,7 @@ package com.jivesoftware.spark.managers
 		
 		protected var _connection:XMPPConnection;
 		protected var _server:String = null;
-		protected var _service:JID = null;
+		protected var _service:UnescapedJID = null;
 		protected var _populated:Boolean = false;
 		protected var _nonefound:Boolean;
 		protected var _fieldsMap:Object = {};
@@ -128,16 +129,16 @@ package com.jivesoftware.spark.managers
 		}
 		
 		// Sets what service we are querying.
-		public function set service(service:JID):void
+		public function set service(service:UnescapedJID):void
 		{
 			_service = service;
 		}
 		
 		// Sets what service we are currently set to query.
-		public function get service():JID
+		public function get service():UnescapedJID
 		{
 			if (!_service && services.length > 0)
-				_service = new JID(services[0].JID);
+				_service = new UnescapedJID(services[0].JID);
 			
 			return _service;
 		}
@@ -151,7 +152,7 @@ package com.jivesoftware.spark.managers
 				_populated = false;
  
  			if (!_populated)
-				new Browser(SparkManager.connectionManager.connection).getServiceItems(new JID(server), "_handlePopulateServices", this);
+				new Browser(SparkManager.connectionManager.connection).getServiceItems(new EscapedJID(server), "_handlePopulateServices", this);
 		}
 		
 		// Callback called to find out what services a server has.
@@ -164,7 +165,7 @@ package com.jivesoftware.spark.managers
 			var itemExt:ItemDiscoExtension = extensions[0];
 			for each(var item:Object in itemExt.items) {
 				_pendingServices.addItem(item.jid);
-				new Browser(SparkManager.connectionManager.connection).getServiceInfo(new JID(item.jid), "_handlePopulateServicesFromInfo", this);
+				new Browser(SparkManager.connectionManager.connection).getServiceInfo(new EscapedJID(item.jid), "_handlePopulateServicesFromInfo", this);
 			}
 		}
 		
@@ -175,7 +176,7 @@ package com.jivesoftware.spark.managers
 			var extensions:Array = iq.getAllExtensionsByNS(InfoDiscoExtension.NS);
 			if (!extensions || extensions.length < 1)
 			{
-				_checkPending(iq.from);
+				_checkPending(iq.from.unescaped);
 				return;	
 			}
 			
@@ -195,7 +196,7 @@ package com.jivesoftware.spark.managers
 				}
 			} 
 			// Not a search service, punt it from the list
-			_checkPending(iq.from);
+			_checkPending(iq.from.unescaped);
 		}
 		
 		// Callback called after a search service is detected to determine and cache
@@ -205,7 +206,7 @@ package com.jivesoftware.spark.managers
 			var extensions:Array = iq.getAllExtensionsByNS(SearchExtension.NS);
 			if (!extensions || extensions.length == 0)
 			{
-				_checkPending(iq.from);
+				_checkPending(iq.from.unescaped);
 				return;
 			}
 			var searchExt:SearchExtension = extensions[0];
@@ -221,7 +222,7 @@ package com.jivesoftware.spark.managers
 				// Hrm, no fields, we can't search this properly.
 				if (fields.length == 0)
 				{
-					_checkPending(iq.from);
+					_checkPending(iq.from.unescaped);
 					return;
 				}
 				_fieldsMap[iq.from] = fields;
@@ -234,7 +235,7 @@ package com.jivesoftware.spark.managers
 			}
 			searchLoading = false;
 			services.addItem({Name:name, JID:iq.from});
-			_checkPending(iq.from);
+			_checkPending(iq.from.unescaped);
 		}
 		
 		// Extracts Data Form search fields from the Search Extension and returns an
@@ -260,7 +261,7 @@ package com.jivesoftware.spark.managers
 
 		// Checks if there are any pending services.  If there aren't, we fire an
 		// event to indicate that we're all done/populated.
-		private function _checkPending(service:JID):void
+		private function _checkPending(service:UnescapedJID):void
 		{
 			//trace("Checking pending after done with service: "+service);
 			try
@@ -297,7 +298,7 @@ package com.jivesoftware.spark.managers
 		}
 		
 		// Retrieves the cached list of fields associated with a service JID.
-		public function getFields(jid:JID):Array
+		public function getFields(jid:UnescapedJID):Array
 		{
 			if (!jid || jid.toString().length == 0) 
 				return null;
@@ -306,7 +307,7 @@ package com.jivesoftware.spark.managers
 		}
 		
 		// Retrieves the cached list of data form fields associated with a service JID.
-		public function getDataFormFields(jid:JID):Array
+		public function getDataFormFields(jid:UnescapedJID):Array
 		{
 			if (!jid|| jid.toString().length == 0) 
 				return null;
@@ -317,7 +318,7 @@ package com.jivesoftware.spark.managers
 		// Queries the search service for the required list of fields.
 		// The JID of the service to query and a callback for the results
 		// is required.
-		private function _retrieveFields(jid:JID, callback:Callback):void
+		private function _retrieveFields(jid:EscapedJID, callback:Callback):void
 		{
 			var packetFilter:IPacketFilter = new CallbackPacketFilter(callback);
 			
@@ -331,11 +332,11 @@ package com.jivesoftware.spark.managers
 		// that is being queried and a callback must be specified to receive the
 		// search results.  The fields list is optional, and all fields will be 
 		// used if null is set.
-		public function performSearch(jid:JID, query:String, callback:Callback, fields:Array = null):void
+		public function performSearch(jid:UnescapedJID, query:String, callback:Callback, fields:Array = null):void
 		{
 			var packetFilter:IPacketFilter = new CallbackPacketFilter(callback);
 			
-			var iqSearch:IQ = new IQ(jid, IQ.SET_TYPE, null, "accept", packetFilter);
+			var iqSearch:IQ = new IQ(jid.escaped, IQ.SET_TYPE, null, "accept", packetFilter);
 			var searchExt:SearchExtension = new SearchExtension();
 			if (!fields)
 				fields = getFields(jid);
@@ -351,14 +352,14 @@ package com.jivesoftware.spark.managers
 		// filled in with the given form fields to match on.
 		// The jid is the JID of the service that is being queried and a callback must
 		// be specified to receive the search results.
-		public function performDataFormSearch(jid:JID, formFields:Array, callback:Callback):void
+		public function performDataFormSearch(jid:UnescapedJID, formFields:Array, callback:Callback):void
 		{
 			if (!formFields)
 				return;
 
 			var packetFilter:IPacketFilter = new CallbackPacketFilter(callback);
 			
-			var iqSearch:IQ = new IQ(jid, IQ.SET_TYPE, null, "accept", packetFilter);
+			var iqSearch:IQ = new IQ(jid.escaped, IQ.SET_TYPE, null, "accept", packetFilter);
 			var searchExt:SearchExtension = new SearchExtension();
 			
 			// Setup the Form Extension

@@ -24,11 +24,11 @@
 	title="{Localizator.getText('title.user.search.window')}">
 	<mx:Script>
 		<![CDATA[
+			import org.jivesoftware.xiff.core.UnescapedJID;
 			import com.jivesoftware.spark.managers.ChatManager;
 			import mx.core.Application;
 			import mx.managers.PopUpManager;
 			import com.jivesoftware.spark.managers.Localizator;
-			import org.jivesoftware.xiff.core.JID;
 			import com.jivesoftware.spark.managers.SparkManager;
 			import com.jivesoftware.spark.managers.AbstractSearchManager;
 			import com.jivesoftware.spark.managers.UserSearchManager;
@@ -41,7 +41,7 @@
             
             protected override function buttonOneAction():void
             {
-            	var selectedJID:JID = new JID(userSearchResults.selectedItem.jid);
+            	var selectedJID:UnescapedJID = new UnescapedJID(userSearchResults.selectedItem.jid);
              	
             	close();
             	AddUserWindow.showAddUser(selectedJID, selectedJID.node);
@@ -49,7 +49,7 @@
             
             protected override function buttonTwoAction():void 
             {
-            	ChatManager.sharedInstance.startChat(new JID(userSearchResults.selectedItem.jid));
+            	ChatManager.sharedInstance.startChat(new UnescapedJID(userSearchResults.selectedItem.jid));
             	close();
             }
             

@@ -58,7 +58,6 @@
 			import com.jivesoftware.spark.utils.*;
 			import com.jivesoftware.spark.events.*;
 			
-			import org.jivesoftware.xiff.core.JID;
 			import mx.events.IndexChangedEvent;
 			import com.jivesoftware.spark.chats.SparkChat;
 			import com.jivesoftware.spark.chats.SparkMessage;
@@ -118,7 +117,7 @@
 				{
 					child = new ChatRoom();
 					chat.ui = child;
-					child.id = chat.jid.toBareJID();
+					child.id = chat.jid.bareJID;
 					child.chat = chat;
 					child.label = chat.displayName;
 					child.setStyle('paddingLeft', 10);
@@ -199,11 +198,11 @@
 			public function handleMessages(event:MessageEvent):void 
 			{
 				var message:Message = event.data;
-				var chat:SparkChat = ChatManager.sharedInstance.getChat(message.from);
+				var chat:SparkChat = ChatManager.sharedInstance.getChat(message.from.unescaped);
 
 				//if we don't have an existing chat, and there's content to the message (i.e. ignoring stuff like composing messages), then we need to create a chat to display the message in
 				if(!chat && message.body)
-					chat = message.type == Message.GROUPCHAT_TYPE ? ChatManager.sharedInstance.joinGroupChat(message.from, false) : ChatManager.sharedInstance.startChat(message.from, false);
+					chat = message.type == Message.GROUPCHAT_TYPE ? ChatManager.sharedInstance.joinGroupChat(message.from.unescaped, false) : ChatManager.sharedInstance.startChat(message.from.unescaped, false);
 				
 				//the if is needed for the case in which chat and xiffMessage.body were both null above
 				if(chat && chat.handleMessage(message) && !inFocus)
