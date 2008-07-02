@@ -179,7 +179,7 @@
 				}
 				_currentMessageBox.type = "system";
 			}
-			_currentMessageBox.addMessage(messageText, messageDate, "system");
+			_currentMessageBox.addMessage(messageText, messageDate ? messageDate : new Date(), "system");
 		}
 		
 		public function addUserMessage(userId:String, username:String, messageText:String, messageDate:Date, type:String = null):void {
