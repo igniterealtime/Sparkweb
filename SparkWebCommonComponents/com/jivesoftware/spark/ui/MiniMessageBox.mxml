@@ -22,8 +22,8 @@
 	verticalScrollPolicy="off" horizontalScrollPolicy="off" horizontalGap="0" verticalGap="0">
 	<mx:Style>
    		.username { font-weight:bold;}
-   		.date { color: #C9C9C9; }
-   		.dateDark { color: #222222; }
+   		.date { font-style:normal; color: #C9C9C9; }
+   		.dateDark { font-style:normal; color: #222222; }
 	</mx:Style>
 	<mx:Script><![CDATA[
 		import com.jivesoftware.spark.utils.SimpleDateFormatter;

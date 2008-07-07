@@ -28,8 +28,8 @@
    		.text { }
    		.system {font-style: italic; color: #BBBBBB;}
    		.highlight {border-style:solid; border-color:red;}
-   		.date { color: #C9C9C9; }
-   		.dateDark { color: #222222; }
+   		.date { font-style:normal; color: #C9C9C9; }
+   		.dateDark { font-style:normal; color: #222222; }
 	</mx:Style>
 	<mx:Script><![CDATA[
 		import com.jivesoftware.spark.utils.SimpleDateFormatter;
