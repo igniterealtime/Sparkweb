@@ -230,6 +230,7 @@
 			};
 			messageBox.addEventListener(FlexEvent.CREATION_COMPLETE, queueScroll);
 			messageBox.addEventListener(ChildExistenceChangedEvent.CHILD_ADD, queueScroll);
+			messageBox.addEventListener(ChildExistenceChangedEvent.CHILD_ADD, function(evt:ChildExistenceChangedEvent):void { messageBox.invalidateSize(); });
 			messageBox.percentWidth = 100;
 			if(numChildren > 0)
 			{
