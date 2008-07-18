@@ -37,9 +37,8 @@ package com.jivesoftware.spark.managers
 	public class ConnectionManager extends EventDispatcher 
 	{
 		private var con:XMPPConnection;
+		private var keepAliveTimer:Timer;
 		private var _lastSent:int = 0;
-		//todo: use bind() equiv instead
-		private var eIQID:String;
 		
 		/**
 		 * Creates a new instance of the ConnectionManager.
@@ -82,16 +81,24 @@ package com.jivesoftware.spark.managers
 			con.resource = resource;
 			if (server)
 				con.server = server;
+			
+			con.removeEventListener("outgoingData", packetSent); 
 			con.addEventListener("outgoingData", packetSent);
 			con.connect( "terminatedFlash");
 				
-			con.addEventListener(LoginEvent.LOGIN, function(evt:LoginEvent):void {
-				SparkManager.me = RosterItemVO.get(con.jid, true);
-			});
+			con.removeEventListener(LoginEvent.LOGIN, getMe);
+			con.addEventListener(LoginEvent.LOGIN, getMe);
 			
-			var timer:Timer = new Timer(15000);
-			timer.addEventListener(TimerEvent.TIMER, checkKeepAlive);
-			timer.start();
+			if(keepAliveTimer)
+				keepAliveTimer.stop();
+			keepAliveTimer = new Timer(15000);
+			keepAliveTimer.addEventListener(TimerEvent.TIMER, checkKeepAlive);
+			keepAliveTimer.start();
+		}
+		
+		private function getMe(evt:LoginEvent):void
+		{
+			SparkManager.me = RosterItemVO.get(con.jid, true);
 		}
 		
 		/**
