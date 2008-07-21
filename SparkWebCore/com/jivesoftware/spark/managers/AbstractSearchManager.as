@@ -290,12 +290,6 @@ package com.jivesoftware.spark.managers
 				}		
 			}
 		}
-	
-		// Returns the list of services provided at the specified server.
-		public function get searchServices():ArrayCollection
-		{
-			return services;
-		}
 		
 		// Retrieves the cached list of fields associated with a service JID.
 		public function getFields(jid:UnescapedJID):Array
