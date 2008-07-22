@@ -18,7 +18,7 @@
 -->
 
 
-<mx:VBox xmlns:sho="sho.ui.*" xmlns:comp="com.jivesoftware.spark.*" horizontalAlign="center" creationComplete="addAsyncDisplayTrigger()" xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:VBox xmlns:sho="sho.ui.*" xmlns:comp="com.jivesoftware.spark.*" horizontalAlign="center" xmlns:mx="http://www.adobe.com/2006/mxml">
 	
 	<mx:Style>
 		.title {
@@ -63,26 +63,19 @@
 			
 			protected var completionTimer:Timer = new Timer(100, 1);
 			
-			protected var completionChoices:Array = [];
+			[Bindable]
+			protected var completionChoices:ArrayCollection = new ArrayCollection();
 			
 			protected var cachedSearches:Object = {};
 			protected var searchManager:UserSearchManager;
-			
-			private function addAsyncDisplayTrigger():void
-			{
-				completionTimer.addEventListener(TimerEvent.TIMER_COMPLETE, function(evt:TimerEvent):void {
-					nameField.completions = completionChoices;
-					nameField.displayCompletions(); 
-				});
-			}
 			
 			public function rebuildCompletionList():void
 			{
 				var rebuild:Function = function(evt:*=null):void {
 					for each(var contact:RosterItemVO in SparkManager.roster)
 					{
-						if(completionChoices.indexOf(contact) == -1)
-							completionChoices.concat(contact);
+						if(completionChoices.source.indexOf(contact) == -1)
+							completionChoices.addItem(contact);
 					}
 				};
 				SparkManager.roster.removeEventListener(CollectionEvent.COLLECTION_CHANGE, rebuild);
@@ -134,16 +127,17 @@
 				
 				var processResults:Function;
 				processResults = function(idx:int):void {
-					for (var i:int = idx;i < searchItems.length && i < (idx + 10); i++)
+					trace("Filling 10 items");
+					
+					for (var i:uint = idx;i < searchItems.length && i < (idx + 10); i++)
 					{
-						trace("Filling 10 items");
 						for each(var field:FormField in searchItems[i])
 						{
 							if(field.name.toLowerCase() == "jid")
 							{
 								var item:RosterItemVO = RosterItemVO.get(new UnescapedJID(field.value), true);
-								if(completionChoices.indexOf(item) == -1)
-									completionChoices.concat(item);
+								if(completionChoices.source.indexOf(item) == -1)
+									completionChoices.addItem(item);
 							}
 						}
 					}
@@ -183,7 +177,7 @@
 	
 	
 	<mx:TextArea borderStyle="none" width="{width - 16}" focusEnabled="false" backgroundAlpha="0.0" text="{Localizator.getText('invite.label')}" />
-	<sho:CompletionInput width="{width - 16}" itemRenderer="com.jivesoftware.spark.BuddyRenderer" focusIn="{nameField.filters = []}" change="{searchForContacts()}" id="nameField" />
+	<sho:CompletionInput width="{width - 16}" dataProvider="{completionChoices}" itemRenderer="com.jivesoftware.spark.BuddyRenderer" focusIn="{nameField.filters = []}" change="{searchForContacts()}" id="nameField" />
 	<mx:HBox>
 		<mx:Button click="dispatchEvent(new Event('close'))" label="Cancel"/>
 		<mx:Button click="send()" label="Invite"/>
