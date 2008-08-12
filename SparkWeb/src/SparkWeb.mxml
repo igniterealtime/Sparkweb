@@ -125,9 +125,9 @@
 				shouldShowLoginWindow = SparkManager.getConfigValueForKey("autoLogin") != "true";
 				shouldUseExternal = SparkManager.getConfigValueForKey("useExternalAuth") == "true";
 				if(shouldUseExternal) {
-					XMPPBOSHConnection.registerSASLMechanism("EXTERNAL",External);
+					XMPPConnection.registerSASLMechanism("EXTERNAL",External);
 				}
-				XMPPBOSHConnection.disableSASLMechanism("ANONYMOUS");
+				XMPPConnection.disableSASLMechanism("ANONYMOUS");
 			}
 			
 			
