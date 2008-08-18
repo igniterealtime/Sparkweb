@@ -24,6 +24,7 @@ package com.jivesoftware.spark.managers
 	
 	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.core.XMPPBOSHConnection;
+	import org.jivesoftware.xiff.core.XMPPSocketConnection;
 	import org.jivesoftware.xiff.core.XMPPConnection;
 	import org.jivesoftware.xiff.data.Message;
 	import org.jivesoftware.xiff.data.events.MessageEventExtension;
@@ -58,7 +59,7 @@ package com.jivesoftware.spark.managers
 					break;
 				case "socket":
 				default:
-					con = new XMPPConnection();	
+					con = new XMPPSocketConnection();	
 			}
 			if(con is XMPPBOSHConnection)
 				con.port = Number(SparkManager.getConfigValueForKey("port"));
@@ -84,7 +85,7 @@ package com.jivesoftware.spark.managers
 			
 			con.removeEventListener("outgoingData", packetSent); 
 			con.addEventListener("outgoingData", packetSent);
-			con.connect( "terminatedFlash");
+			con.connect( "terminatedStandard");
 				
 			con.removeEventListener(LoginEvent.LOGIN, getMe);
 			con.addEventListener(LoginEvent.LOGIN, getMe);
