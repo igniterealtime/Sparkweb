@@ -210,6 +210,13 @@
  						loginDialog.reset();
  						loginDialog.showErrorText(Localizator.getText('message.not.authorized'));
  						break;
+ 					case 501:
+ 						loginDialog.reset();
+ 						if (event.errorMessage && event.errorCondition == "TLS required")
+ 							loginDialog.showErrorText(Localizator.getText('message.tls.required'));
+ 						else
+ 							loginDialog.showErrorText(Localizator.getText('message.generic.error'));
+ 						break;
  					case 503:
  						loginDialog.reset();
  						loginDialog.showErrorText(Localizator.getText('message.service.unavailable'));
@@ -218,7 +225,8 @@
  			}
  			
  			public function handleDisconnect(event:Event):void {
- 				ExternalInterface.call("refreshPage");
+ 				if (loginDialog.visible == false)
+ 					ExternalInterface.call("refreshPage");
  			}
 		    
 		    public static function logout():void {
