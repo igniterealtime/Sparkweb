@@ -22,11 +22,13 @@ package com.jivesoftware.spark.managers
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	
+	import org.jivesoftware.xiff.core.EscapedJID;
 	import org.jivesoftware.xiff.core.UnescapedJID;
 	import org.jivesoftware.xiff.core.XMPPBOSHConnection;
-	import org.jivesoftware.xiff.core.XMPPSocketConnection;
 	import org.jivesoftware.xiff.core.XMPPConnection;
+	import org.jivesoftware.xiff.core.XMPPSocketConnection;
 	import org.jivesoftware.xiff.data.Message;
+	import org.jivesoftware.xiff.data.Presence;
 	import org.jivesoftware.xiff.data.events.MessageEventExtension;
 	import org.jivesoftware.xiff.data.im.RosterItemVO;
 	import org.jivesoftware.xiff.events.LoginEvent;
@@ -93,6 +95,20 @@ package com.jivesoftware.spark.managers
 			keepAliveTimer = new Timer(15000);
 			keepAliveTimer.addEventListener(TimerEvent.TIMER, checkKeepAlive);
 			keepAliveTimer.start();
+		}
+		
+		/**
+		 * Logs out of the server.
+		 */
+		public function logout():void
+		{
+			// Send an unavilable presence
+			var recipient:EscapedJID = new EscapedJID(connection.domain);
+			var unavailablePresence:Presence = new Presence(recipient, null, Presence.UNAVAILABLE_TYPE, null, "Logged out");
+			con.send(unavailablePresence);
+			
+			// Now disconnect
+			con.disconnect();
 		}
 		
 		private function getMe(evt:LoginEvent):void

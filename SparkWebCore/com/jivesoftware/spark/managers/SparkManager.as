@@ -166,7 +166,9 @@ package com.jivesoftware.spark.managers
 		
 		public static function logout():void
 		{
-			//TODO: implement!
+			// We may want to implement a way to logout without restarting the entire application (especially for SparkAir). SW-73
+			// All of the managers would deinitialize and unregister their event listeners. Then SparkWeb would show its login dialog.
+			connectionManager.logout();
 		}
 	}
 }
