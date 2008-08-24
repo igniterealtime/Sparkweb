@@ -244,7 +244,7 @@
 				addListeners();
 					
 				if(rosterItem && rosterItem.online)
-					loadVCard(contact as RosterItemVO);
+					loadVCard(rosterItem);
 				dispatchEvent(new Event("dataChanged"));
 			}
 		}
