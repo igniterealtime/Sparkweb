@@ -134,7 +134,7 @@
 		[Bindable(event=dataUpdated)]
 		public function get jid():UnescapedJID
 		{
-			return data.jid.unescaped;
+			return data.jid;
 		}
 
 	]]>			

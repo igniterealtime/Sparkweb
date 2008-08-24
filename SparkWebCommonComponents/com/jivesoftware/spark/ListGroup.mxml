@@ -66,9 +66,7 @@
 		public var _headerFontColors:ArrayCollection = new ArrayCollection([0x000000, 0x000000]);
 		
 		protected var _dataProvider:ListCollectionView = null;
-		
-		protected var _selectionList:ListCollectionView = new ArrayCollection();
-		
+
 		protected function postChange(event:ListEvent):void
 		{
 			dispatchEvent(event);
@@ -82,16 +80,6 @@
 		public function get headerFontColors():Array
 		{
 			return _headerFontColors.toArray();
-		}
-		
-		public function set selectionList(list:ListCollectionView):void
-		{
-			_selectionList = list;
-		}
-		
-		public function get selectionList():ListCollectionView
-		{
-			return _selectionList;
 		}
 		
 		public function set collapsed(flag:Boolean):void

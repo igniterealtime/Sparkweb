@@ -50,18 +50,16 @@ package com.jivesoftware.spark.managers
 			switch(type)
 			{
 				case "http":
-					con = new XMPPBOSHConnection();
-					(con as XMPPBOSHConnection).secure = false;
+					con = new XMPPBOSHConnection(false);
 					break;
 				case "https":
-					con = new XMPPBOSHConnection();
-					(con as XMPPBOSHConnection).secure = true;
+					con = new XMPPBOSHConnection(true);
 					break;
 				case "socket":
 				default:
 					con = new XMPPSocketConnection();	
 			}
-			if(con is XMPPBOSHConnection)
+			if(SparkManager.getConfigValueForKey("port") != null)
 				con.port = Number(SparkManager.getConfigValueForKey("port"));
 		}
 		

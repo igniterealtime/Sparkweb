@@ -86,14 +86,14 @@
 						}
 						else
 						{
+							var jid:UnescapedJID = bookmark.jid.unescaped;
 							if (bookmark.autoJoin)
-								ChatManager.sharedInstance.queueRoom(bookmark.jid.unescaped);
+								ChatManager.sharedInstance.queueRoom(jid);
 							
 							
 							// Automatically add the conference server that a bookmarked room resides on to this MUCList
-							var jid:UnescapedJID = bookmark.jid.unescaped;
 							var roomList:MUCRoomList = addConferenceServer(jid);
-							roomList.addItems([{jid:bookmark.jid, name:bookmark.name}]);
+							roomList.addItems([{jid:jid, name:bookmark.name}]);
 						}	
 					}
 					

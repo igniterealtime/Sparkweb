@@ -30,8 +30,7 @@ package com.jivesoftware.spark.managers
 	public class MUCManager
 	{
 		private var observers:Object = {};
-		private var serviceJIDStoServerJIDS:Object = {};
-		private var cache:Object = {};
+		private var serviceJIDsToServerJIDs:Object = {};
 		private var rooms:Object = {};
 		
 		private static var sharedInstance:MUCManager = null;
@@ -67,29 +66,12 @@ package com.jivesoftware.spark.managers
 		
 		public function findConferenceService(server:UnescapedJID, callback:Function):void
 		{
-			if(!observers[server])
+			if(!observers[server.toString()])
 			{
-				observers[server] = [];
+				observers[server.toString()] = [];
 			}
-			observers[server].push(callback);
+			observers[server.toString()].push(callback);
 			new Browser(SparkManager.connectionManager.connection).getServiceInfo(server.escaped, "handleSpeculativeInfoReply", this);
-		}
-		
-		public function handleServiceList(iq:IQ):void
-		{
-			var extensions:Array = iq.getAllExtensionsByNS(ItemDiscoExtension.NS);
-			if (!extensions || extensions.length < 1) 
-				return;
-				
-			var extension:ItemDiscoExtension = extensions[0];
-			
-			var server:UnescapedJID = iq.from.unescaped;
-			
-			for each(var item:* in extension.items) 
-			{
-				serviceJIDStoServerJIDS[item.jid] = server;
-				new Browser(SparkManager.connectionManager.connection).getServiceInfo(new EscapedJID(item.jid), "handleInfoReply", this);
-			}
 		}
 		
 		public function handleSpeculativeInfoReply(iq:IQ):void
@@ -102,16 +84,32 @@ package com.jivesoftware.spark.managers
 			{
 				if (feature == MUCExtension.NS)
 				{
-					cache[iq.from] = iq.from;
-					for each(var callback:Function in observers[iq.from])
+					for each(var callback:Function in observers[iq.from.unescaped.toString()])
 					{
-						callback(iq.from);
+						callback(iq.from.unescaped);
 					}
 					return;
 				}
 			}
 			//if it wasn't a conference server, we need to get the list of services on this server
 			new Browser(SparkManager.connectionManager.connection).getServiceItems(iq.from, "handleServiceList", this);
+		}
+		
+		public function handleServiceList(iq:IQ):void
+		{
+			var extensions:Array = iq.getAllExtensionsByNS(ItemDiscoExtension.NS);
+			if (!extensions || extensions.length < 1) 
+				return;
+				
+			var extension:ItemDiscoExtension = extensions[0];
+			
+			var server:UnescapedJID = iq.from.unescaped;
+			
+			for each(var item:Object in extension.items) 
+			{
+				serviceJIDsToServerJIDs[item.jid] = server;
+				new Browser(SparkManager.connectionManager.connection).getServiceInfo(new EscapedJID(item.jid), "handleInfoReply", this);
+			}
 		}
 		
 		public function handleInfoReply(iq:IQ):void
@@ -124,11 +122,10 @@ package com.jivesoftware.spark.managers
 			{
 				if (feature == MUCExtension.NS)
 				{
-					var server:String = serviceJIDStoServerJIDS[iq.from];
-					cache[server] = iq.from;
-					for each(var callback:* in observers[server])
+					var server:UnescapedJID = serviceJIDsToServerJIDs[iq.from.toString()];
+					for each(var callback:Function in observers[server.toString()])
 					{
-						callback(iq.from);
+						callback(iq.from.unescaped);
 					}
 					return;
 				}
